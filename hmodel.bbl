@@ -1,0 +1,126 @@
+\begin{thebibliography}{10}
+
+\bibitem{albrecht2003construction}
+Irene Albrecht, J{\"o}rg Haber, and Hans-Peter Seidel.
+\newblock Construction and animation of anatomically based human hand models.
+\newblock In {\em Proceedings of the 2003 ACM SIGGRAPH/Eurographics symposium
+  on Computer animation}, pages 98--109. Eurographics Association, 2003.
+
+\bibitem{bloomenthal1991convolution}
+Jules Bloomenthal and Ken Shoemake.
+\newblock Convolution surfaces.
+\newblock In {\em ACM SIGGRAPH Computer Graphics}, volume~25, pages 251--256.
+  ACM, 1991.
+
+\bibitem{keskin2012hand}
+Cem Keskin, Furkan K{\i}ra{\c{c}}, Yunus~Emre Kara, and Lale Akarun.
+\newblock Hand pose estimation and hand shape classification using
+  multi-layered randomized decision forests.
+\newblock In {\em Computer Vision--ECCV 2012}, pages 852--863. Springer, 2012.
+
+\bibitem{khamis12learning}
+Sameh Khamis12, Jonathan Taylor, Jamie Shotton, Cem Keskin, Shahram Izadi, and
+  Andrew Fitzgibbon.
+\newblock Learning an efficient model of hand shape variation from depth
+  images.
+
+\bibitem{melax2013dynamics}
+Stan Melax, Leonid Keselman, and Sterling Orsten.
+\newblock Dynamics based 3d skeletal hand tracking.
+\newblock In {\em Proceedings of Graphics Interface 2013}, pages 63--70.
+  Canadian Information Processing Society, 2013.
+
+\bibitem{oikonomidis2014evolutionary}
+Iason Oikonomidis, Manolis Lourakis, Antonis Argyros, et~al.
+\newblock Evolutionary quasi-random search for hand articulations tracking.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2014 IEEE
+  Conference on}, pages 3422--3429. IEEE, 2014.
+
+\bibitem{qian2014realtime}
+Chen Qian, Xiao Sun, Yichen Wei, Xiaoou Tang, and Jian Sun.
+\newblock Realtime and robust hand tracking from depth.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2014 IEEE
+  Conference on}, pages 1106--1113. IEEE, 2014.
+
+\bibitem{rhee2006human}
+Taehyun Rhee, Ulrich Neumann, and John~P Lewis.
+\newblock Human hand modeling from surface anatomy.
+\newblock In {\em Proceedings of the 2006 symposium on Interactive 3D graphics
+  and games}, pages 27--34. ACM, 2006.
+
+\bibitem{schroder2013analysis}
+Matthias Schr{\"o}der, Jonathan Maycock, Helge Ritter, and Mario Botsch.
+\newblock Analysis of hand synergies for inverse kinematics hand tracking.
+\newblock In {\em IEEE International Conference on Robotics and Automation
+  (ICRA)}, 2013.
+
+\bibitem{schroder2014real}
+Michael Schroder, Jonathan Maycock, Helge Ritter, and Mario Botsch.
+\newblock Real-time hand tracking using synergistic inverse kinematics.
+\newblock In {\em Robotics and Automation (ICRA), 2014 IEEE International
+  Conference on}, pages 5447--5454. IEEE, 2014.
+
+\bibitem{sharp2015accurate}
+Toby Sharp, Cem Keskin, Duncan Robertson, Jonathan Taylor, Jamie Shotton, David
+  Kim Christoph Rhemann~Ido Leichter, Alon Vinnikov~Yichen Wei, Daniel Freedman
+  Pushmeet Kohli~Eyal Krupka, Andrew Fitzgibbon, and Shahram Izadi.
+\newblock Accurate, robust, and flexible real-time hand tracking.
+\newblock In {\em Proc. CHI}, volume~8, 2015.
+
+\bibitem{sridhar2015fast}
+Srinath Sridhar, Franziska Mueller, Antti Oulasvirta, and Christian Theobalt.
+\newblock Fast and robust hand tracking using detection-guided optimization.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 3213--3221, 2015.
+
+\bibitem{straka2012simultaneous}
+Matthias Straka, Stefan Hauswiesner, Matthias R{\"u}ther, and Horst Bischof.
+\newblock Simultaneous shape and pose adaption of articulated models using
+  linear optimization.
+\newblock In {\em Computer Vision--ECCV 2012}, pages 724--737. Springer, 2012.
+
+\bibitem{sun2015cascaded}
+Xiao Sun, Yichen Wei, Shuang Liang, Xiaoou Tang, and Jian Sun.
+\newblock Cascaded hand pose regression.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 824--832, 2015.
+
+\bibitem{tagliasacchi2015robust}
+Andrea Tagliasacchi, Matthias Schroeder, Anastasia Tkach, Sofien Bouaziz, Mario
+  Botsch, and Mark Pauly.
+\newblock Robust articulated-icp for real-time hand tracking.
+\newblock Technical report, 2015.
+
+\bibitem{tang2013real}
+Danhang Tang, Tsz-Ho Yu, and Tae-Kyun Kim.
+\newblock Real-time articulated hand pose estimation using semi-supervised
+  transductive regression forests.
+\newblock In {\em Computer Vision (ICCV), 2013 IEEE International Conference
+  on}, pages 3224--3231. IEEE, 2013.
+
+\bibitem{taylor2014user}
+James Taylor, Richard Stebbing, Varun Ramakrishna, Cem Keskin, Jamie Shotton,
+  Shahram Izadi, Aaron Hertzmann, and Andrew Fitzgibbon.
+\newblock User-specific hand modeling from monocular depth sequences.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2014 IEEE
+  Conference on}, pages 644--651. IEEE, 2014.
+
+\bibitem{tompson2014real}
+Jonathan Tompson, Murphy Stein, Yann Lecun, and Ken Perlin.
+\newblock Real-time continuous pose recovery of human hands using convolutional
+  networks.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 33(5):169, 2014.
+
+\bibitem{vaillant2013implicit}
+Rodolphe Vaillant, Lo{\"\i}c Barthe, Ga{\"e}l Guennebaud, Marie-Paule Cani,
+  Damien Rohmer, Brian Wyvill, Olivier Gourmel, and Mathias Paulin.
+\newblock Implicit skinning: Real-time skin deformation with contact modeling.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 32(4):125, 2013.
+
+\bibitem{vaillant2014robust}
+Rodolphe Vaillant, G{\"a}el Guennebaud, Lo{\"\i}c Barthe, Brian Wyvill, and
+  Marie-Paule Cani.
+\newblock Robust iso-surface tracking for interactive character skinning.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 33(6):189, 2014.
+
+\end{thebibliography}

@@ -12,9 +12,10 @@
 \usepackage{cite}
 \usepackage{multirow}
 \setlength{\parindent}{0pt}
+\definecolor{mygray}{gray}{0.6}
 
 
-\title{Appendix}
+\title{Convolution surfaces model  for hand tracking}
 
 %\author{Anastasia Tkach\\ 
 %Computer Graphics and Geometry Laboratory}
@@ -22,12 +23,110 @@
 \begin{document}
 \maketitle
 
-\section{Convolution segment}
+\section{Introduction}
+
+Hand tracking is a process of accurately reconstructing shape and articulation of human hands. It is a crucial component of natural human-computer interfaces and animation of humanoid avatars. A number of hand tracking algorithms has been recently proposed  Keskin et. al. \cite{keskin2012hand}, Melax et. al. \cite{melax2013dynamics}, Tang et. al. \cite{tang2013real}, Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, Schroder et. al. \cite{schroder2014real},
+Tompson et. al. \cite{tompson2014real}, Qian et. al. \cite{qian2014realtime},  Tagliasacchi et. al. \cite{tagliasacchi2015robust}, Sridhar et. al. \cite{sridhar2015fast}, Sun et. al. \cite{sun2015cascaded} and Sharp et. al. \cite{sharp2015accurate}.
+However, in most consumer applications hand tracking is just a single components of a bigger pipeline. Before tracking, a suitable hand model is obtained. Once the hand pose parameters are found, the tracking result is displayed by skinning the model. Both modeling and skinning tasks are not trivial.
+
+\textit{Why customizing the hand model?}
+Hand model should be able to accurately represent the observed data.  The discrepancy between the optimal model pose given the data and the true hand pose can be significant, especially if the hand model does not reflect all the degrees of freedom of a hand (Figure \ref{fig:coarse_hand_model_and_lbs}, left).
+
 
 \begin{figure}[h!] 
 	\centering
 	\hspace{-2em}
-	\includegraphics[width=0.3\textwidth]{fig/convsegment.png}
+	\includegraphics[width=0.5\textwidth]{figures/coarse_hand_model_and_lbs}
+	\caption{Left - coarse hand model  from \cite{tagliasacchi2015robust}; right - hand model animated with linear blend skinning from \cite{sharp2015accurate}.}
+	\label{fig:coarse_hand_model_and_lbs}
+\end{figure}
+
+
+\textit{Why realistically animating the hand model?}
+The hand skinning quality is obviously important for digital avatars applications. In AR and VR applications a 3D hand model can properly interact with 3D objects, establish a realistic contact and disappear behind them. Given that, the degree of immersion into virtual reality depends on whether a user sees own realistic hands \textcolor{mygray}{(find a study mentioned by Leap Motion).} The simple skinning approaches like linear blend skinning may generate implausible results  (Figure \ref{fig:coarse_hand_model_and_lbs}, right).
+
+Since each stage of the pipeline requires a hand model, it is worth trying to find a model representation suitable for all three stages.  If that representation is at least as good as its available alternatives at each stage, it should be preferred to them. Firstly, it eliminates a problem of retargeting, which doesn't only require additional effort but also brings additional imprecision. \textcolor{mygray}{Secondly, a system with a single representation is simpler and more elegant.}
+
+We suggest to use convolution surfaces representation of the hand model. Convolution surface is an implicit surface which is described by a control skeleton. The skeleton may consist of points, edges or polygons \cite{bloomenthal1991convolution}. In each vertex of the skeleton we define a radius. The radius in intermediate points is a linear combination of the radii at the neighboring vertices. Given the topology of the underlying skeleton, the model can be represented with convolution surface up to high precision \textcolor{mygray}{(find some theoretical estimates).}
+
+
+\subsection{Convolution surfaces for model fitting}
+The spheres and mixed cylinders/spheres hand model representations (Figure \ref{fig:hand_model_representations} a, b) are ubiquitous in hand tracking, because they are well suited for tracking tack per se (see next) and can be quickly to created manually. If a small number of  building blocks is used, the precision of the model is low, especially in the palm region. A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}
+The triangles mesh representation can approximate the hand to a high precision. However, there is obvious way to specify the model parts that are rigid and should be kept the same shape between the poses. This results in overfitting to local skin deformations. 
+
+\begin{figure}[h!] 
+	\centering
+	\hspace{-2em}
+	\includegraphics[width=0.5\textwidth]{figures/hand_model_representations}
+	\caption{Hand model representations from works of (a) Qian et. al. \cite{qian2014realtime}, (b)  Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, (c) Melax et. al. \cite{melax2013dynamics} and (d) Sharp et. al \cite{sharp2015accurate}.}
+	\label{fig:hand_model_representations}
+\end{figure}
+
+\subsection{Convolution surfaces for hand tracking}
+For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. For a triangular mesh this operation has complexity linear in number of triangles. Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.
+
+\subsection{Convolution surfaces for hand skinning}
+The Linear Blend Skinning approach used to pose the hand model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ). A convolution surfaces model serves a ready to use input for such an approach.
+
+\subsection{Contributions}
+
+\begin{itemize}
+
+\item Suggested a single hand model representation suitable for modeling, tracking and skinning tasks. 
+\item Developed an approach for approximation a model with convolution surface, given a skeleton topology.
+\item Formulated position-based inverse kinematics algorithm for hand tracking. The position based approach does not require walking through the hierarchical chain of joint, thus saving the computational power. Also, position-based inverse kinematics does not involve linear approximations or rotations, thus making the optimization more stable.
+\item Suggested an automatic approach for field functions construction in implicit skinning.  \textcolor{mygray}{Replaced newton iteration for vertex projection by a closed form solution.}
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Related Literature}
+
+\begin{itemize}
+
+\item Albrecht et al. \cite{albrecht2003construction} developed an approach for creating an anatomically realistic hand model that includes bones and muscles structure. Their approach requires several prerequisites including plaster cast of a human hand and laser scanner for manually creating a physically realistic hand template. Given user-defined correspondences between 3D feature points and the hand image, a specific hand model is created by deforming a generic hand model. 
+
+\item Rhee et. al. \cite{rhee2006human} use a single image of a hand at rest pose to infer joint hand joint locations from skin creases. Given the skeleton obtained at the previous step and the hand contour from the image, they deform a template hand mesh to fit this data. 
+
+\item Straka et al. \cite{straka2012simultaneous} also fit the template mesh with attached skeleton to 3D data. The model is deformed to explain the data while keeping the vertices attached to their corresponding bones. It is on clear whether the approach whether be able to handle a hand motion sequence, since the results are demonstrated on a full body model.
+
+\item Taylor et. al. \cite{taylor2014user} generate a user-specific hand model from an RGBD video sequence. The model is represented as a triangular mesh with an embedded skeleton. In each frame the hand pose is initialized using an appearance-based tracking algorithm. The hand model parameters are found by solving a single optimization problem formulated for the entire video sequence which also finds hand pose in each frame. 
+
+\item Khamis et. al.  \cite{khamis12learning} fit a hand model for a specific user by finding its shape coordinates in the basis of mesh matrices and bones locations. As in the approach by Taylor et. al, they optimize simultaneously for pose and shape parameters in all the frames of an RGBD sequence across all the subjects. Requires large number of subjects as a regularization for excessive degrees of freedom. 
+
+The results generated by the approaches listed above could be used as an input for our system to create a hand model representation adapted for efficient tracking and animation.
+
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Results}
+
+\subsection{Modeling}
+
+\begin{figure}[h!] 
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/modeling}
+	\caption{Fitting convolution surfaces hand model to several poses of the same hand.}
+	\label{fig:modeling}
+\end{figure}
+
+\subsection{Tracking}
+
+\subsection{Skinning}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\appendix
+\subsection{Convolution segment}
+
+\begin{figure}[h!] 
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/convsegment.png}
 	\caption{Convolution segment.}
 	\label{fig:convsegment}
 \end{figure}
@@ -50,7 +149,7 @@ Given the data points $P = \{p_i\}_{i = 1}^N$ and their projections on the model
 \begin{figure}[h!] 
 	\centering
 	\hspace{-2em}
-	\includegraphics[width=0.47\textwidth]{fig/projection_convsegment.png}
+	\includegraphics[width=0.47\textwidth]{figures/projection_convsegment.png}
 	\caption{Convolution segment.}
 	\label{fig:projection_convsegment}
 \end{figure}
@@ -76,13 +175,13 @@ Given the projection $q_i = q_i(c_1, c_2, r_1, r_2)$, the objective function $\t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Convolution triangle}
+\subsection{Convolution triangle}
 
 
 \begin{figure}[h!] 
 	\centering
 	\hspace{-2em}
-	\includegraphics[width=0.3\textwidth]{fig/convtriangle.png}
+	\includegraphics[width=0.3\textwidth]{figures/convtriangle.png}
 	\caption{Convolution triangle.}
 	\label{fig:convtriangle}
 \end{figure}
@@ -92,7 +191,7 @@ A convolution triangle (Figure \ref{fig:convtriangle}) is defined by three spher
 \begin{figure}[h!] 
 	\centering
 	\hspace{-2em}
-	\includegraphics[width=0.45\textwidth]{fig/cones_and_tangent_plane.png}
+	\includegraphics[width=0.45\textwidth]{figures/cones_and_tangent_plane.png}
 	\caption{The three apices of the cones tangent to each pair of spheres lie on a straight line.}
 	\label{fig:logistic_regression}
 \end{figure}
@@ -100,7 +199,7 @@ A convolution triangle (Figure \ref{fig:convtriangle}) is defined by three spher
 \begin{figure}[h!] 
 	\centering
 	\hspace{-2em}
-	\includegraphics[width=0.45\textwidth]{fig/projection_convtriangle.png}
+	\includegraphics[width=0.45\textwidth]{figures/projection_convtriangle.png}
 	\caption{Computing the tangent plane for three spheres.}
 	\label{fig:projection_convtriangle}
 \end{figure}
@@ -181,7 +280,7 @@ Consider the case when several convolution segments and triangles are used to cr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%\bibliographystyle{plain}
-%\bibliography{htrack}
+ \bibliographystyle{plain}
+\bibliography{hmodel}
 
 \end{document}
