@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.16)  5 OCT 2015 14:23
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.16)  6 OCT 2015 15:38
 entering extended mode
-**C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/hmodel.tex
-(C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/hmodel.tex
+**C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/hmodel.tex
+(C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/hmodel.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -316,7 +316,7 @@ Package: cite 2015/02/27  v 5.5
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
 \bigstrutjot=\dimen143
 )
-(C:\Users\tkach\OneDrive\EPFL\Reports\HandModel\latex_hand_model\hmodel.aux)
+(C:\Users\tkach\OneDrive\EPFL\Reports\HModel_paper\hmodel.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
@@ -354,149 +354,187 @@ LaTeX Warning: No \author given.
 
 LaTeX Warning: No \author given.
 
-<figures/coarse_hand_model_and_lbs.png, id=1, 856.3995pt x 368.577pt>
+<figures/generic_pipeline.png, id=1, 1300.86pt x 595.023pt>
+File: figures/generic_pipeline.png Graphic file (type png)
+
+<use figures/generic_pipeline.png>
+Package pdftex.def Info: figures/generic_pipeline.png used on input line 34.
+(pdftex.def)             Requested size: 258.0pt x 118.00377pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 34--35
+ [][] 
+ []
+
+<figures/coarse_hand_model_and_lbs.png, id=2, 856.3995pt x 368.577pt>
 File: figures/coarse_hand_model_and_lbs.png Graphic file (type png)
 
 <use figures/coarse_hand_model_and_lbs.png>
 Package pdftex.def Info: figures/coarse_hand_model_and_lbs.png used on input li
-ne 39.
+ne 48.
 (pdftex.def)             Requested size: 258.0pt x 111.04074pt.
+LaTeX Font Info:    Try loading font information for U+msa on input line 67.
 
-<figures/hand_model_representations.png, id=2, 1137.048pt x 368.577pt>
-File: figures/hand_model_representations.png Graphic file (type png)
-
-<use figures/hand_model_representations.png>
-Package pdftex.def Info: figures/hand_model_representations.png used on input l
-ine 60.
-(pdftex.def)             Requested size: 258.0pt x 83.62924pt.
- [1{C:/Users/tkach/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
-
-
- <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/figures/coars
-e_hand_model_and_lbs.png> <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex
-_hand_model/figures/hand_model_representations.png>]
-LaTeX Font Info:    Try loading font information for U+msa on input line 75.
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 75.
+LaTeX Font Info:    Try loading font information for U+msb on input line 67.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<figures/modeling.png, id=9, 1111.15125pt x 830.50275pt>
+Underfull \hbox (badness 10000) in paragraph at lines 71--71
+\OT1/ptm/m/n/8 em-bed-ded skele-ton,
+ []
+
+
+Underfull \hbox (badness 6284) in paragraph at lines 71--71
+[]\OT1/ptm/m/n/8 Vertices and bones
+ []
+
+
+Underfull \hbox (badness 6284) in paragraph at lines 71--72
+[]\OT1/ptm/m/n/8 Vertices and bones
+ []
+
+
+Underfull \hbox (badness 8189) in paragraph at lines 73--73
+[]\OT1/ptm/m/n/8 Cylinders size and
+ []
+
+
+Underfull \hbox (badness 2334) in paragraph at lines 75--76
+[]\OT1/ptm/m/n/8 Positions of con-trol
+ []
+
+[1{C:/Users/tkach/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
+
+
+ <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/generic_pipeline.pn
+g> <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/coarse_hand_model
+_and_lbs.png>] <figures/hand_model_representations.png, id=9, 1137.048pt x 368.
+577pt>
+File: figures/hand_model_representations.png Graphic file (type png)
+
+<use figures/hand_model_representations.png>
+Package pdftex.def Info: figures/hand_model_representations.png used on input l
+ine 91.
+(pdftex.def)             Requested size: 258.0pt x 83.62924pt.
+
+<figures/modeling.png, id=10, 1111.15125pt x 830.50275pt>
 File: figures/modeling.png Graphic file (type png)
 
 <use figures/modeling.png>
-Package pdftex.def Info: figures/modeling.png used on input line 113.
+Package pdftex.def Info: figures/modeling.png used on input line 143.
 (pdftex.def)             Requested size: 258.0pt x 192.83644pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 113--114
+Overfull \hbox (6.0pt too wide) in paragraph at lines 143--144
  [][] 
  []
 
-[2 <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/figures/mod
-eling.png>] <figures/convsegment.png, id=16, 1101.51524pt x 699.8145pt>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figures/convsegment.png, id=12, 1101.51524pt x 699.8145pt>
 File: figures/convsegment.png Graphic file (type png)
 
 <use figures/convsegment.png>
-Package pdftex.def Info: figures/convsegment.png used on input line 129.
+Package pdftex.def Info: figures/convsegment.png used on input line 159.
 (pdftex.def)             Requested size: 258.0pt x 163.91183pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 129--130
+Overfull \hbox (6.0pt too wide) in paragraph at lines 159--160
  [][] 
  []
 
-<figures/projection_convsegment.png, id=17, 807.015pt x 561.89925pt>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figures/projection_convsegment.png, id=13, 807.015pt x 561.89925pt>
 File: figures/projection_convsegment.png Graphic file (type png)
 
 <use figures/projection_convsegment.png>
 Package pdftex.def Info: figures/projection_convsegment.png used on input line 
-152.
+182.
 (pdftex.def)             Requested size: 242.52063pt x 168.854pt.
-
-<figures/convtriangle.png, id=18, 544.434pt x 640.794pt>
+ [2 <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/hand_model_repre
+sentations.png>]
+<figures/convtriangle.png, id=25, 544.434pt x 640.794pt>
 File: figures/convtriangle.png Graphic file (type png)
 
 <use figures/convtriangle.png>
-Package pdftex.def Info: figures/convtriangle.png used on input line 184.
+Package pdftex.def Info: figures/convtriangle.png used on input line 214.
 (pdftex.def)             Requested size: 154.80157pt x 182.19797pt.
 
-<figures/cones_and_tangent_plane.png, id=19, 349.90726pt x 315.579pt>
+<figures/cones_and_tangent_plane.png, id=26, 349.90726pt x 315.579pt>
 File: figures/cones_and_tangent_plane.png Graphic file (type png)
 
 <use figures/cones_and_tangent_plane.png>
 Package pdftex.def Info: figures/cones_and_tangent_plane.png used on input line
- 194.
+ 224.
 (pdftex.def)             Requested size: 232.19843pt x 209.41438pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figures/projection_convtriangle.png, id=20, 811.23074pt x 567.3195pt>
+<figures/projection_convtriangle.png, id=27, 811.23074pt x 567.3195pt>
 File: figures/projection_convtriangle.png Graphic file (type png)
 
 <use figures/projection_convtriangle.png>
 Package pdftex.def Info: figures/projection_convtriangle.png used on input line
- 202.
+ 232.
 (pdftex.def)             Requested size: 232.19843pt x 162.38026pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[3
-
- <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/figures/convs
-egment.png> <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/fi
-gures/projection_convsegment.png> <C:/Users/tkach/OneDrive/EPFL/Reports/HandMod
-el/latex_hand_model/figures/convtriangle.png>]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 266.
-
+[3 <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/modeling.png> <C:
+/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/convsegment.png> <C:/Us
+ers/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/projection_convsegment.png
+> <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/convtriangle.png>]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 296.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 266.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 296.
 
-** WARNING: Ignoring useless \section in Appendix (line 276).
-(C:\Users\tkach\OneDrive\EPFL\Reports\HandModel\latex_hand_model\hmodel.bbl
+** WARNING: Ignoring useless \section in Appendix (line 306).
+(C:\Users\tkach\OneDrive\EPFL\Reports\HModel_paper\hmodel.bbl
 Underfull \hbox (badness 1661) in paragraph at lines 22--26
 []\OT1/ptm/m/n/8 Sameh Khamis12, Jonathan Tay-lor, Jamie Shot-ton, Cem Ke-skin,
 
  []
 
-[4 <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex_hand_model/figures/con
-es_and_tangent_plane.png> <C:/Users/tkach/OneDrive/EPFL/Reports/HandModel/latex
-_hand_model/figures/projection_convtriangle.png>]) [5
+[4 <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/cones_and_tangent
+_plane.png> <C:/Users/tkach/OneDrive/EPFL/Reports/HModel_paper/figures/projecti
+on_convtriangle.png>]) [5
 
 ]
-(C:\Users\tkach\OneDrive\EPFL\Reports\HandModel\latex_hand_model\hmodel.aux) ) 
+(C:\Users\tkach\OneDrive\EPFL\Reports\HModel_paper\hmodel.aux) ) 
 Here is how much of TeX's memory you used:
- 3790 strings out of 493921
- 58707 string characters out of 3144876
- 124008 words of memory out of 3000000
- 7016 multiletter control sequences out of 15000+200000
- 34746 words of font info for 70 fonts, out of 3000000 for 9000
+ 3819 strings out of 493921
+ 59010 string characters out of 3144876
+ 125024 words of memory out of 3000000
+ 7036 multiletter control sequences out of 15000+200000
+ 39570 words of font info for 84 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 42i,10n,26p,785b,252s stack positions out of 5000i,500n,10000p,200000b,50000s
-{
-C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program F
-iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fil
-es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x
-86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
-onts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
-s/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw
-/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr
-i8a.pfb>
-Output written on hmodel.pdf (5 pages, 3222802 bytes).
+ 42i,10n,26p,771b,250s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Fil
+es (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x86)/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/ti
+mes/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.
+pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on hmodel.pdf (5 pages, 3267665 bytes).
 PDF statistics:
- 81 PDF objects out of 1000 (max. 8388607)
+ 82 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
