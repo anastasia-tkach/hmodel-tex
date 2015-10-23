@@ -1,0 +1,62 @@
+\usepackage{color}
+\usepackage{overpic}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{multirow}
+% \usepackage{cite}
+
+
+%% 
+%% Insert symbols on figures
+%%
+\usepackage{overpic}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{caption} % \caption*
+
+%% 
+%% Bibliography
+%% 
+% \usepackage[backend=biber,sorting=ydnt,style=alphabetic,citestyle=alphabetic,maxbibnames=99]{biblatex}
+
+%%
+%% text layout
+%%
+% Insert whitespace at the end of a paragraph
+\setlength{\parskip}{.5\baselineskip}%
+% Don't intent by default on new paragraph
+\setlength{\parindent}{0pt}%
+
+%% 
+%% To define colors
+%% 
+\usepackage{color}
+\definecolor{lightgray}{rgb}{0.64, 0.64, 0.64}
+\definecolor{mygray}{gray}{0.6}
+
+%% 
+%% Portions that {need major work, comments}
+%% 
+\newenvironment{draft}{\color{red}}{\color{black}}
+\newcommand{\INSTRUCTIONS}[1]{{\textcolor{blue}{[INSTRUCTIONS] #1}}}
+% \newcommand{\copypaste}[1]{{\textcolor{blue}{#1}}}
+\newcommand{\copypaste}[1]{{{#1}}}
+\newcommand{\OK}{{\textcolor{green}{OK!}}}
+\newcommand{\todo}[1]{{\textcolor{red}{#1}}}
+\newcommand{\TODO}[1]{{\textcolor{red}{[TODO: #1]}}}
+\newcommand{\ignore}[1]{}
+
+%% 
+%% Performs the following type of transformation:
+%%   \Fig{figname} => Fig.~\ref{fig:figname}
+\newcommand{\Fig}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\Figure}[1]{Figure~\ref{fig:#1}}
+\newcommand{\Eq}[1]{Eq.~\ref{eq:#1}}
+\newcommand{\Sec}[1]{Sec.~\ref{sec:#1}}
+\newcommand{\Section}[1]{Section~\ref{sec:#1}}
+\newcommand{\Appendix}[1]{Appendix~\ref{app:#1}}

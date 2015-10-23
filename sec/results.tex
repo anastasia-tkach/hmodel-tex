@@ -4,14 +4,14 @@
 
 \begin{figure}[h!] 
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/modeling}
+	\includegraphics[width=0.5\textwidth]{fig/modeling}
 	\caption{Fitting convolution surfaces hand model to several poses of the same hand.}
 	\label{fig:modeling}
 \end{figure}
 
 \subsection{Tracking}
 
-In this paper instead of a standard inverse kinematics approach for aligning the model with data we use \textit{"As Rigid As Possible"} approach. The hand model is parametrized with the locations of the vertices of the hand skeleton $c = {c_1, c_2, ... c_N}$.
+In this paper instead of a standard inverse kinematics approach for aligning the model with data we use \textit{"As Rigid As Possible"} approach~\cite{sorkine2007arap}. The hand model is parametrized with the locations of the vertices of the hand skeleton $c = {c_1, c_2, ... c_N}$.
 
 \begin{equation}
 	\min_{c} E_{ICP} + E_{ARAP} \label{eq:tracking_energy}
@@ -41,7 +41,7 @@ I also tried doing several iterations of $E_{ARAP}$ only, The initial length of 
 
 \begin{figure}[h!] 
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/fixed_correspondences}
+	\includegraphics[width=0.5\textwidth]{fig/fixed_correspondences}
 	\caption{Updating the centers locations while keeping the data-model correspondences fixed. The model is black, the data is pink, the corresponding points are connected in blue.}
 	\label{fig:fixed_correspondences}
 \end{figure}
