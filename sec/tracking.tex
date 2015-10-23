@@ -1,0 +1,24 @@
+\section{Tracking}
+
+In this paper instead of a standard inverse kinematics approach for aligning the model with data we use \textit{"As Rigid As Possible"} approach~\cite{sorkine2007arap}. The hand model is parametrized with the locations of the vertices of the hand skeleton $c = {c_1, c_2, ... c_N}$.
+
+\begin{equation}
+	\min_{c} E_{ICP} + E_{ARAP} \label{eq:tracking_energy}
+\end{equation}
+
+The first energy $E_{ICP}$ models a 3D geometric registration in the spirit of ICP as
+
+\begin{equation}
+	E_{ICP} = \omega_1 \sum_{p \in P} \| p - \Pi(p, c)\|_2
+\end{equation}
+
+where $P$ is the set of data points.
+
+The second energy $E_{ARAP}$ is needed for shape preservation. Denote locations of hand skeleton vertices at rest pose as $c^0$ and in iteration $t$ as $c^t$. Denote the set of all edges of hand skeleton as $E$.
+
+\begin{equation}
+	E_{ARAP} = \omega_2 \sum_{e \in E} \| e(c^t) - R_e e(c^0)\|_2^2,
+\end{equation}
+
+where $R_e$ is the optimal rotation to bring the rest pose edge $e^0$ to the current position $e^t$. Unless we what some set of edges to rotate as a solid body, the rotation $R_e$ can be expressed in the closed form, such that $R_e e(c^0)$ is collinear to $e(c^t)$. 
+Each optimization iteration consists of two alternating steps: first we find the projections of the data points to the model surface $\Pi(p, c)$ and the optimal rotations $  R_e  $. Then we make one step of Levenberg-Marquardt iteration for energy (\ref{eq:tracking_energy}).

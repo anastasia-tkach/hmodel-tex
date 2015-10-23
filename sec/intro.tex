@@ -21,10 +21,9 @@ Hand model should be able to accurately represent the observed data.  The discre
 	\centering
 	\hspace{-2em}
 	\includegraphics[width=0.5\textwidth]{fig/coarse_hand_model_and_lbs}
-	\caption{Left - coarse hand model  from \cite{tagliasacchi2015robust}; right - hand model animated with linear blend skinning from \cite{sharp2015accurate}.}
+	\caption{Left - coarse hand model  from Tagliasacchi et. al.; right - hand model animated with linear blend skinning from Sharp e. al }.
 	\label{fig:coarse_hand_model_and_lbs}
 \end{figure}
-
 
 \subsection{Why realistically animating the hand model?}
 
@@ -55,7 +54,6 @@ Convolution surface is an implicit surface which is described by a control skele
 	\label{table:representation_dependent_components}
 \end{table}
 
-
 \subsection{Convolution surfaces for model fitting}
 The spheres and mixed cylinders/spheres hand model representations (Figure \ref{fig:hand_model_representations} a, b) are ubiquitous in hand tracking, because they are well suited for tracking tack per se (see next) and can be quickly to created manually. If a small number of  building blocks is used, the precision of the model is low, especially in the palm region. A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}
 The triangles mesh representation can approximate the hand to a high precision. However, there is obvious way to specify the model parts that are rigid and should be kept the same shape between the poses. This results in overfitting to local skin deformations. 
@@ -64,7 +62,7 @@ The triangles mesh representation can approximate the hand to a high precision. 
 	\centering
 	\hspace{-2em}
 	\includegraphics[width=0.5\textwidth]{fig/hand_model_representations}
-	\caption{Hand model representations from works of (a) Qian et. al. \cite{qian2014realtime}, (b)  Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, (c) Melax et. al. \cite{melax2013dynamics} and (d) Sharp et. al \cite{sharp2015accurate}.}
+	\caption {Hand model representations from works of (a) Qian et. al., (b)  Oikonomidis et. al., (c) Melax et. al.  and (d) Sharp et. al}
 	\label{fig:hand_model_representations}
 \end{figure}
 
@@ -73,3 +71,11 @@ For model based tracking the main operation is to find the closest point on the 
 
 \subsection{Convolution surfaces for hand skinning}
 The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ).  A convolution surfaces model serves a ready to use input for such an approach.
+
+
+
+
+
+
+
+
