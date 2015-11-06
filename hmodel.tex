@@ -12,9 +12,43 @@
 \input{sec/abstract.tex}
 \input{sec/intro.tex}
 \input{sec/contribs.tex}
-\input{sec/technical.tex}
 \input{sec/modeling.tex}
 \input{sec/tracking.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Joint limits}
+
+
+\begin{figure}[h!] 
+	\centering
+	\hspace{0em}
+	\includegraphics[trim = 0mm 70mm 0mm 0mm, width=0.5\textwidth]{fig/joint_limits}
+	\caption{The computation of the limiting rotation}
+	\label{fig:limiting_rotation}
+\end{figure}
+
+Joint limits energy is formulated similarly to the ARAP energy. The current edge rotation $R_e$ is replaced by limiting rotation $R_L$ in case if the joint limits are violated (if $I_a = 1$). Otherwise, the joint limits energy is not active ($I_a = 0$).
+
+\begin{equation}
+	E_{L} = \omega_3 \sum_{a \in E} I_a \| a(c^t) - R_L a(c^0)\|_2^2,
+\end{equation}
+
+The procedure of finding the limiting rotation $R_L$ is presented on Figure \ref{fig:limiting_rotation}. In the equation \ref{eq:limiting_rotation}, $R_a$ and $R_b$ are the rotations w.r.t the rest pose of the current edge $a$ and its parent $b$. $R_{b\rightarrow a}$ is the local rotation of $a$ w.r.t $b$. $\tilde{R}_{b\rightarrow a} $ is the local rotation clumped to the limit joint angle value.
+ 
+\begin{equation}
+	R_L = R_b \tilde{R}_{b\rightarrow a} R^T_{b\rightarrow a} R^T_b R_a \label{eq:limiting_rotation}
+\end{equation}
+
+Given the Euler decomposition of the local rotation  $R_{b\rightarrow a} = R_x(\theta_x) R_z(\theta_z) R_y(\theta_y)$, the limiting rotation is computed by clamping the joint angles along the constrained axis.  $\tilde{R}_{b\rightarrow a} = R_x(\tilde{\theta}_x) R_z(\tilde{\theta}_z) R_y(\tilde{\theta}_y)$. Note the order of Euler decomposition. In our settings, $x$ is axis of flexion, $z$ is axis of abduction and $y$ is axis of twist. It is important to find the twist component last. In the expression 
+
+\begin{equation}
+\tilde{R}_{b\rightarrow a} R^T_{b\rightarrow a} =  R_x(\tilde{\theta}_x) R_z(\tilde{\theta}_z) R^T_z(\theta_z) R^T_x(\theta_x)
+\end{equation}
+
+the twist component is discarded, because it does not make a difference.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \input{sec/results.tex}
  \input{sec/acks.tex}
 \input{sec/biblio.tex}
