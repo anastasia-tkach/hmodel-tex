@@ -83,6 +83,56 @@ where $m$ is a sampled model point, $p$ is the closest data point, which is know
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Optimization without gradients}
+
+Denote the current data points as $p$, the projection on the model surface as $q$ and an intersection of continuation of the segment $pq$ with the model axis as $s$ (see Figure \ref{fig:no_gradients}). The axis point $s$ can be expressed as linear combination of the model centers $s = \alpha c_1 + \beta c_2$, with $\beta = 1 - \alpha$. 
+The goal is to minimize the distance between the data point $p$ and its model projection $q$:
+
+\begin{equation}
+\min_{c_1, c_2} (q - p) = \min_{c_1, c_2} (s - s + q - p) = \min_{c_1, c_2} (\alpha c_1 + \beta c_2 - s + q - p)
+\end{equation}
+
+The above objective function can be minimized by solving a linear system 
+
+\begin{equation}
+\left[\begin{array}{c}
+W \\    
+L \\ 
+ \end{array}\right]
+ x = 
+ \left[\begin{array}{c}
+u \\    
+b \\ 
+ \end{array}\right]
+\end{equation}
+
+where 
+
+\begin{equation}
+W = \left[
+\begin{array}{cc}
+\alpha & 0 \\    
+0 & \beta \\ 
+ \end{array} 
+ \right]
+\end{equation}
+
+
+\begin{equation}
+u = p + s - q
+\end{equation}
+
+\begin{figure}[h] 
+	\centering
+	\hspace{0em}
+	\includegraphics[trim = 20mm 20mm 130mm 50mm, width=0.5\textwidth]{fig/no_gradients}
+	\caption{No gradients}
+	\label{fig:no_gradients}
+\end{figure}
+
+and $L$ and $b$ are respectively the left and right side of the standard ARAP linear system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{sec/results.tex}
  \input{sec/acks.tex}
