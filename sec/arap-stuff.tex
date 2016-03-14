@@ -1,0 +1,141 @@
+\documentclass[tog]{acmsiggraph}
+\input{sec/tweaks.tex}
+\title{Convolution surfaces model  for hand tracking}
+\author{}
+\pdfauthor{Secret}
+
+\input{sec/teaser.tex}
+
+\begin{document}
+\maketitle
+
+\input{sec/abstract.tex}
+\input{sec/intro.tex}
+\input{sec/contribs.tex}
+\input{sec/modeling.tex}
+\input{sec/tracking.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Joint limits}
+
+
+\begin{figure}[h!] 
+	\centering
+	\hspace{0em}
+	\includegraphics[trim = 0mm 70mm 0mm 0mm, width=0.5\textwidth]{fig/joint_limits}
+	\caption{The computation of the limiting rotation}
+	\label{fig:limiting_rotation}
+\end{figure}
+
+Joint limits energy is formulated similarly to the ARAP energy. The current edge rotation $R_e$ is replaced by limiting rotation $R_L$ in case if the joint limits are violated (if $I_a = 1$). Otherwise, the joint limits energy is not active ($I_a = 0$).
+
+\begin{equation}
+	E_{L} = \omega_3 \sum_{a \in E} I_a \| a(c^t) - R_L a(c^0)\|_2^2,
+	\label{eq:joint_limits_energy}
+\end{equation}
+
+The procedure of finding the limiting rotation $R_L$ is presented on Figure \ref{fig:limiting_rotation}. In the equation \ref{eq:limiting_rotation}, $R_a$ and $R_b$ are the rotations w.r.t the rest pose of the current edge $a$ and its parent $b$. $R_{b\rightarrow a}$ is the local rotation of $a$ w.r.t $b$. $\tilde{R}_{b\rightarrow a} $ is the local rotation clumped to the limit joint angle value.
+ 
+\begin{equation}
+	R_L = R_b \tilde{R}_{b\rightarrow a} R^T_{b\rightarrow a} R^T_b R_a \label{eq:limiting_rotation}
+\end{equation}
+
+Given the Euler decomposition of the local rotation  $R_{b\rightarrow a} = R_x(\theta_x) R_z(\theta_z) R_y(\theta_y)$, the limiting rotation is computed by clamping the joint angles along the constrained axis.  $\tilde{R}_{b\rightarrow a} = R_x(\tilde{\theta}_x) R_z(\tilde{\theta}_z) R_y(\tilde{\theta}_y)$. Note the order of Euler decomposition. In our settings, $x$ is axis of flexion, $z$ is axis of abduction and $y$ is axis of twist. It is important to find the twist component last. In the expression 
+
+\begin{equation}
+\tilde{R}_{b\rightarrow a} R^T_{b\rightarrow a} =  R_x(\tilde{\theta}_x) R_z(\tilde{\theta}_z) R^T_z(\theta_z) R^T_x(\theta_x)
+\end{equation}
+
+the twist component is discarded, because it does not make a difference.
+
+\subsubsection{Further adjustment}
+The rotations $R_{b \rightarrow a}$, $R_a$ and $R_b$ cannot be uniquely determined from orientations of the edges $a$ and $b$ (a full coordinates frame is required to define a unique rotation). On the synthetic data this can lead to a situation when the model cannot converge to the ground truth pose, because of the joint limits.
+
+As a remedy, we use the formulation (\ref{eq:limiting_rotation}) only for the joints at the finger bases (for these joints there is no rotation error, because the global rotation of the palm can be uniquely determined). To impose the limits on the upper joints, we fit a plane to the joint locations of each finger and compute rotations $R_L$  that bring all the finger bones to the same plane. The joint angles are measured between the projections of the bones on that plane. So there is no need to apply Euler decomposition, which can give wrong results because of the accommodated error in local rotation.
+We also put a limit on the angle between the plane of each finger and the palm orientation.
+
+\subsubsection{Influence of the joint limits on convergence speed}
+Figure \ref{fig:joint_limits_problems} shows that joint limits can accelerate convergence, because they do not allow the hand model to assume wrong configurations. At the same time, the above formulation of the joint limits energy slows down the convergence. The energy term (\ref{eq:joint_limits_energy}) brings the edges to the orientations $R_L$. The orientation $R_L$ is the adjusted orientation of edges during current iteration; it changes the weights balance between ICP and ARAP energy terms. The third column of the Figure \ref{fig:joint_limits_problems} shows that the thumb and the pinky of the model are not converged at the 7th iteration.
+
+\begin{figure}[h!] 
+	\centering
+	\hspace{0em}
+	\includegraphics[width=0.5\textwidth]{fig/joint_limits_problems}
+	\caption{First column - optimization without joint limits; second column - optimization with low weight joint limits; third column - optimization with high weight joint limits.}
+	\label{fig:joint_limits_problems}
+\end{figure}
+
+\subsection{Silhouette energy}
+The silhouette energy term is formulated in 3D space, unlike in htrack paper. The reason for a change is that the projective space formulation causes considerable overshooting in parameters updates, probably due to the division used in projection operator. Computing the closest data point of each model sample is expensive in 3D, therefore, this term was formulated in 2D in htrack. In the below formulation the closest data points points are also found in 2D. A point location in projective space corresponds to a camera ray  in 3D. Therefore, we minimize the distance between each model point and the corresponding camera ray.
+
+\begin{equation}
+	E_{S} = \omega_S \sum_{m \in M} \| n^T(m - p)\|_2,
+\end{equation}
+
+where $m$ is a sampled model point, $p$ is the closest data point, which is known up to a shift along a camera ray, $n$ is a unit vector orthogonal to that camera ray. Example iterations are presented on the Figure \ref{fig:silhouette}
+
+\begin{figure}[h!] 
+	\centering
+	\hspace{0em}
+	\includegraphics[width=0.5\textwidth]{fig/silhouette}
+	\caption{Silhouette energy minimization}
+	\label{fig:silhouette}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Optimization without gradients}
+
+Denote the current data points as $p$, the projection on the model surface as $q$ and an intersection of continuation of the segment $pq$ with the model axis as $s$ (see Figure \ref{fig:no_gradients}). The axis point $s$ can be expressed as linear combination of the model centers $s = \alpha c_1 + \beta c_2$, with $\beta = 1 - \alpha$. 
+The goal is to minimize the distance between the data point $p$ and its model projection $q$:
+
+\begin{equation}
+\min_{c_1, c_2} (q - p) = \min_{c_1, c_2} (s - s + q - p) = \min_{c_1, c_2} (\alpha c_1 + \beta c_2 - s + q - p)
+\end{equation}
+
+The above objective function can be minimized by solving a linear system 
+
+\begin{equation}
+\left[\begin{array}{c}
+W \\    
+L \\ 
+ \end{array}\right]
+ x = 
+ \left[\begin{array}{c}
+u \\    
+b \\ 
+ \end{array}\right]
+\end{equation}
+
+where 
+
+\begin{equation}
+W = \left[
+\begin{array}{cc}
+\alpha & 0 \\    
+0 & \beta \\ 
+ \end{array} 
+ \right]
+\end{equation}
+
+
+\begin{equation}
+u = p + s - q
+\end{equation}
+
+\begin{figure}[h] 
+	\centering
+	\hspace{0em}
+	\includegraphics[trim = 20mm 20mm 130mm 50mm, width=0.5\textwidth]{fig/no_gradients}
+	\caption{No gradients}
+	\label{fig:no_gradients}
+\end{figure}
+
+and $L$ and $b$ are respectively the left and right side of the standard ARAP linear system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{sec/results.tex}
+ \input{sec/acks.tex}
+\input{sec/biblio.tex}
+
+\end{document}
