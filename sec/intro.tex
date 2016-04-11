@@ -1,5 +1,7 @@
 \section{Introduction}
 
+\todo{While in digital production triangular meshes are the de-facto standard geometric representation, they are difficult to employ in real-time system.}
+
 Hand tracking is a process of accurately reconstructing shape and articulation of human hands. It is a crucial component of natural human-computer interfaces and animation of humanoid avatars. A number of hand tracking algorithms has been recently proposed  Keskin et. al. \cite{keskin2012hand}, Melax et. al. \cite{melax2013dynamics}, Tang et. al. \cite{tang2013real}, Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, Schroder et. al. \cite{schroder2014real},
 Tompson et. al. \cite{tompson2014real}, Qian et. al. \cite{qian2014realtime},  Tagliasacchi et. al. \cite{tagliasacchi2015robust}, Sridhar et. al. \cite{sridhar2015fast}, Sun et. al. \cite{sun2015cascaded} and Sharp et. al. \cite{sharp2015accurate}.
 However, in most consumer applications hand tracking is just a single components of a bigger pipeline (Figure \ref{fig:generic_pipeline}). Before tracking, a suitable hand model is obtained. Once the hand pose parameters are found, the tracking result is displayed by skinning the model. Both modeling and skinning tasks are not trivial.
@@ -15,7 +17,6 @@ However, in most consumer applications hand tracking is just a single components
 \subsection{Why customizing the hand model?}
 
 Hand model should be able to accurately represent the observed data.  The discrepancy between the optimal model pose given the data and the true hand pose can be significant, especially if the hand model does not reflect all the degrees of freedom of a hand (Figure \ref{fig:coarse_hand_model_and_lbs}, left).
-
 
 \begin{figure}[h!] 
 	\centering
@@ -36,7 +37,7 @@ We suggest to use convolution surfaces representation of the hand model.
 
 Convolution surface is an implicit surface which is described by a control skeleton. The skeleton may consist of points, edges or polygons \cite{bloomenthal1991convolution}. In each vertex of the skeleton we define a radius. The radius in intermediate points is a linear combination of the radii at the neighboring vertices. Given the topology of the underlying skeleton, the model can be represented with convolution surface up to high precision \textcolor{mygray}{(find some theoretical estimates).} Next we present the arguments why convolution surfaces representation is suitable for all the stages of the pipeline.
 
-\begin{table}[!h] 
+\begin{table}[!ht] 
 	\centering
 	\begin{tabular}{|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
 	\hline
