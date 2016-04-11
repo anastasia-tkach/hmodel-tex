@@ -1,3 +1,14 @@
 \begin{abstract}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+%--- Background
+Modern systems for real-time tracking rely on a combination of discriminative and generative approaches to robustly recover the hand's pose. Generative approaches require the specification of the geometric model, where the fitness of this model to the user heavily affects tracking precision.
+%--- Core point
+In this paper, we propose to use a special instance of convolution surfaces as a novel geometric representation for real-time hand tracking. 
+%--- Model Adaptation
+We first derive an optimization to non-rigidly deform the template to fit the user data in a number of poses, thus producing a 3D model that jointly captures the user's static and dynamic geometry.
+%--- Performance
+While the convolution model fits the model tightly, allowing high-precision registration, the limited number of primitives in the model allows us to retain excellent tracking performance. We confirm this by embedding our models in an open source real-time tracking algorithm and obtaining a 60FPS tracker.
+%--- Why should I believe you?
+We demonstrate the effectiveness of our solution by qualitatively and quantitively evaluating tracking precision across a number of users, and on a variety of complex motions.
+%--- Data release
+To enable further research in the area of high-precision tracking, we also fully disclose our datasets altogether with the corresponding quantitative evaluation metrics.
 \end{abstract}
