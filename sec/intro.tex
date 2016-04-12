@@ -1,41 +1,47 @@
+% Problem Statement: What's the problem you want to solve?
+% 
+% Motivation: Why is this an interesting problem? Who cares about it? Why now? Why is it appropriate for the conference audience?
+% 
+% Research Gap, Novelty: Why is new research required? Why can the problem not be solved with existing methods? How does the proposed solution differ from and/or improve upon existing work?
+% 
+% Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
+% 
+% Applications / Future Work: What will your solution enable? How does it project into the future? How will it inspire future work?
 \section{Introduction}
 
-\todo{While in digital production triangular meshes are the de-facto standard geometric representation, they are difficult to employ in real-time system.}
+%--- Why hand-tracking is fundamental (something abour AR/VR?)
+% Hand tracking is a process of accurately reconstructing shape and articulation of human hands. It is a crucial component of natural human-computer interfaces and animation of humanoid avatars.
+\TODO{In our world, our hands are our main mean of interaction, and with the advent of augmented and virtual reality experiences, there is a compelling need ...}
+%--- Camera-based tracking & Physics
+Accurate real-time hand tracking is therefore a fundamental technical challenge \todo{In AR and VR applications a 3D hand model can properly interact with 3D objects, establish a realistic contact and disappear behind them. Given that, the degree of immersion into virtual reality depends on whether a user sees own realistic hands (find a study mentioned by Leap Motion).}
 
-Hand tracking is a process of accurately reconstructing shape and articulation of human hands. It is a crucial component of natural human-computer interfaces and animation of humanoid avatars. A number of hand tracking algorithms has been recently proposed  Keskin et. al. \cite{keskin2012hand}, Melax et. al. \cite{melax2013dynamics}, Tang et. al. \cite{tang2013real}, Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, Schroder et. al. \cite{schroder2014real},
-Tompson et. al. \cite{tompson2014real}, Qian et. al. \cite{qian2014realtime},  Tagliasacchi et. al. \cite{tagliasacchi2015robust}, Sridhar et. al. \cite{sridhar2015fast}, Sun et. al. \cite{sun2015cascaded} and Sharp et. al. \cite{sharp2015accurate}.
-However, in most consumer applications hand tracking is just a single components of a bigger pipeline (Figure \ref{fig:generic_pipeline}). Before tracking, a suitable hand model is obtained. Once the hand pose parameters are found, the tracking result is displayed by skinning the model. Both modeling and skinning tasks are not trivial.
+\TODO{the paragraph names can be removed later on}
 
-\begin{figure}[h!] 
-	\centering
-	\includegraphics[width=0.5\textwidth]{fig/generic_pipeline}
-	\caption{Generic pipeline for hand tracking. The input data that does not depend on the internal hand model representation is shown in blue, the representation-dependent components are shown in beige, and are listed in Table \ref{table:representation_dependent_components} for different representations.}
-	\label{fig:generic_pipeline}
-\end{figure}
+%--- Combination of model+appearance
+\paragraph{Tracker: discriminative v.s. generative.}
+Modern systems for real-time tracking \cite{sridhar2015fast,sharp2015accurate},  rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continous recovery from tracking failure. As these discriminative models are learnt from data, they typically only provide a coarse and jittery pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It comes with no surprise that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
+\TODO{mention that no need to re-init at high FPS?}
+
+\paragraph{Surface v.s. volumetric models.}
+\todo{In digital production triangular meshes are the de-facto standard geometric representation, they are difficult to employ in real-time system.}
 
 
-\subsection{Why customizing the hand model?}
+% \TODO{why is it necessary, plus previous works}
+\paragraph{Model calibration.}
+\input{fig/coarsemodel/item.tex}
+As generative models perform tracking by fitting a geometric model to what is measured by the sensor, our template should be able to represent well the observed data. However, even in modern trackers, the discrepancy between the optimal model pose given the data and the true hand pose can be significant. For example, the sources of discrepancy in \Figure{coarsemodel} include the incorrect length of fingers and the lack of the \todo{[pinky-ring]} degree of freedom. \todo{In the literature, the creation of user-specific models for tracking is referred to as \emph{calibration}.}
 
-Hand model should be able to accurately represent the observed data.  The discrepancy between the optimal model pose given the data and the true hand pose can be significant, especially if the hand model does not reflect all the degrees of freedom of a hand (Figure \ref{fig:coarse_hand_model_and_lbs}, left).
+\paragraph{LBS Looks Crappy}
+\todo{The hand skinning quality is obviously important for digital avatars applications. The simple skinning approaches like linear blend skinning may generate implausible results.}
 
-\begin{figure}[h!] 
-	\centering
-	\hspace{-2em}
-	\includegraphics[width=0.5\textwidth]{fig/coarse_hand_model_and_lbs}
-	\caption{Left - coarse hand model  from Tagliasacchi et. al.; right - hand model animated with linear blend skinning from Sharp e. al }.
-	\label{fig:coarse_hand_model_and_lbs}
-\end{figure}
+\input{fig/handmodels/item.tex}
 
-\subsection{Why realistically animating the hand model?}
+\TODO{--- STOPPED EDITING HERE ---}
 
-The hand skinning quality is obviously important for digital avatars applications. In AR and VR applications a 3D hand model can properly interact with 3D objects, establish a realistic contact and disappear behind them. Given that, the degree of immersion into virtual reality depends on whether a user sees own realistic hands \textcolor{mygray}{(find a study mentioned by Leap Motion).} The simple skinning approaches like linear blend skinning may generate implausible results  (Figure \ref{fig:coarse_hand_model_and_lbs}, right).
+\input{fig/twocol/item.tex}
 
 \subsection{Alternative hand model representations}
-Each stage of the pipeline requires a hand model. There is several different hand model representations suggested by previous authors (see Figure \ref{fig:hand_model_representations}). Each representation is well suited for one of the stages, since it was used for the task on the first place. We argue that each representation also has weaknesses, which is why there exists a set of alternatives.
-
-We suggest to use convolution surfaces representation of the hand model. 
-
-Convolution surface is an implicit surface which is described by a control skeleton. The skeleton may consist of points, edges or polygons \cite{bloomenthal1991convolution}. In each vertex of the skeleton we define a radius. The radius in intermediate points is a linear combination of the radii at the neighboring vertices. Given the topology of the underlying skeleton, the model can be represented with convolution surface up to high precision \textcolor{mygray}{(find some theoretical estimates).} Next we present the arguments why convolution surfaces representation is suitable for all the stages of the pipeline.
+We suggest to use convolution surfaces representation of the hand model. Convolution surface is an implicit surface which is described by a control skeleton. The skeleton may consist of points, edges or polygons \cite{bloomenthal1991convolution}. In each vertex of the skeleton we define a radius. The radius in intermediate points is a linear combination of the radii at the neighboring vertices. Given the topology of the underlying skeleton, the model can be represented with convolution surface up to high precision \textcolor{mygray}{(find some theoretical estimates).} Next we present the arguments why convolution surfaces representation is suitable for all the stages of the pipeline.
 
 \begin{table}[!ht] 
 	\centering
@@ -59,14 +65,6 @@ Convolution surface is an implicit surface which is described by a control skele
 The spheres and mixed cylinders/spheres hand model representations (Figure \ref{fig:hand_model_representations} a, b) are ubiquitous in hand tracking, because they are well suited for tracking tack per se (see next) and can be quickly to created manually. If a small number of  building blocks is used, the precision of the model is low, especially in the palm region. A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}
 The triangles mesh representation can approximate the hand to a high precision. However, it is not trivial to specify the model parts that are rigid and should be kept the same shape between the poses. This results in overfitting to local skin deformations. 
 
-\begin{figure}[h!] 
-	\centering
-	\hspace{-2em}
-	\includegraphics[width=0.5\textwidth]{fig/hand_model_representations}
-	\caption {Hand model representations from works of (a) Qian et. al., (b)  Oikonomidis et. al., (c) Melax et. al.  and (d) Sharp et. al}
-	\label{fig:hand_model_representations}
-\end{figure}
-
 \subsection{Convolution surfaces for hand tracking}
 For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. 
 For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.
@@ -74,10 +72,31 @@ For a triangular mesh this operation has complexity linear in number of triangle
 \subsection{Convolution surfaces for hand skinning}
 The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ).  A convolution surfaces model serves a ready to use input for such an approach.
 
+\subsection{Contributions}
 
+\subsubsection*{1. Suggested a hand model representation well suited for user-specific adaption, tracking and animation}
 
+TODO: 
 
+\begin{itemize}
+\item Modeling. Implement initialization for the model fitting by running Htrack and putting the hand in a similar pose. 
+\item Skinning. Display the texture on the model. For that a parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage. 
+\end{itemize}
 
+\subsubsection*{1a. Proposed a single optimization framework for modeling and tracking}
 
+TODO:
 
+\begin{itemize}
+\item Run a couple of iteration of ARAP for palm after IK optimization just with data term.
+\end{itemize}
 
+\subsubsection*{1b. Developed a tracking model that represents all the degrees of freedom of human hand without creating inexistent degrees. (Not guaranteed by the other approaches, look how model adaptation paper finds the degrees of freedom)}
+
+\subsubsection*{Improved accuracy of state-of-art hand tracking system}
+
+TODO: 
+
+\begin{itemize}
+\item Add outline term, time interpolation of initial joint angles, downsampling of the sensor data, fingertips term.
+\end{itemize}

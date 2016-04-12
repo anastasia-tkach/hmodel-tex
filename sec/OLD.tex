@@ -1,0 +1,15 @@
+% \input{fig/pipeline.tex} %<<< TO REMOVE!
+
+However, in most consumer applications hand tracking is just a single components of a bigger pipeline (Figure \ref{fig:generic_pipeline}). Before tracking, a suitable hand model is obtained. Once the hand pose parameters are found, the tracking result is displayed by skinning the model. Both modeling and skinning tasks are not trivial.
+
+\begin{figure}[h!] 
+\centering
+\hspace{-2em}
+\includegraphics[width=0.5\textwidth]{fig/coarse_hand_model_and_lbs}
+\caption{}.
+\label{fig:coarse_hand_model_and_lbs}
+\end{figure}
+
+Especially if the hand model does not reflect all the degrees of freedom of a hand (Figure \ref{fig:coarse_hand_model_and_lbs}, left).
+
+Each stage of the pipeline requires a hand model. There is several different hand model representations suggested by previous authors (see Figure \ref{fig:hand_model_representations}). Each representation is well suited for one of the stages, since it was used for the task on the first place. We argue that each representation also has weaknesses, which is why there exists a set of alternatives.
