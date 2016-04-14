@@ -19,8 +19,16 @@ Accurate real-time hand tracking is therefore a fundamental technical challenge 
 
 %--- Combination of model+appearance
 \paragraph{Tracker: discriminative v.s. generative.}
-Modern systems for real-time tracking \cite{sridhar2015fast,sharp2015accurate},  rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continous recovery from tracking failure. As these discriminative models are learnt from data, they typically only provide a coarse and jittery pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It comes with no surprise that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
-\TODO{mention that no need to re-init at high FPS?}
+Modern systems for real-time tracking \cite{sridhar2015fast,sharp2015accurate},  rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continous recovery from tracking failure. As these discriminative models are learnt from data, they typically only provide a coarse and jittery pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
+\TODO{mention that no need to re-init at high FPS?}.
+% 
+Therefore, the main goal of this paper is to explore novel tracking templates that strike an optimal \emph{balance} between accuracy and performance, that is, a model that is able to accurately capture the user's geometry, while ...
+
+ 
+
+ between the ability to accurately model the hand geometry, 
+
+while having little impact on the computational complexity of a   
 
 \paragraph{Surface v.s. volumetric models.}
 \todo{In digital production triangular meshes are the de-facto standard geometric representation, they are difficult to employ in real-time system.}
