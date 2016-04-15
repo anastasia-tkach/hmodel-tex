@@ -7,36 +7,55 @@
 % Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
 % 
 % Applications / Future Work: What will your solution enable? How does it project into the future? How will it inspire future work?
+
+
+
+% NOTE: the paragraph names can be removed later on
 \section{Introduction}
 
 %--- Why hand-tracking is fundamental (something abour AR/VR?)
 % Hand tracking is a process of accurately reconstructing shape and articulation of human hands. It is a crucial component of natural human-computer interfaces and animation of humanoid avatars.
 \TODO{In our world, our hands are our main mean of interaction, and with the advent of augmented and virtual reality experiences, there is a compelling need ...}
 %--- Camera-based tracking & Physics
-Accurate real-time hand tracking is therefore a fundamental technical challenge \todo{In AR and VR applications a 3D hand model can properly interact with 3D objects, establish a realistic contact and disappear behind them. Given that, the degree of immersion into virtual reality depends on whether a user sees own realistic hands (find a study mentioned by Leap Motion).}
-
-\TODO{the paragraph names can be removed later on}
+Accurate real-time hand tracking is therefore a fundamental technical challenge \todo{In AR and VR applications a 3D hand model can properly interact with 3D objects, establish a realistic contact and disappear behind them. Given that, the degree of immersion into virtual reality depends on whether a user sees own realistic hands (find a study mentioned by Leap Motion).} \todo{Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.}
 
 %--- Combination of model+appearance
 \paragraph{Tracker: discriminative v.s. generative.}
-Modern systems for real-time tracking \cite{sridhar2015fast,sharp2015accurate},  rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continous recovery from tracking failure. As these discriminative models are learnt from data, they typically only provide a coarse and jittery pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
+Modern systems for real-time tracking \cite{sridhar2015fast,sharp2015accurate},  rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continous recovery from tracking failure. As these discriminative models are learnt from data, they typically only estimate a coarse and jittery pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
 \TODO{mention that no need to re-init at high FPS?}.
 % 
-Therefore, the main goal of this paper is to explore novel tracking templates that strike an optimal \emph{balance} between accuracy and performance, that is, a model that is able to accurately capture the user's geometry, while ...
+Therefore, the main goal of this paper is to explore novel tracking templates that strike an optimal \emph{balance} between accuracy and performance, that is, a model that is able to more accurately capture the user's geometry, while retaining the ability to answer registration queries in close form with very high efficiency.
 
- 
+\paragraph{Surface and volumetric templates.}
+In modern digital production representing objects by a piecewise linear meshing of their surface (i.e. triangular or quad meshes) is the de-facto standard. However, unlike volumetric models, surface representations cannot efficiently answer queries such as the distance from the point to the object's boundary, or whether a point lies inside/outside the model~\cite[Ch.1]{botsch2010book}. In tracking applications these queries play a fundamental role, as the optimization attempts to find configurations where the average \emph{distance} from model to data is minimized. Similarly, a tracker should prevent the model from assuming implausible configurations, for example by preventing self-intersections as measured by inside/outside predicates. For all these reasons, volumetric models appear optimal for registration applications; indeed, recent compelling results in joint rigid registration and reconstruction~\cite{newcombe2011kinfu} as well as its recent non-rigid variant~\cite{newcombe2015dynfusion} leverage volumetric models. One important observations is that such techniques assume the frame-rate is high compared to camera and user motion, a condition that is surely not realizable in our setting. \AT{something about the fact that deforming a surface is easier than deforming a volume?} To tackle this challenge, in this paper we propose to employ a \emph{hybrid} model for tracking that inherits the advantages of surface and volumetric representations. 
 
- between the ability to accurately model the hand geometry, 
+\input{fig/convsurf/item.tex}
+\paragraph{Hybrid tracking model.}
+The model we propose in this paper is a variant of a convolution surface~\cite{bloomenthal1997book}, and its fundamental building block is illustrated in \Figure{convsurf}. Such a construct is nothing but the zero iso-surface of the scalar function:
+\begin{equation}
+\phi(\mathbf{x}) = \min \int_{\mathbf{c} \in \mathcal{M}} \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) \: d\mathbf{c},
+\label{eq:convsurf}
+\end{equation}
+where $\mathcal{M}$ is a skeletal mesh (a segment or a triangle with respect to the simple example in \Figure{convsurf}), and $\mathcal{B}$ is the implicit function of a sphere parameterized by its center $\mathbf{c}$ and radii $r$:
+\begin{equation}
+\mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
+\end{equation}
+The spheres centers $\mathbf{c}$ span the skeleton $\mathcal{M}$, while the radii is a function of the position $\mathbf{c}$ within an element, and more specifically, it is linearly interpolated from values specified on the skeletal mesh vertices $r(m_*)$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\mathcal{S} = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\mathcal{M}$ is an explicit representation (a piecewise-parameterized \todo{surface}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
+\input{fig/topology/item.tex}
 
-while having little impact on the computational complexity of a   
+\paragraph{Convolution tracking and calibration.}
+Our novel tracking model has two significant advantages. (1) First of all, distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. Therefore, not only our distance queries can be executed with great efficiently as we can evaluate distance queries to $\skeleton$ in brute force but this leads to an algorithm that is trivially parallelizable and that executes with a fixed framerate. (2) Our hand model parameterization is also particularly simple, as we can generate a family of models by simply adjusting positions and radii of the vertices $m_* \in \skeleton$.
 
-\paragraph{Surface v.s. volumetric models.}
-\todo{In digital production triangular meshes are the de-facto standard geometric representation, they are difficult to employ in real-time system.}
+\TODO{--- STOPPED HERE -- BACK TOMORROW ---}
+
+\input{fig/coarsemodel/item.tex}
+\newpage
+
+% While the integral in \Eq{convsurf} might be difficult to evaluate for generic skeletal structures $\mathcal{M}$,
 
 
 % \TODO{why is it necessary, plus previous works}
 \paragraph{Model calibration.}
-\input{fig/coarsemodel/item.tex}
 As generative models perform tracking by fitting a geometric model to what is measured by the sensor, our template should be able to represent well the observed data. However, even in modern trackers, the discrepancy between the optimal model pose given the data and the true hand pose can be significant. For example, the sources of discrepancy in \Figure{coarsemodel} include the incorrect length of fingers and the lack of the \todo{[pinky-ring]} degree of freedom. \todo{In the literature, the creation of user-specific models for tracking is referred to as \emph{calibration}.}
 
 \paragraph{LBS Looks Crappy}
