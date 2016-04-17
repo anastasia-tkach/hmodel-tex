@@ -44,86 +44,21 @@ where $\mathcal{M}$ is a skeletal control mesh (a segment or a triangle with res
 \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
 \end{equation}
 The spheres centers $\mathbf{c}$ span the skeleton $\mathcal{M}$, while the radii is a function of the position $\mathbf{c}$ within an element, and more specifically, it is linearly interpolated from values specified on the skeletal mesh vertices $r_*=r(c_*)$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\mathcal{S} = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\mathcal{M}$ is an explicit representation (a piecewise-parameterized \todo{surface}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
+\todo{While the integral in \Eq{convsurf} might be difficult to evaluate, distances to $\mathcal{S}$ can conveniently be computed by querying distances to the piecewise linear structures composing $\mathcal{M}$; see \Figure{convsurf}.}
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models.}
-Our novel tracking model has two significant advantages. (1) First of all, distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. Therefore, not only our distance queries can be executed with great efficiently as we can evaluate distance queries to $\skeleton$ in brute force but this leads to an algorithm that is trivially parallelizable and that executes with a fixed framerate. (2) Our hand model parameterization is also compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. A direct approach to building a calibrated model is to let the artist manually adjust these quantities; this process is known as  \emph{ZSphere~{\textcopyright}} modeling in the popular \emph{ZBrush~\textcopyright} 3D modeling software. \todo{Something about why this makes the model efficient.}
-
-\paragraph{Contributions}
-dsadsa
-
-
-\TODO{--- STOPPED HERE -- BACK TOMORROW ---}
-
-
-\newpage
-
-% While the integral in \Eq{convsurf} might be difficult to evaluate for generic skeletal structures $\mathcal{M}$,
-
-
-
-\paragraph{LBS Looks Crappy}
-\todo{The hand skinning quality is obviously important for digital avatars applications. The simple skinning approaches like linear blend skinning may generate implausible results.}
+Our novel tracking model has two significant advantages. (1) First of all, distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. Therefore, not only our distance queries can be executed with great efficiently as we can evaluate distance queries to $\skeleton$ in brute force but this leads to an algorithm that is trivially parallelizable and that executes with a fixed framerate. (2) Our hand model parameterization is also compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. A direct approach to building a calibrated model is to let the artist manually adjust these quantities; this process is known as  \emph{ZSphere~{\textcopyright}} modeling in the popular \emph{ZBrush~\textcopyright} 3D modeling software. \TODO{Something about why this makes the model efficient.} \TODO{Something about many recent SphereMeshes and ImplicitSkinning papers at SIGGRAPH?}
 
 \input{fig/handmodels/item.tex}
-
-\input{fig/twocol/item.tex}
-
-
-\begin{table}[!ht] 
-	\centering
-	\begin{tabular}{|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
-	\hline
- 	& Hand pose  & Hand shape  \\
-	\hline
-	Triangular mesh with embedded skeleton, \cite{taylor2014user} & Vertices and bones positions & Vertices and bones positions	 \\
-	\hline
-	Cylinder model, \cite{tagliasacchi2015robust} & Cylinders size and transformations & Cylinders transformations	 \\
-	\hline
-	Convolution surfaces model & Positions and radii of control points & Positions of control points \\
-	\hline
-	\end{tabular}
-	\vspace{1em}
-	\caption{Comparison of different hand model representations}
-	\label{table:representation_dependent_components}
-\end{table}
-
-\subsection{Convolution surfaces for model fitting}
-The spheres and mixed cylinders/spheres hand model representations (Figure \ref{fig:hand_model_representations} a, b) are ubiquitous in hand tracking, because they are well suited for tracking tack per se (see next) and can be quickly to created manually. If a small number of  building blocks is used, the precision of the model is low, especially in the palm region. A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}
-The triangles mesh representation can approximate the hand to a high precision. However, it is not trivial to specify the model parts that are rigid and should be kept the same shape between the poses. This results in overfitting to local skin deformations. 
-
-\subsection{Convolution surfaces for hand tracking}
-For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. 
-For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.
-
-\subsection{Convolution surfaces for hand skinning}
-The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ).  A convolution surfaces model serves a ready to use input for such an approach.
-
-\subsection{Contributions}
-
-\subsubsection*{1. Suggested a hand model representation well suited for user-specific adaption, tracking and animation}
-
-TODO: 
+\paragraph{Contributions \TODO{ANDREA}}
 
 \begin{itemize}
-\item Modeling. Implement initialization for the model fitting by running Htrack and putting the hand in a similar pose. 
-\item Skinning. Display the texture on the model. For that a parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage. 
-\end{itemize}
-
-\subsubsection*{1a. Proposed a single optimization framework for modeling and tracking}
-
-TODO:
-
-\begin{itemize}
-\item Run a couple of iteration of ARAP for palm after IK optimization just with data term.
-\end{itemize}
-
-\subsubsection*{1b. Developed a tracking model that represents all the degrees of freedom of human hand without creating inexistent degrees. (Not guaranteed by the other approaches, look how model adaptation paper finds the degrees of freedom)}
-
-\subsubsection*{Improved accuracy of state-of-art hand tracking system}
-
-TODO: 
-
-\begin{itemize}
-\item Add outline term, time interpolation of initial joint angles, downsampling of the sensor data, fingertips term.
+\setlength\itemsep{-.5em}
+\item Suggested a hand model representation well suited for user-specific adaption, tracking and animation 
+\item Identified a good tracking template topology
+\item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
+\item Proposed a single optimization framework for modeling and tracking
+\item Automatically identifies the degrees of freedom and axes of rotation from data
+\item Improved accuracy of state-of-art hand tracking system
 \end{itemize}

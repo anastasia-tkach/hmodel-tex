@@ -1,5 +1,20 @@
+\input{fig/twocol/item.tex}
 \section{Related Works}
+\endinput
 
+%--- ON SPHERE MODELS
+\TODO{A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}}
+
+%--- LINEAR BLEND SKINNING
+\TODO{The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. }
+
+%--- IMPLICIT SKINNING
+\TODO{The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ).  A convolution surfaces model serves a ready to use input for such an approach.}
+
+%--- CLOSEST POINT COMPUTATIONS
+\TODO{For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.}
+
+%--- JUST A LIST OF PAPERS?
 \todo{A number of hand tracking algorithms has been recently proposed  Keskin et. al. \cite{keskin2012hand}, Melax et. al. \cite{melax2013dynamics}, Tang et. al. \cite{tang2013real}, Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, Schroder et. al. \cite{schroder2014real},
 Tompson et. al. \cite{tompson2014real}, Qian et. al. \cite{qian2014realtime},  Tagliasacchi et. al. \cite{tagliasacchi2015robust}, Sridhar et. al. \cite{sridhar2015fast}, Sun et. al. \cite{sun2015cascaded} and Sharp et. al. \cite{sharp2015accurate}.}
 
