@@ -1,25 +1,54 @@
 \section{Tracking}
 
-In this paper instead of a standard inverse kinematics approach for aligning the model with data we use \textit{"As Rigid As Possible"} approach~\cite{sorkine2007arap}. The hand model is parametrized with the locations of the vertices of the hand skeleton $c = {c_1, c_2, ... c_N}$.
+\subsection{Correspondences computation}
 
-\begin{equation}
-	\min_{c} E_{ICP} + E_{ARAP} \label{eq:tracking_energy}
-\end{equation}
+For each data points $p$ we want to find the closest point on the front-facing model surface. This approach has proven to be efficient  \cite{tagliasacchi2015robust}, because the sensor data corresponds only to the front-facing part of the model. The computation is done in 3 steps that are presented in the Algorithm\ref{alg:correspondences}.
 
-The first energy $E_{ICP}$ models a 3D geometric registration in the spirit of ICP as
+\begin{algorithm}
+\caption{Correspondences computation}
+\begin{algorithmic}[1]
+	\For {$\text{each } p$}
+  		 \State \text{compute model projection } $q_m$
+  		  \State \text{replace or discard if $q_m$ is back-facing}
+  		  \State \text{compute outline projection } $q_o$
+  		  \If {$\|{p - q_m}\|_2^2 < \|{p - q_o}\|_2^2$}
+  		  	\State $q = q_m$
+  		  \Else
+  		  	\State $q = q_o$
+  		  \EndIf
+	\EndFor
+\end{algorithmic}
+\label{alg:correspondences}
+\end{algorithm}
 
-\begin{equation}
-	E_{ICP} = \omega_1 \sum_{p \in P} \| p - \Pi(p, c)\|_2
-\end{equation}
+\textbf{Computing model projection.}
+Compute the closest point $q_b$ of each model block $b$ to the data point $p$  (the same way as in model fitting). The model projection $q_m$ is chosen as following: 
+\begin{equation*}
+	q_m = \underset{q_b}{\operatorname{argmin}}{ \textbf{ signed\_distance}(p, q_b)} 
+\end{equation*}
 
-where $P$ is the set of data points.
+using signed distance is an heuristic that helps to get the projection on the model surface when the data point $p$ is inside of the model.
 
-The second energy $E_{ARAP}$ is needed for shape preservation. Denote locations of hand skeleton vertices at rest pose as $c^0$ and in iteration $t$ as $c^t$. Denote the set of all edges of hand skeleton as $E$.
+\textbf{Discarding or replacing back-facing projections.}
+The resulting projection $q_m$ can be on back-facing side of the model, that is $c^{T} n > 0$, where $c$ is camera ray and $n$ is model normal at the point $q_m$.
+The next step depends on the block type. 
+\begin{itemize}
+	\item Convolution segment: the closest front-facing point is on the model outline \Anastasia{do I need to prove this? I could make a distance field picture in 2D}, thus set the current point $q_m$ to $\infty$.
+	\item Convolution triangle: the closest front-facing point is either on the model outline or on a front-facing face of the convolution triangle, thus replace $q_m$ by the closest front-facing face projection.
+\end{itemize}
 
-\begin{equation}
-	E_{ARAP} = \omega_2 \sum_{e \in E} \| e(c^t) - R_e e(c^0)\|_2^2,
-\end{equation}
+\textbf{Computing outline.}
+Before explaining how to compute outline projection, let us first discuss how to compute the model outline. For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:outline}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
 
-where $R_e$ is the optimal rotation to bring the rest pose edge $e^0$ to the current position $e^t$. Unless we what some set of edges to rotate as a solid body, the rotation $R_e$ can be expressed in the closed form, such that $R_e e(c^0)$ is collinear to $e(c^t)$. 
-Each optimization iteration consists of two alternating steps: first we find the projections of the data points to the model surface $\Pi(p, c)$ and the optimal rotations $  R_e  $. Then we make one step of Levenberg-Marquardt iteration for energy (\ref{eq:tracking_energy}).
+\begin{figure}[h]
+	\centering
+	\begin{overpic} 
+		[width=\linewidth]
+		{fig/tracking/outline.png}
+	\end{overpic}
+	\caption{ Left - 2D outline of the model (fingers outline is computed separately, here an entire model outline is shown for illustration purposes). Right - 3D model outline.} 
+	\label{fig:outline}
+\end{figure}
 
+\textbf{Computing outline projection.}
+The model outline is represented as a sequence of line and circle segments. To compute an outline projection $q_o$ we compute a projection on each element of the outline and select the closest to the data point $p$.
