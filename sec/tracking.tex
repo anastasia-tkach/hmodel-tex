@@ -3,6 +3,8 @@
 \paragraph{Correspondences}
 In monocular acquisition, an oracle registration algorithm would align only the portion of the model that is \emph{visible} from the viewpoint of the sensor to the sensor data~\cite{tagliasacchi2015robust}. Therefore, only the portion of the model currently visible by the camera should be considered when computing ICP correspondences. \todo{Here we describe the...}
 
+\input{fig/corresp/item.tex}
+
 \subsection*{Correspondences computation}
 \todo{{--- FINISHED EDITING HERE ---}}
 
@@ -41,17 +43,9 @@ The next step depends on the block type.
 \end{itemize}
 
 \textbf{Computing outline.}
-Before explaining how to compute outline projection, let us first discuss how to compute the model outline. For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:outline}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
+Before explaining how to compute outline projection, let us first discuss how to compute the model outline. For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:silhcorr}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
 
-\begin{figure}[h]
-	\centering
-	\begin{overpic} 
-		[width=\linewidth]
-		{fig/tracking/outline.png}
-	\end{overpic}
-	\caption{ Left - 2D outline of the model (fingers outline is computed separately, here an entire model outline is shown for illustration purposes). Right - 3D model outline.} 
-	\label{fig:outline}
-\end{figure}
+\input{fig/silhcorr/item.tex}
 
 \textbf{Computing outline projection.}
 The model outline is represented as a sequence of line and circle segments. To compute an outline projection $q_o$ we compute a projection on each element of the outline and select the closest to the data point $p$.
