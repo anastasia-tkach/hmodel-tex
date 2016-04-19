@@ -53,24 +53,26 @@ Our novel tracking model has two significant advantages. (1) First of all, dista
 
 \input{fig/handmodels/item.tex}
 \paragraph{Contributions.}
-% NOW
-% FUTURE
 % Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
 % Applications / Future Work: What will your solution enable? How does it project into the future? How will it inspire future work?
-We identify a number of contributions in our research. 
-(1) We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. Note how although we focus on modelling hands, our research paves a new way of to track any form of articulated body. 
-(2) As many possible variants of convolution skeletons exist, it is essential to identify a skeletal topology that performs optimally for hands; see \Figure{topology} \AT{won't they us to compare against other topologies?}. 
-(3) While any geometric model could be employed in tracking applications, it is imperative to determine whether a model is suitable for real-time tracking applications; we demonstrate this is the case by integrating our models in an open-source tracking system~\cite{tagliasacchi2015robust} and retaining 60 FPS tracking performance. 
-(4) We introduce an optimization technique for convolution models that adapts a given template to a specific user, and demonstrate how this results in substantial improvements in tracking precision.
-(5) Rather than relying on a artist-built rig we automatically 
+In our research we we identify a number of contributions:
+(1)~We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. 
+(2)~Amongst many possible variants, we identify an effective convolution surface  topology for hand-tracking. \AT{won't they us to compare against other topologies?}
+(3)~We demonstrate that the increased model accuracy does not aberrate tracking performance, leading to a 60 FPS tracking algorithm.
+% (3) While any geometric model could be employed in tracking applications, it is imperative to determine whether a model is suitable for real-time tracking applications; we demonstrate this is the case by integrating our models in an open-source tracking system~\cite{tagliasacchi2015robust} and retaining 60 FPS tracking performance. 
+(4)~We introduce an optimization technique for convolution models that adapts a given template to a given user, and demonstrate how this results in substantial improvements in tracking precision.
+(5)~Rather than relying on a artist-built IK skeleton, we define an optimization problem to automatically identify the kinematic decomposition of motion from data.
+%
+\hspace{0in}
+% 
+%--- Areas of future work
+Our findings pave the way to a number of interesting venues for future works, including (1)~the extension of our modeling framework to the capture of generic articulated geometry in motion, (2)~the consolidation of optimization for modeling and tracking stages, 
+(3)~the generation of parameterizations to enable texturing and level-of-detail representations, 
+(4)~the possibility to 
+% 
 
 
 
-\todo{
-\begin{itemize}
-\setlength\itemsep{-.5em}
-\item Proposed a single optimization framework for modeling and tracking
-\item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
-\item Automatically identifies the degrees of freedom and axes of rotation from data
-\end{itemize}
-}
+% \item Proposed a single optimization framework for modeling and tracking
+% \item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
+% \item Automatically identifies the degrees of freedom and axes of rotation from data
