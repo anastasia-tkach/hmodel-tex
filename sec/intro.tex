@@ -52,15 +52,25 @@ The spheres centers $\mathbf{c}$ span the skeleton $\mathcal{M}$, while the radi
 Our novel tracking model has two significant advantages. (1) First of all, distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. Therefore, not only our distance queries can be executed with great efficiently using a brute force approach, but this leads to an algorithm that is trivially parallelizable and that executes with a fixed frame-rate. (2)~Our hand model parameterization is also compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. A direct approach to building a calibrated model is to let the artist manually adjust these quantities; this process is known as  \emph{ZSphere~{\textcopyright}} modeling in the popular \emph{ZBrush~\textcopyright} 3D modeling software. \TODO{Something about why this makes the model efficient.} \TODO{Something about many recent SphereMeshes and ImplicitSkinning papers at SIGGRAPH?}
 
 \input{fig/handmodels/item.tex}
-\paragraph{Contributions \TODO{ANDREA}}
+\paragraph{Contributions.}
+% NOW
+% FUTURE
+% Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
+% Applications / Future Work: What will your solution enable? How does it project into the future? How will it inspire future work?
+We identify a number of contributions in our research. 
+(1) We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. Note how although we focus on modelling hands, our research paves a new way of to track any form of articulated body. 
+(2) As many possible variants of convolution skeletons exist, it is essential to identify a skeletal topology that performs optimally for hands; see \Figure{topology} \AT{won't they us to compare against other topologies?}. 
+(3) While any geometric model could be employed in tracking applications, it is imperative to determine whether a model is suitable for real-time tracking applications; we demonstrate this is the case by integrating our models in an open-source tracking system~\cite{tagliasacchi2015robust} and retaining 60 FPS tracking performance. 
+(4) We introduce an optimization technique for convolution models that adapts a given template to a specific user, and demonstrate how this results in substantial improvements in tracking precision.
+(5) Rather than relying on a artist-built rig we automatically 
+
+
+
 \todo{
 \begin{itemize}
 \setlength\itemsep{-.5em}
-\item Suggested a hand model representation well suited for user-specific adaption, tracking and animation 
-\item Identified a good tracking template topology
-\item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
 \item Proposed a single optimization framework for modeling and tracking
+\item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
 \item Automatically identifies the degrees of freedom and axes of rotation from data
-\item Improved accuracy of state-of-art hand tracking system
 \end{itemize}
 }
