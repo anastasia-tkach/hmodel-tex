@@ -1,11 +1,13 @@
 \section{Tracking}
 
-\subsection{Correspondences computation}
+\paragraph{Correspondences}
+In monocular acquisition, an oracle registration algorithm would align only the portion of the model that is \emph{visible} from the viewpoint of the sensor to the sensor data~\cite{tagliasacchi2015robust}. Therefore, only the portion of the model currently visible by the camera should be considered when computing ICP correspondences. \todo{Here we describe the...}
 
-For each data points $p$ we want to find the closest point on the front-facing model surface. This approach has proven to be efficient  \cite{tagliasacchi2015robust}, because the sensor data corresponds only to the front-facing part of the model. The computation is done in 3 steps that are presented in the Algorithm\ref{alg:correspondences}.
+\subsection*{Correspondences computation}
+\todo{{--- FINISHED EDITING HERE ---}}
 
 \begin{algorithm}
-\caption{Correspondences computation}
+\caption{Correspondences computation \todo{(rename $p$ to $\point$)}}
 \begin{algorithmic}[1]
 	\For {$\text{each } p$}
   		 \State \text{compute model projection } $q_m$
@@ -22,12 +24,13 @@ For each data points $p$ we want to find the closest point on the front-facing m
 \end{algorithm}
 
 \textbf{Computing model projection.}
-Compute the closest point $q_b$ of each model block $b$ to the data point $p$  (the same way as in model fitting). The model projection $q_m$ is chosen as following: 
+For each each ``block'' $b$, compute $q_b = \proj_b(\point)$, then the
+projection over the whole model $q_m = \proj_\surface(\point)$ is chosen as: 
 \begin{equation*}
 	q_m = \underset{q_b}{\operatorname{argmin}}{ \textbf{ signed\_distance}(p, q_b)} 
 \end{equation*}
 
-using signed distance is an heuristic that helps to get the projection on the model surface when the data point $p$ is inside of the model.
+using signed distance is an heuristic that helps to get the projection on the model surface when the data point $p$ is inside of the model \AT{a figure is likely needed here!}.
 
 \textbf{Discarding or replacing back-facing projections.}
 The resulting projection $q_m$ can be on back-facing side of the model, that is $c^{T} n > 0$, where $c$ is camera ray and $n$ is model normal at the point $q_m$.

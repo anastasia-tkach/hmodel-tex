@@ -12,16 +12,20 @@
 \input{sec/abstract.tex}
 \input{sec/intro.tex}
 \input{sec/related.tex}
+\newpage
 \input{sec/overview.tex}
 \input{sec/tracking.tex}
 
+% \input{fig/twocol/item.tex} %<<< EXAMPLE OF 2 Column figure
 % \input{sec/tracking.tex}
 % \input{sec/results.tex}
 % \input{sec/acks.tex}
 % \input{sec/draft.tex}
-
-
-\input{sec/biblio.tex}  
-\appendix
 % \input{sec/modeling.tex}
+
+\newpage
+\nocite{*} %<< prints all
+\bibliographystyle{acmsiggraph}
+\bibliography{hmodel}
+\appendix
 \end{document}
