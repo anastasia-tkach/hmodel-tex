@@ -1,26 +1,28 @@
 \section{Tracking}
 
 \paragraph{Correspondences}
-In monocular acquisition, an oracle registration algorithm would align only the portion of the model that is \emph{visible} from the viewpoint of the sensor to the sensor data~\cite{tagliasacchi2015robust}. Therefore, only the portion of the model currently visible by the camera should be considered when computing ICP correspondences. \todo{Here we describe the...}
+In monocular acquisition, an oracle registration algorithm would align only the portion of the model that is \emph{visible} from sensor point of view~\cite{tagliasacchi2015robust}. Therefore, when computing ICP correspondences, only the portion of the model currently visible by the camera should be considered.
+
+\todo{{----------- ANDREA - FINISHED EDITING HERE -----------}}
+
+
+% In convolution surfaces correspondence computation takes place in four steps:
+
+% \todo{If our convolution model would be composed of a single skeletal element, the computation of correspondences would be as visualized in~\Figure{corresp}.}
 
 \input{fig/corresp/item.tex}
 
-\subsection*{Correspondences computation}
-\todo{{--- FINISHED EDITING HERE ---}}
+\subsection*{Correspondences Computation \todo{(OLD)}}
 
 \begin{algorithm}
 \caption{Correspondences computation \todo{(rename $p$ to $\point$)}}
 \begin{algorithmic}[1]
-	\For {$\text{each } p$}
-  		 \State \text{compute model projection } $q_m$
-  		  \State \text{replace or discard if $q_m$ is back-facing}
-  		  \State \text{compute outline projection } $q_o$
-  		  \If {$\|{p - q_m}\|_2^2 < \|{p - q_o}\|_2^2$}
-  		  	\State $q = q_m$
-  		  \Else
-  		  	\State $q = q_o$
-  		  \EndIf
-	\EndFor
+    \For {$\text{each } p$}
+    	 \State \text{compute model projection } $q_m$
+    	 \State \text{replace or discard if $q_m$ is back-facing}
+    	 \State \text{compute outline projection } $q_o$
+         \State $q=(\|{p - q_m}\|_2^2 < \|{p - q_o}\|_2) ? q_m : q_o$
+    \EndFor
 \end{algorithmic}
 \label{alg:correspondences}
 \end{algorithm}
@@ -29,10 +31,10 @@ In monocular acquisition, an oracle registration algorithm would align only the 
 For each each ``block'' $b$, compute $q_b = \proj_b(\point)$, then the
 projection over the whole model $q_m = \proj_\surface(\point)$ is chosen as: 
 \begin{equation*}
-	q_m = \underset{q_b}{\operatorname{argmin}}{ \textbf{ signed\_distance}(p, q_b)} 
+	q_m = \argmin_{q_b = \{ q_1, \dots, q_\numblocks \}} \phi_{q_b}(p) 
 \end{equation*}
 
-using signed distance is an heuristic that helps to get the projection on the model surface when the data point $p$ is inside of the model \AT{a figure is likely needed here!}.
+taking the minimum helps to get the projection on the model surface when the data point $p$ is inside of the model \AT{how? I am not sure I understand, please quickly sketch a figure!)}.
 
 \textbf{Discarding or replacing back-facing projections.}
 The resulting projection $q_m$ can be on back-facing side of the model, that is $c^{T} n > 0$, where $c$ is camera ray and $n$ is model normal at the point $q_m$.
@@ -43,7 +45,9 @@ The next step depends on the block type.
 \end{itemize}
 
 \textbf{Computing outline.}
-Before explaining how to compute outline projection, let us first discuss how to compute the model outline. For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:silhcorr}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
+For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with the $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:silhcorr}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
+\AT{What's the difference between the silhouette here and the one computed by raytracing/rasterizing the model on the GPU?}
+
 
 \input{fig/silhcorr/item.tex}
 
