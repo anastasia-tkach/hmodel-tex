@@ -1,10 +1,11 @@
 \section{Tracking}
 
-\paragraph{Element Projection}
+\input{fig/corresp/item.tex}
+\paragraph{Element Correspondences}
 \TODO{Anastasia, please add and describe \Figure{corresp}, that is how do we compute correspondences to a single convolution element}.
 
 \paragraph{Element-Wise Correspondences}
-Our correspondence search leverages the structure of \Eq{convsurf}, by decomposing the surface in several elementary convolution elements $\element$ (\todo{a decomposition of the shape in pill and wedge primitives}) and their associated implicit functions $\implicit_e$. Given a point $\point$ in space, the implicit function of the whole surface can be written by evaluating the expression:
+Our correspondence search leverages the structure of \Eq{convsurf}, by decomposing the surface in several elementary convolution elements $\element$ (a decomposition of the shape in \todo{pill} and \todo{wedge} implicit primitives) and their associated implicit functions $\implicit_e$. Given a point $\point$ in space, the implicit function of the whole surface can be written by evaluating the expression:
 \begin{equation}
 \implicit_\surface(\point) = \argmin_{e=1 \dots E} \implicit_e(\point)
 \label{eq:piecewise}
@@ -12,49 +13,15 @@ Our correspondence search leverages the structure of \Eq{convsurf}, by decomposi
 Therefore, given a query point $\point$, we can first compute the closest-points $\footpoint_e = \proj_{\element}(\point)$ to each element independently; within this set, the closest-point projection to the full model $\footpoint = \proj_\surface(\point)$ is the one with the smallest associated implicit function value $\implicit_e(\point)$.
 \TODO{should we mention how long this takes?}
 
-\input{fig/corresp/item.tex}
 \paragraph{Frontal Correspondences}
-In monocular acquisition, an oracle registration algorithm aligns the portion of the model that is \emph{visible} from sensor viewpoint to the available data. Therefore, when computing ICP's closest-point correspondences, only the portion of the model currently visible by the camera should be considered~\cite{tagliasacchi2015robust}. Given the camera direction $\camdir$, we can test whether the retrieved footpoint $\footpoint$ is back-facing by testing the sign of $\camdir \cdot \mathcal{N}_\surface(\footpoint)$, where the second term is the object's normal at $\footpoint$. As illustrated in \Figure{?}, whenever this test fails, there are additional candidates for closest point that must be checked . The first with respect to the silhouette of the model, 
+In monocular acquisition, an oracle registration algorithm aligns the portion of the model that is \emph{visible} from sensor viewpoint to the available data. Hence, when computing ICP's closest-point correspondences, only the portion of the model currently visible by the camera should be considered~\cite{tagliasacchi2015robust}. Given the camera direction $\camdir$, we can test whether the retrieved footpoint $\footpoint$ is back-facing by testing the sign of $\camdir \cdot \mathcal{N}_\surface(\footpoint)$, where the second term is the object's normal at $\footpoint$. As illustrated in 2D in \Figure{visibility}, whenever this test fails, there are additional candidates for closest point that must be checked: (1)~the closest-point on the silhouette of the model (e.g. $\point_{2,4,5,7}$), and (2)~the front facing planar portions of convolution elements (e.g. $\point_{3}$). These additional correspondences for the query point are computed, and the one closest to $\point$ becomes our front-facing footpoint $\footpoint$.
+\input{fig/visibility/item.tex}
 
-The \emph{silhouette} of an object is a (3D) curve separating front from back-facing portions of a shape. If we restrict correspondence search to the frontal portion of the model, naturally many correspondences will be mapped to such curve. 
+
+\input{fig/silhouette/item.tex}
+\paragraph{Silhouette Computation}
+The \emph{silhouette} is a (3D) curve separating front-facing from back-facing portions of a shape. In our visibility-aware search, many points will be mapped to this curve. Similarly to \cite{tagliasacchi2015robust}, to compute the silhouette we approximate the perspective camera of the sensor with an orthographic one. Under this assumption finding the (3D) silhouette $\partial \surface$ becomes much simpler. We first project the 3D convolution model onto the 2D camera plane, and then traverse the graph of line and circle segments in counters-clockwise direction. \AT{this is not very clear to me, needs to be explained better} Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}.
+
+\AT{do you have to pass the silhouette back to CUDA to compute correspondences?}
 
 \FINISH
-
-% In convolution surfaces correspondence computation takes place in four steps:
-% \todo{If our convolution model would be composed of a single skeletal element, the computation of correspondences would be as visualized in~\Figure{corresp}.}
-
-% \input{fig/silhouette/item.tex}
-
-\begin{algorithm}
-\caption{Correspondences computation}
-\begin{algorithmic}[1]
-    \For {$\text{each } p$}
-    	 \State \text{compute model projection } $q_m$
-    	 \State \text{replace or discard if $q_m$ is back-facing}
-    	 \State \text{compute outline projection } $q_o$
-         \State $q=(\|{p - q_m}\|_2^2 < \|{p - q_o}\|_2) ? q_m : q_o$
-    \EndFor
-\end{algorithmic}
-\label{alg:correspondences}
-\end{algorithm}
-
-% \textbf{Computing model projection.}
-% taking the minimum helps to get the projection on the model surface when the data point $p$ is inside of the model \AT{how? I am not sure I understand, please quickly sketch a figure!)}.
-
-\textbf{Discarding or replacing back-facing projections.}
-\begin{itemize}
-	\item Convolution segment: the closest front-facing point is on the model outline, thus set the current point $q_m$ to $\infty$.
-	\item Convolution triangle: the closest front-facing point is either on the model outline or on a front-facing face of the convolution triangle, thus replace $q_m$ by the closest front-facing face projection.
-\end{itemize}
-
-\textbf{Computing outline.}
-For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with the $XY$ plane. This outline is computed by finding the upper left point of the cross-section and traversing the graph of line and circle segments in counters-clockwise direction (see Figure \ref{fig:silhcorr}). To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions.
-\AT{What's the difference between the silhouette here and the one computed by raytracing/rasterizing the model on the GPU?}
-
-
-
-
-\textbf{Computing outline projection.}
-The model outline is represented as a sequence of line and circle segments. To compute an outline projection $q_o$ we compute a projection on each element of the outline and select the closest to the data point $p$.
-
-\input{fig/visibility/item.tex}

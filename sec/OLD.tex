@@ -42,3 +42,34 @@ The hand skinning quality is obviously important for digital avatars application
 
 \subsection{Convolution surfaces for model fitting}
 The spheres and mixed cylinders/spheres hand model representations (Figure \ref{fig:hand_model_representations} a, b) are ubiquitous in hand tracking, because they are well suited for tracking tack per se (see next) and can be quickly to created manually. If a small number of  building blocks is used, the precision of the model is low, especially in the palm region. 
+
+
+% In convolution surfaces correspondence computation takes place in four steps:
+% \todo{If our convolution model would be composed of a single skeletal element, the computation of correspondences would be as visualized in~\Figure{corresp}.}
+
+% \input{fig/silhouette/item.tex}
+
+\begin{algorithm}
+\caption{Correspondences computation}
+\begin{algorithmic}[1]
+    \For {$\text{each } p$}
+    	 \State \text{compute model projection } $q_m$
+    	 \State \text{replace or discard if $q_m$ is back-facing}
+    	 \State \text{compute outline projection } $q_o$
+         \State $q=(\|{p - q_m}\|_2^2 < \|{p - q_o}\|_2) ? q_m : q_o$
+    \EndFor
+\end{algorithmic}
+\label{alg:correspondences}
+\end{algorithm}
+
+% \textbf{Computing model projection.}
+% taking the minimum helps to get the projection on the model surface when the data point $p$ is inside of the model \AT{how? I am not sure I understand, please quickly sketch a figure!)}.
+
+\textbf{Discarding or replacing back-facing projections.}
+\begin{itemize}
+	\item Convolution segment: the closest front-facing point is on the model outline, thus set the current point $q_m$ to $\infty$.
+	\item Convolution triangle: the closest front-facing point is either on the model outline or on a front-facing face of the convolution triangle, thus replace $q_m$ by the closest front-facing face projection.
+\end{itemize}
+
+% For this computation we assume that projection is orthographic and that camera direction coincides with axis $Z$. We shift all the model spheres to have zero coordinate at axis $Z$ and compute an outline of the cross-section of the model with the $XY$ plane.
+To obtain the 3D outline we shift the model spheres with attached 2D outline back to their original positions. The model outline is represented as a sequence of line and circle segments. To compute an outline projection $q_o$ we compute a projection on each element of the outline and select the closest to the data point $p$.
