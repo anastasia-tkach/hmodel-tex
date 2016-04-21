@@ -20,8 +20,18 @@ In monocular acquisition, an oracle registration algorithm aligns the portion of
 
 \input{fig/silhouette/item.tex}
 \paragraph{Silhouette Computation}
-The \emph{silhouette} is a (3D) curve separating front-facing from back-facing portions of a shape. In our visibility-aware search, many points will be mapped to this curve. Similarly to \cite{tagliasacchi2015robust}, to compute the silhouette we approximate the perspective camera of the sensor with an orthographic one. Under this assumption finding the (3D) silhouette $\partial \surface$ becomes much simpler. We first project the 3D convolution model onto the 2D camera plane, and then traverse the graph of line and circle segments in counters-clockwise direction. \AT{this is not very clear to me, needs to be explained better} Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}.
+The \emph{silhouette} is a (3D) curve separating front-facing from back-facing portions of a shape. \Anastasia{Normally by silhouette people mean the outline of the shape and everything inside of the outline. "A silhouette is the image of a person, animal, object or scene represented as a solid shape of a single color, usually black, its edges matching the outline of the subject (Wikipedia)". Also, silhouette is always in 2D, like in our silhouette energy} In our visibility-aware search, many points will be mapped to this curve. Similarly to \cite{tagliasacchi2015robust}, to compute the silhouette we approximate the perspective camera of the sensor with an orthographic one. Under this assumption finding the (3D) silhouette $\partial \surface$ becomes much simpler. 
+
+\Anastasia{Updated}
+We first shift all the model centers to have zero coordinate at the axis Z (which coincides with camera axis). We compute the cross-section of the model with XY plane. This cross-section consists of  circles and line segments (see \Figure{silhouette}, left). Now we need to find a set of circle segments and line segments that are on the outline of the cross-section. This is done by computing intersection and tangency points of every circle with every other circle and every line segment. The resulting structure can be thought of as a graph with intersection and tangency points as vertices and circle and line segments as edges. We traverse this graph starting from the upper left or any other point that is guaranteed to be on the outline. From every vertex we follow the edge with the next polar angle from the one that we came from (for the circle the polar angle is computed for a tangent at that point). This way  we always stay on the outline and never go inside of the cross-section.
+
+Note that if a finger is in front of the palm, we still want to have its outline for the benefit of the correspondences that are back-facing to the finger.
+Therefore we separately compute the outline for the palm and for the fingers and merge them together afterwards. The merging is done by removing the part of the finger outline that is inside of the palm outline and part of the palm outline that is inside of the finger outline. The fingers outline only modified if it is the outline of the base finger segment, because it is OK for the finger tip outline to be inside of the palm outline.
+
+Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}.
+\Anastasia{End of update}
 
 \AT{do you have to pass the silhouette back to CUDA to compute correspondences?}
+\Anastasia{the outline is computed on CPU, the outline projections are computed on GPU. My function for computing  correspondences looks exactly like Algorithm 1 that I have wrote.}
 
 \FINISH
