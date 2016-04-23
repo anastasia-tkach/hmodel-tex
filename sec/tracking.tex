@@ -30,7 +30,7 @@ While rotation frames for most fingers are typically initialized with a rotation
 
 \input{fig/kinematic/item.tex}
 \paragraph{Chain Optimization}
-The coordinate frame translations are simply a subset of sphere centers of our convolution skeleton $\skeleton$. Conversely, the orientation of rotation in the local coordinate frames are computed as the solution of an optimization problem. As an example, let us consider a kinematic chain with the same degrees of freedoms as the thumb; see \Figure{kinematic}. Let us consider a point $\point$ expressed in the local coordinate frame $c$ (e.g. the tip of the thumb). By traversing the kinematic chain, its position in the wrist's local coordinate frame $w$ can be written as:
+The coordinate frame translations are simply a subset of sphere centers of our convolution skeleton $\skeleton$. \Anastasia{it is true, but translations and centers are different kinds of entities (point and vector). Can we say instead that the translations can be computed from the centers?} Conversely, the orientation of rotation in the local coordinate frames are computed as the solution of an optimization problem. As an example, let us consider a kinematic chain with the same degrees of freedoms as the thumb; see \Figure{kinematic}. Let us consider a point $\point$ expressed in the local coordinate frame $c$ (e.g. the tip of the thumb). By traversing the kinematic chain, its position in the wrist's local coordinate frame $w$ can be written as:
 % 
 \begin{equation*}
 \tilde\point = \mathbf{T}_w^a\mathbf{R}_w^a(\delta_x, \delta_y, \delta_z)
@@ -41,14 +41,27 @@ The coordinate frame translations are simply a subset of sphere centers of our c
 \label{eq:kinematic}
 \end{equation*}
 % 
-Where, for example, $\mathbf{T}_a^b$ represents the homogeneous transformation matrix translating the coordinate frame $b$ to $a$, and the angles $\alpha_x, \beta_x, \gamma_x$ determine rotations about the local $x$ axis of $a, b, c$, that encode the thumb's \todo{flexion}, while $\alpha_y$ controls the thumb's \todo{abduction}. Note bone lengths have already been fitted, therefore $\mathbf{T}_*^*$ are not degrees of freedom in our optimization. For compactness of notation let us define the vector $\mathbf{\theta} = [\alpha_x, \alpha_y, \beta_x, \gamma_x ]$ of parameters that encode the hand \todo{pose}. The vector $\mathbf{\delta} = [\delta_x, \delta_y, \delta_z]$ gathers the parameters encoding the hand \todo{posture}, that is, its \emph{rest pose} of our hand. 
 
+\Anastasia{This looks equivalent to the formulation that I used, but I cannot guarantee without coding it up.}
+
+Where, for example, $\mathbf{T}_a^b$ represents the homogeneous transformation matrix translating the coordinate frame $b$ to $a$, and the angles $\alpha_x, \beta_x, \gamma_x$ determine rotations about the local $x$ axis of $a, b, c$, that encode the thumb's \todo{flexion}, while $\alpha_y$ controls the thumb's \todo{abduction}. Note bone lengths have already been fitted, therefore $\mathbf{T}_*^*$ are not degrees of freedom in our optimization. For compactness of notation let us define the vector $\mathbf{\theta} = [\alpha_x, \alpha_y, \beta_x, \gamma_x ]$ of parameters that encode the hand \todo{pose}. The vector $\mathbf{\delta} = [\delta_x, \delta_y, \delta_z]$ gathers the parameters encoding the hand \todo{posture}, that is, its \emph{rest pose} of our hand. 
+\Anastasia{I actually use 5 parameters $\delta$, not three. Because, at least in my hand, the upper phalanges of the fingers are slightly tilted sideways.}
 The position $\point$ has been tracked over time across of number of frames $\{\point_1, \dots, \point_N\}$, leading to the following space-time optimization problem:
 % 
 \begin{eqnarray}
 \argmin_{\mathbf{\delta}, \{\mathbf{\theta_i}\}} \sum_i^N \| \mathbf{\theta}_i \|^2 \quad \text{s.t.} \quad \| \tilde\point(\mathbf{\delta}, \mathbf{\theta}_i) - \point_i \|^2 = 0
 \label{eq:kinopt}    
 \end{eqnarray}
+
+\Anastasia{
+I solve a slightly different problem
+\begin{eqnarray}
+\argmin_{\mathbf{\delta}, \{\mathbf{\theta_i}\}} \sum_i^N \quad \| \tilde\point(\mathbf{\delta}, \mathbf{\theta}_i) - \point_i \|^2 = 0
+\label{eq:kinopt}    
+\end{eqnarray}
+where $p_i$ are not only the fingertips, as you imply, but also the two upper finger joints.
+}
+
 Note that solving this problem does not only compute the rotations necessary to pose the model to a particular configuration. It also computes the parameters $\mathbf{\delta}$ of the optimal rotation frame. 
 
 \AT{still need some work, but amanda is here and I need to run}
