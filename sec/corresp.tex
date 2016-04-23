@@ -1,6 +1,22 @@
 \section{Convolution Models}
 \todo{Here we describe all the stuff that is common to both modeling and tracking applications: correspondence computation and rendering.}
 
+\input{fig/posing/item.tex}
+\subsection{Posing a convolution model}
+\label{sec:posing}
+% 
+\begin{DRAFT}
+To pose a convolution model the centers ... 
+Where $\Pi$ left multiplies matrices by traversing the kinematic chain $K(i)$ of element $i$ towards the root.
+... $\bar\ballcenter_i$ are written in world coordinates.
+% 
+\begin{equation}
+\ballcenter_i = \left[ \Pi_{k \in K(i)} \mathbf{\bar{T}}_k \mathbf{T}_k \mathbf{\bar{T}}_k^{-1} \right] \bar\ballcenter_i
+\end{equation}
+% 
+Basically we express the point int he coordinate frame of the k-th element, we apply the posing transformation, then we re-apply the rest pose transformation to bring the point back in world coordinates.
+\end{DRAFT}
+
 \subsection{Correspondences}
 \label{sec:corresp}
 % \paragraph{Surface Correspondences: $\proj_\surface(\point)$}
@@ -13,13 +29,16 @@ Therefore, given a query point $\point$, we can first compute the closest-points
 
 \input{fig/corresp/item.tex}
 \paragraph{Pill Correspondences: $\footpoint=\proj_\text{pill}(\point)$}
-A pill is defined by two balls $\ball_1(\ballcenter_1,r_1)$ and $\ball_2(\ballcenter_2,r_2)$. Let us first compute the position of the skewed projection $\skewproj$; see \Figure{corresp}-(left). 
+A pill is defined by two balls $\ball_1(\ballcenter_1,r_1)$ and $\ball_2(\ballcenter_2,r_2)$. 
+\begin{DRAFT}
+Let us first compute the position of the skewed projection $\skewproj$; see \Figure{corresp}-(left). 
 % 
 Let us assume $r_1 > r_2$ and define $\mathbf{u} = \ballcenter_2-\ballcenter_1$, $\mathbf{\vec{u}} = \mathbf{u}/\|\mathbf{u}\|$, $\mathbf{v} = \point-\ballcenter_1$, $\alpha=\mathbf{\vec{u}} \cdot \mathbf{v}$. The orthogonal projection of $\point$ onto the segment is $\mathbf{t} = \mathbf{c}_1 + \alpha \mathbf{u}$. The distance $\omega$ can be derived with the Pythagorean theorem as $\omega^2 = \mathbf{u}^T \mathbf{u} - (r_1 - r_2)^2$ while $\delta$ is derived leveraging triangle similarity $\delta / \| \point - \mathbf{t} \| = (r_1-r_2)/\omega$. Finally, our skewed projection $\skewproj$ is $\skewproj = \mathbf{t} - \delta \mathbf{\vec{u}}$.
 % 
 According to the position of $\skewproj$ we have two solutions: 
 (1) If $\skewproj$ lies on the segment $\segment$, then $\point$ projects onto the pill's conic surface as $\footpoint=\mathbf{s}+(\gamma+r_2) \overrightarrow{\mathbf{\skewproj} \point}$, where $\overrightarrow{\skewproj \point} = (\point-\skewproj)/ \|\point-\skewproj\|$. 
-(2) if $\skewproj$ lies outside the segment and closer to the ball $\ball_*$, then $\point$ projects onto the sphere as $\footpoint_e = \ballcenter_* + r_*(\overrightarrow{\point \ballcenter_*})$. \AT{this computation or explanation could be substantially simplified (in the writeup, don't worry for the code) in the same way as I did for the wedge}
+(2) if $\skewproj$ lies outside the segment and closer to the ball $\ball_*$, then $\point$ projects onto the sphere as $\footpoint_e = \ballcenter_* + r_*(\overrightarrow{\point \ballcenter_*})$.
+\end{DRAFT}
 
 \paragraph{Wedge Correspondences: $\footpoint=\proj_\text{wedge}(\point)$}
 A wedge is defined by three spheres $\ball_i = \{\ballcenter_i, r_i\}$. By inspecting \Figure{convsurf}, it is apparent that a wedge element can be decomposed in three parts: \emph{spherical}, \emph{conical} and \emph{planar} elements respectively associated with vertices, edges and faces of the triangular convolution skeleton. Having identified the planar element $\mathcal{P}(\mathbf{n}, \mathbf{t}_0)$ with normal $\mathbf{n}$ and tangent $\mathbf{t}_0$ to $\ball_0$ (see \Appendix{wedgecorr}), we compute the skewed projection $\skewproj$ by finding the intersection of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the triangle $\mathcal{T}$ formed by $\ballcenter_1$, $\ballcenter_2$ and $\ballcenter_3$. 
