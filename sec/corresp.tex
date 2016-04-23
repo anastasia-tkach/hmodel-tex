@@ -1,4 +1,7 @@
-\section{Correspondences}
+\section{Convolution Models}
+\todo{Here we describe all the stuff that is common to both modeling and tracking applications: correspondence computation and rendering.}
+
+\subsection{Correspondences}
 \label{sec:corresp}
 % \paragraph{Surface Correspondences: $\proj_\surface(\point)$}
 Our correspondence search leverages the structure of \Eq{convsurf}, by decomposing the surface in several elementary convolution elements $\element$ (a decomposition of the shape in \todo{pill} and \todo{wedge} implicit primitives) and their associated implicit functions $\implicit_e$. Given a point $\point$ in space, the implicit function of the whole surface can be written by evaluating the expression:
@@ -24,3 +27,18 @@ A wedge is defined by three spheres $\ball_i = \{\ballcenter_i, r_i\}$. By inspe
 According to the position of $\skewproj$ we have two solutions:
 (1) If the skewed $\skewproj$ lies inside the triangle $\mathcal{T}$, then our footpoint is $\footpoint = \proj_\mathcal{P}(\point)$, otherwise 
 (2) employ the barycentric coordinates of $\skewproj$ in $\mathcal{T}$ to identify the closest pill element and compute $\footpoint=\proj_\text{pill}(\point)$.
+
+
+\subsection{Rendering}
+Rendering the convolution model in real time is not only employed for visual verification of tracking performance; e.g. \Figure{coarsemodel}. The real-time tracking algorithm reviewed in \Section{overview} performs a 2D registration in the image plane that requires the computation of an (image-space) silhouette. There are two alternatives for rendering a  convolution model like the one shown in \Figure{topology}. One possibility is to explicitly extract the surface of individual convolution element by computing the convex hull of pairs or triplets of spheres; see \Figure{convsurf} and \cite{ando2013liquid}. While this process would be suitable in applications where the model is fixed, it is hardly appropriate to our scenario where we want to calibrate the model to the user. Therefore, we instead efficiently ray-trace the convolution model on the GPU. We render a unit fullscreen quad, and in the fragment shader we leverage the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each of this ray is intersected with each convolution element of our model in \todo{close form}, and only the closest intersection point is retained. \AT{how do you perform the intersection tests? do you decompose the surfaces into planes, cones, and spheres or what?} Surface normals at the intersection point are also computed for shading purposes.
+
+\paragraph{Optimization}
+Ray tracing our surface on a framebuffer of size $1280 \times 960$ would consume in average \todo{$\sim 4$ ms/iteration}. However, our optimization requires in the order of 10 iterations to converge, thus upper-bounding the performance of the tracker to 25 \FPS{}. We overcome this issue by rendering the model to a smaller $320 \times 240$ framebuffer texture (the same resolution of textures fetched from the sensor) and upsampling it with linearly interpolation whenever necessary. This process allows us to reduce the rendering time to~\todo{$\sim.6$~ms/iteration}.
+
+\endinput
+
+% It is required to render the model for silhouette energy and for visualization purposes. The full rendering process is done in fragment shader, the vertex shader only provides a quad.
+% In fragment shader, given the fragment coordinates gl\_FragCoord, we compute the camera ray corresponding to the current pixel, but de-applying the transformations done by the rasterizer to the points $\{$gl\_FragCoord.x, gl\_FragCoord.y, 0$\}$ and $\{$gl\_FragCoord.x, gl\_FragCoord.y, 1$\}$ that correspond to the points on the near and far camera plane in the world coordinates.
+% Once we have the ray, we intersect it with each block of the model. The intersection points of a ray with a sphere, plane and conic surface are found in closed form.
+% \textbf{Optimization.}
+% We also compute the normals at intersection points for shading. This takes 20 milliseconds for a window size $1280 \times 960$ which is prohibitively show. To speed up the rendering, we first render an indicator texture of size $320 \times 240$ that contains model silhouette with the number of each model block and a value 255 for background. Once the texture is accessed from the fragment shader, it is automatically interpolated for the window size  $1280 \times 960$.

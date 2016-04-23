@@ -1,9 +1,8 @@
 \section{Tracking}
 \begin{DRAFT}
 High level description of these three components:
-(1) We need to modify correspondences to make them compatible to single vantage point, 
-(2) we need to render the convolution surface to compute 2D alignment energies, 
-(3)
+(1) We need to modify correspondences to make them compatible to single vantage point
+(2) we need to render the convolution surface to compute 2D alignment energies
 \end{DRAFT}
 
 
@@ -15,20 +14,7 @@ In monocular acquisition, an oracle registration algorithm aligns the portion of
 \input{fig/silhouette/item.tex}
 \paragraph{Silhouette Computation}
 The \emph{object-space silhouette} $\partial \surface$ is a (3D) curve separating front-facing from back-facing portions of a shape~\cite[Sec.1]{olson2006eg}. Similarly to \cite{tagliasacchi2015robust}, to simplify the silhouette computation we approximate the perspective camera of the sensor with an orthographic one. We then offset all convolution elements on the 2D camera plane, and perform a cross-section with this plane. Spheres are replaced with circles and planes/cylinders with segments; see~\Figure{silhouette}-(left). We then compute an \emph{arrangement}, splitting curves whenever intersection or tangency occurs~\Figure{silhouette}-(center). We traverse this graph, starting from a point that is guaranteed to be on the outline (e.g. a point on the bounding box). The traversal selects the next element as the one whose tangent forms the smallest counter-clockwise angle thus identifying the silhouette. Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}. Note the process described above would compute the \emph{image-space silhouette} of our model. Therefore, we apply the process above to palm and fingers separately, and merge them in a second phase. The merge process simply checks whether vertices $v \in \partial \surface$ are contained within the model, that is it discards those where $\implicit_\surface(v)<0$. In our experiments, the average computation of silhouette on the CPU takes \todo{\emph{100 $\mu$s/iteration}}.
-
-\subsection{Rendering}
-
-\begin{DRAFT}
-It is required to render the model for silhouette energy and for visualization purposes. The full rendering process is done in fragment shader, the vertex shader only provides a quad. 
-In fragment shader, given the fragment coordinates gl\_FragCoord, we compute the camera ray corresponding to the current pixel, but de-applying the transformations done by the rasterizer to the points $\{$gl\_FragCoord.x, gl\_FragCoord.y, 0$\}$ and $\{$gl\_FragCoord.x, gl\_FragCoord.y, 1$\}$ that correspond to the points on the near and far camera plane in the world coordinates.
-
-Once we have the ray, we intersect it with each block of the model. The intersection points of a ray with a sphere, plane and conic surface are found in closed form. We also compute the normals at intersection points for shading. This takes 20 milliseconds for a window size $1280 \times 960$ which is prohibitively show.
-
-\textbf{Optimization.} To speed up the rendering, we first render an indicator texture of size $320 \times 240$ that contains model silhouette with the number of each model block and a value 255 for background. Once the texture is accessed from the fragment shader, it is automatically interpolated for the window size  $1280 \times 960$. We only consider the rays for which the value of the indicator texture is less than 255. The change in resolution is handled by the ``blured'' boundaries of the model. This allows to decrease rendering time to 6-7 millisecond. 
-
-We use one more heuristic, if the value of the indicator texture is very close to an integer, this means that the pixel is on the middle of a block and we can only intersect the corresponding ray with that block. If the  value is not an integer, than the intersection is done with all the blocks. This brings the rendering time down to 4-5 ms. \Anastasia{But with this I get white pixels at the intersection line of the blocks that have very different indices, like 3 and 20. I have no idea why. Also, if while reading this you got an idea how to speed up rendering some more, please let me know, it would be great. Also I tried running glFinish, after offscreen renderer and nothing changed, I still have exactly the same issues.}
-\end{DRAFT}
-
+ 
 \subsection{Initial transformations}
 \begin{DRAFT}
 The overwhelming majority of hand  tracking systems uses joint angles as an optimization variable. Given the vector of joint angles $\theta$, one also needs to know the initial rotations of the fingers with respect to the palm to be able to pose the model. (This is especially relevant for user-specific model adaptation). The precise tracking is impossible without having the correct initial rotations, because the joints at the base of fingers cannot rotate around their axis, thus initial rotations constrain the possible poses that a hand model can assume. The initial rotations of the fingers can be guessed approximately because the are close to identity, but with the thumb it is much more difficult. \Anastasia{To prove this, I could alter the rotations in our system and show that tracking gets worse.} 
