@@ -4,7 +4,7 @@ Our calibration procedure tailors a convolutional model to a specific user from 
 \TODO{Something about averaging-out imprecision, and fact that hand cannot be seen from a single vantage point?} 
 \TODO{something about the two types of data? (photoscan v.s. sensor)}
 % 
-Let us partition our parameters into two sets $\parposture$ and $\parpose$. The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. the posture). The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. the pose) which we then gather across the N data frames in a matrix $\parposes$. The geometry of the convolution surface is fully represented by two matrices $\centers$ and $\radii$ respectively containing one $\ballcenter_i$ and one $r_i$ per row. Our calibration optimization can then be written as:
+Let us partition our parameters into two sets $\parposture$ and $\parpose$. The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. the posture). The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. the pose). The geometry of the convolution surface is fully represented by two matrices $\centers$ and $\radii$ respectively containing one $\ballcenter_i$ and one $r_i$ per row. Finally, define $\pars_n=[\parpose_n, \parposture, \centers, \radii]$. Our calibration optimization can then be written as:
 % 
 \begin{eqnarray}
 \argmin_{\parposture, \centers, \radii}
@@ -23,7 +23,7 @@ We employ a set of energies $\mathcal{T}_*$ to balance two different aspects. On
 \item[valid] convolution elements should not degenerate
 \end{description}
 % 
-To make this problem more approachable we split the calibration optimization in \Eq{calibration} into three alternating optimization steps:
+To make this problem more approachable we split the calibration optimization in \Eq{calibration} into a three-steps iterative optimization:
 % 
 \begin{eqnarray}
 \argmin_{\parposes} 
@@ -48,34 +48,31 @@ w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
 \label{eq:step3}
 \end{eqnarray}
 % 
-In the first step we fix the geometry and kinematics of the template and rigidly align it to the input data -- this step is analogous to the one used for real-time tracking. In the second step, we alter the geometry of our convolution model by allowing sphere centers and radii of our convolution model to be adjusted to conform to the user. In the third step, we adjust the kinematic chain by correcting the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational portions of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$.
+In the first step we fix the geometry and kinematics of the template and rigidly align it to the input data. In the second step, we alter the geometry of our convolution model by allowing sphere centers and radii of our convolution model to be adjusted to conform to the user. In the third step, we adjust the kinematic chain by correcting the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational portions of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$.
 
 
 
 \subsection{Energies}
-We now describe in details the various energies of our optimization. The first two terms encode the \emph{symmetric} Hausdorff distance between model and data, while the remaining 
+We now describe in details the various energies of our optimization.
 
 \paragraph{Data $\rightarrow$ Model}
 Every measurement $\point$ in our data frame $\depth_n$ should be well explained by our model:
 \begin{equation}
 E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\parpose_n, \parposture, \centers, \radii)}(\point)\|_2^1
+\label{eq:d2m}
 \end{equation}
 % 
-The operator $\proj$ computes the projection of $\point$ onto our model $\model$, therefore each term in this energy is nothing but the length of ICP correspondences. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix, especially for the ones in \Eq{step2}}.
+The operator $\proj$ computes the projection of $\point$ onto our model $\model$, therefore this energy is the integral length of ICP correspondences. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix, especially for the ones in \Eq{step2}}.
 
 \paragraph{Model $\rightarrow$ Data}
-As we want our data to be a good representation of our model, we 
-
-As we are seeking for a model which is \emph{strictly sufficient} to represent our data, we need to ensure that no portion of the model remains unused. 
-
-Another way of explaining why this energy is necessary is that we want model and data to have a small symmetric Hausdorff distance. 
-
-
+As we are seeking for a model which is \emph{strictly sufficient} to represent our data, we need to ensure that no portion of the model remains unused. The data-to-model term encodes an approximation of the one-sided Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
 \begin{equation}
-E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\parpose_n, \parposture, \centers, \radii)}(\point)\|_2^1
+E_{d2m} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)\|_2^1
+\label{eq:m2d}
 \end{equation}
+The set of points $\point$ can be obtained by rasterizing our model. Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data being used. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator is similar to the one used for \Eq{d2m}: we build a kd-tree for the point cloud in frame $\depth_n$ and fetch the closest point to $\point$. Conversely, if the data in $\depth_n$ has been obtained through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
 
-\todo{Same as in HTrack, while when using photoscan we can sample the model and compute kdtree correspondences}
+
 
 \paragraph{Rigidity}
 The consistency energy requires that for every rigid part of the skeleton the distances between every pair of vertices are the same for all the poses. The consistency energy does not apply to elastic parts of hand model.
@@ -89,6 +86,10 @@ A pill becomes degenerate if one of the spheres is completely inside of another 
 % \AT{This is now obsolete, as we encode common rotation frames for nodes of the kinematic chain} This energy ensures that initial rotations are similar for all the poses. The common initial rotations are computed as described in the section ``Initial Rotations''. The energy minimizes the distance between the current centers and the centers locations with common initial rotations. This energy is very important, because it constraints fingers motion in meaningful way. In the absence of this energy each joint bends in arbitrary direction.
 
 \subsection{Optimization}
+Step1: this step is analogous to the one used for real-time tracking\\
+Step2: ARAP like solve\\
+Step3: simplifying assumption, just use the $\centers$
+
 \begin{DRAFT}
 The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
 \end{DRAFT}
