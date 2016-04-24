@@ -1,72 +1,83 @@
 \section{Calibration}
-In order to tailor hand model for a specific user, we acquire a set of $N$ 3D measurements $\depth_1 \dots \depth_N$ of the user's hand in different poses. \todo{Such data can come from a static acquisition setup or not.} \todo{$\centers$ is a matrix stacking all $\ballcenter_i$ while $\radii$ is a vector stacking all $r_i$.}
+Our calibration procedure tailors a convolutional model to a specific user from a set of $N$ 3D measurements $\depth_1 \dots \depth_N$ of the user's hand in different poses. 
 % 
-\todo{Let us split the parameters of our model in two sets, the first controlling the pose $\parpose$, while the second set controls the posture $\parposture$.}
+\TODO{Something about averaging-out imprecision, and fact that hand cannot be seen from a single vantage point?} 
+\TODO{something about the two types of data? (photoscan v.s. sensor)}
 % 
-\todo{attempt to fit a single convolution model through this data.}
+Let us partition our parameters into two sets $\parposture$ and $\parpose$. The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. the posture). The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. the pose) which we then gather across the N data frames in a matrix $\parposes$. The geometry of the convolution surface is fully represented by two matrices $\centers$ and $\radii$ respectively containing one $\ballcenter_i$ and one $r_i$ per row. Our calibration optimization can then be written as:
 % 
 \begin{eqnarray}
 \argmin_{\parposture, \centers, \radii}
 \sum_{n=1}^N 
 \sum_{\mathcal{T} \in \mathcal{T}_*} 
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
+\label{eq:calibration}
 \end{eqnarray}
 % 
-\todo{Our terms $\mathcal{T}$ are...}
+We employ a set of energies $\mathcal{T}_*$ to balance two different aspects. On one side we would like our model $\model$ to be a good fit to our data, on the other we require each posed model to be a piecewise-rigid posing of a convolution template that is non-degenerate. Our energies $\mathcal{T}_*$ are:
+% 
 \begin{description}[labelsep=0em,labelwidth=.4in,labelindent=1cm]
 \item[d2m] each data point should be close to our model
 \item[m2d] the model should lie close to the data
-\item[rigid] elements are posed rigidly
-\item[valid] elements should not degenerate
+\item[rigid] convolution elements are posed rigidly
+\item[valid] convolution elements should not degenerate
 \end{description}
 % 
-Our calibration optimization splits this problem in two alternating optimization steps:
+To make this problem more approachable we split the calibration optimization in \Eq{calibration} into three alternating optimization steps:
 % 
 \begin{eqnarray}
-\argmin_{\parposes, \parposture} 
+\argmin_{\parposes} 
 \sum_{n=1}^N 
 \sum_{\mathcal{T} \in \mathcal{T}_*}
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii) 
 && \text{(Step 1)}
+\label{eq:step1}
 \\
 \argmin_{\centers, \radii} 
 \sum_{n=1}^N 
 \sum_{\mathcal{T} \in \mathcal{T}_*}
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
 && \text{(Step 2)}
+\label{eq:step2}
+\\
+\argmin_{\parposture} 
+\sum_{n=1}^N 
+\sum_{\mathcal{T} \in \mathcal{T}_*}
+w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii) 
+&& \text{(Step 3)}
+\label{eq:step3}
 \end{eqnarray}
-
-\paragraph{Initialization}
-The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
-
+% 
+In the first step we fix the geometry and kinematics of the template and rigidly align it to the input data -- this step is analogous to the one used for real-time tracking. In the second step, we alter the geometry of our convolution model by allowing sphere centers and radii of our convolution model to be adjusted to conform to the user. In the third step, we adjust the kinematic chain by correcting the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational portions of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$.
 
 
 
-% The first reason is that we want ensure that the resulting hand model will be able to assume all the poses that a real hand can, or at least the subset of poses for which we have the point clouds.
-% The second reason is that the artifacts present in some input point clouds might be compensated by the others, so it is possible to accumulate information this way.
-% For fitting we use the same optimization framework as for tracking (in a hope to extend it to fitting \& tracking real time system).
-% The main difference is that instead of the joint angles $\theta$, the hand model is parametrized by convolution surface centers locations and radii $[c , r]$.
-% \begin{equation*}
-% \sigma =\underset{\sigma}{\operatorname{argmin}} \; E_\text{d2m} + E_\text{m2d} + E_\text{rigid} + E_\text{valid}
-% \end{equation*}
-% \subsection{Optimization}
+\subsection{Energies}
+We now describe in details the various energies of our optimization. The first two terms encode the \emph{symmetric} Hausdorff distance between model and data, while the remaining 
 
-\paragraph{Data $\rightarrow$ Model Energy}
-\todo{The data-model energy is computed in exactly the same way as in Htrack, except that the gradients are much more complicated.}
-\begin{equation*}
-E_{d2m} = \underset{p\in P}\sum \| p - q(\sigma)\|_2
-\end{equation*}
+\paragraph{Data $\rightarrow$ Model}
+Every measurement $\point$ in our data frame $\depth_n$ should be well explained by our model:
+\begin{equation}
+E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\parpose_n, \parposture, \centers, \radii)}(\point)\|_2^1
+\end{equation}
+% 
+The operator $\proj$ computes the projection of $\point$ onto our model $\model$, therefore each term in this energy is nothing but the length of ICP correspondences. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix, especially for the ones in \Eq{step2}}.
 
-\paragraph{Model $\rightarrow$ Data Energy}
+\paragraph{Model $\rightarrow$ Data}
+As we want our data to be a good representation of our model, we 
+
+As we are seeking for a model which is \emph{strictly sufficient} to represent our data, we need to ensure that no portion of the model remains unused. 
+
+Another way of explaining why this energy is necessary is that we want model and data to have a small symmetric Hausdorff distance. 
+
+
+\begin{equation}
+E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\parpose_n, \parposture, \centers, \radii)}(\point)\|_2^1
+\end{equation}
+
 \todo{Same as in HTrack, while when using photoscan we can sample the model and compute kdtree correspondences}
-% The first attempt was to make the model-data energy also the same as in Htrack. But probably due to more non-linear gradients that expression was giving unstable optimization, because it was involving a projection operator. So, the model-data energy is replaced by a similar energy, but in 3D space. \Anastasia{Maybe we could just say that it is exactly the same?}.
-% The model-data correspondences are also computed by rendering the model and the data, identifying the model points that are outside of the data silhouette and finding the closest data points in 2D using a distance transform. Afterwards for each 2D correspondence pair $\{m_{2D}, p_{2D}$\}, the original 3D points $\{m, p\}$ are looked up. We minimize the distance between $m$ and $p$ in the direction orthogonal to the camera ray that goes through $p$.
-% \input{fig/optimization/item}
-% \begin{equation*}
-% E_\text{model-data} = \underset{m\in M}\sum n^T(p - m(\sigma))
-% \end{equation*}
 
-\paragraph{Rigid}
+\paragraph{Rigidity}
 The consistency energy requires that for every rigid part of the skeleton the distances between every pair of vertices are the same for all the poses. The consistency energy does not apply to elastic parts of hand model.
 \Anastasia{To demonstrate rigid parts I could color-code them on the skeleton topology image. The rigid parts are palm, wrist and each finger segment}
 
@@ -77,6 +88,11 @@ A pill becomes degenerate if one of the spheres is completely inside of another 
 % \paragraph{Synchronizing rotations energy}
 % \AT{This is now obsolete, as we encode common rotation frames for nodes of the kinematic chain} This energy ensures that initial rotations are similar for all the poses. The common initial rotations are computed as described in the section ``Initial Rotations''. The energy minimizes the distance between the current centers and the centers locations with common initial rotations. This energy is very important, because it constraints fingers motion in meaningful way. In the absence of this energy each joint bends in arbitrary direction.
 
+\subsection{Optimization}
+\begin{DRAFT}
+The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
+\end{DRAFT}
+
 \newpage
 
 \begin{DRAFT}
@@ -84,7 +100,23 @@ A pill becomes degenerate if one of the spheres is completely inside of another 
 While our convolution model is fully specified by sphere positions and radii, most tracking systems, including the one we build upon, parameterize the pose through the specification of a kinematic chain. Every node of the kinematic chain is associated with a frame of reference according to which local transformations are specified~\cite[Fig.2-(middle)]{tagliasacchi2015robust}. For example, transformations at the base of the index finger are parameterized so to produce a \todo{flexion} by performing as rotation around the local $x$ axis, and an abduction as a \todo{rotation} around the local $y$ axis. In most systems the orthogonal frame origin and rotation is manually specified offline by a 3D modeling artist, and is therefore not adapted to the user. 
 % 
 While rotation frames for most fingers are typically initialized with a rotation matrix, it is extremely difficult to identify an appropriate rotation frame for the thumb articulation, and as we show in the video at frame \todo{[00:00]} this can result in imprecise tracking. Therefore in our technique we automatically discover the structure of the kinematic chain from input data. 
-
-\paragraph{Chain Optimization}
-The coordinate frame translations are simply a subset of sphere centers of our convolution skeleton $\skeleton$. \Anastasia{it is true, but translations and centers are different kinds of entities (point and vector). Can we say instead that the translations can be computed from the centers?} Conversely, the orientation of rotation in the local coordinate frames are computed as the solution of an optimization problem.
 \end{DRAFT}
+
+
+\endinput
+
+% The first reason is that we want ensure that the resulting hand model will be able to assume all the poses that a real hand can, or at least the subset of poses for which we have the point clouds.
+% The second reason is that the artifacts present in some input point clouds might be compensated by the others, so it is possible to accumulate information this way.
+% For fitting we use the same optimization framework as for tracking (in a hope to extend it to fitting \& tracking real time system).
+% The main difference is that instead of the joint angles $\theta$, the hand model is parametrized by convolution surface centers locations and radii $[c , r]$.
+% \begin{equation*}
+% \sigma =\underset{\sigma}{\operatorname{argmin}} \; E_\text{d2m} + E_\text{m2d} + E_\text{rigid} + E_\text{valid}
+% \end{equation*}
+% \subsection{Optimization}
+
+% The first attempt was to make the model-data energy also the same as in Htrack. But probably due to more non-linear gradients that expression was giving unstable optimization, because it was involving a projection operator. So, the model-data energy is replaced by a similar energy, but in 3D space. \Anastasia{Maybe we could just say that it is exactly the same?}.
+% The model-data correspondences are also computed by rendering the model and the data, identifying the model points that are outside of the data silhouette and finding the closest data points in 2D using a distance transform. Afterwards for each 2D correspondence pair $\{m_{2D}, p_{2D}$\}, the original 3D points $\{m, p\}$ are looked up. We minimize the distance between $m$ and $p$ in the direction orthogonal to the camera ray that goes through $p$.
+% \input{fig/optimization/item}
+% \begin{equation*}
+% E_\text{model-data} = \underset{m\in M}\sum n^T(p - m(\sigma))
+% \end{equation*}
