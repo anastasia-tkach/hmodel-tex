@@ -1,68 +1,70 @@
 \section{Calibration}
-Our calibration procedure tailors a convolutional model to a specific user from a set of $N$ 3D measurements $\depth_1 \dots \depth_N$ of the user's hand in different poses. 
+Our calibration procedure tailors a convolutional model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
+
+\paragraph{Kinematic Optimization}
+While our convolution model is fully specified by sphere positions and radii, most tracking systems, including the one we build upon, parameterize the pose through the specification of a kinematic chain. Every node of the chain is associated with an orthogonal frame $\mathbf{\bar{T}}_k$ according to which local transformations are specified; see~\Figure{posing}. An an example, transformations for the index finger are parameterized so to result in \todo{flexion} (resp. \todo{abduction}) as a rotation around the local $x$ (resp. $y$) axis. In most tracking systems frame origin and axes are manually specified by a 3D modeling artist, and often initialized as identity matrices. While for most articulations such an approximation is somewhat acceptable, it is particularly challenging to select the correct reference frame for the thumb articulation. In the accompanying video \todo{[00:00]}, we clearly show how incorrect initialization of $\mathbf{\bar{T}}$ can be highly detrimental to tracking quality.
+
+\begin{DRAFT}
+Therefore in our technique we automatically discover the structure of the kinematic chain from input data. The geometry of the convolution surface is represented by two matrices $\centers$ and $\radii$ respectively containing centers $\ballcenter_i$ and radii $r_i$ along rows. 
+\end{DRAFT}
+
+\paragraph{Formulation}
+Let us partition our free parameters into two sets $\parposture$ and $\parpose$. 
+The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. pose). 
+The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. posture).
 % 
-\TODO{Something about averaging-out imprecision, and fact that hand cannot be seen from a single vantage point?} 
-\TODO{something about the two types of data? (photoscan v.s. sensor)}
-% 
-Let us partition our parameters into two sets $\parposture$ and $\parpose$. The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. the posture). The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. the pose). The geometry of the convolution surface is fully represented by two matrices $\centers$ and $\radii$ respectively containing one $\ballcenter_i$ and one $r_i$ per row. Finally, define $\pars_n=[\parpose_n, \parposture, \centers, \radii]$. Our calibration optimization can then be written as:
-% 
+Our calibration optimization can then be written as:
 \begin{eqnarray}
 \argmin_{\parposture, \centers, \radii}
 \sum_{n=1}^N 
-\sum_{\mathcal{T} \in \mathcal{T}_*} 
+\sum_{\mathcal{T} \in \termscalib} 
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
 \label{eq:calibration}
 \end{eqnarray}
 % 
-We employ a set of energies $\mathcal{T}_*$ to balance two different aspects. On one side we would like our model $\model$ to be a good fit to our data, on the other we require each posed model to be a piecewise-rigid posing of a convolution template that is non-degenerate. Our energies $\mathcal{T}_*$ are:
+We employ a set of energies $\termscalib$ to balance two different aspects. On one side we would like our model $\model$ to be a good fit to our data, on the other we require each posed model to be a piecewise-rigid posing of a convolution template that is non-degenerate. Our energies $\termscalib$ are:
 % 
 \begin{description}[labelsep=0em,labelwidth=.4in,labelindent=1cm]
-\item[d2m] each data point should be close to our model
+\item[d2m] the data should lie close to our model
 \item[m2d] the model should lie close to the data
 \item[rigid] convolution elements are posed rigidly
 \item[valid] convolution elements should not degenerate
 \end{description}
 % 
-To make this problem more approachable we split the calibration optimization in \Eq{calibration} into a three-steps iterative optimization:
+To make this calibration more approachable numerically, we rewrite \Eq{calibration} as an iterative alternating optimization problem:
 % 
 \begin{eqnarray}
-\argmin_{\parposes} 
+\argmin_{\parposes,\parposture} 
 \sum_{n=1}^N 
-\sum_{\mathcal{T} \in \mathcal{T}_*}
+\sum_{\mathcal{T} \in \termscalib}
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii) 
 && \text{(Step 1)}
 \label{eq:step1}
 \\
 \argmin_{\centers, \radii} 
 \sum_{n=1}^N 
-\sum_{\mathcal{T} \in \mathcal{T}_*}
+\sum_{\mathcal{T} \in \termscalib}
 w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
 && \text{(Step 2)}
 \label{eq:step2}
-\\
-\argmin_{\parposture} 
-\sum_{n=1}^N 
-\sum_{\mathcal{T} \in \mathcal{T}_*}
-w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii) 
-&& \text{(Step 3)}
-\label{eq:step3}
 \end{eqnarray}
 % 
-In the first step we fix the geometry and kinematics of the template and rigidly align it to the input data. In the second step, we alter the geometry of our convolution model by allowing sphere centers and radii of our convolution model to be adjusted to conform to the user. In the third step, we adjust the kinematic chain by correcting the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational portions of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$.
-
-
+In the first step, pose and posture are optimized jointly by fixing the geometry of the template and aligning multiple instances to each frame. The kinematic chain is adjusted by refining the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational portions of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$. In the second step, sphere centers and radii of our convolution model are adjusted, thus altering the rest pose geometry of the convolution surface to better conform to the user.
 
 \subsection{Energies}
-We now describe in details the various energies of our optimization.
+We now describe in details the various energies of our optimization. For notational brevity, we gather the parameters of our model as $\pars_n=[\parpose_n, \parposture, \centers, \radii]$.
 
 \paragraph{Data $\rightarrow$ Model}
-Every measurement $\point$ in our data frame $\depth_n$ should be well explained by our model:
+Every measurement $\point$ in our data frame $\depth_n$ should be explained by our model. Given an operator $\proj_\model$ computing the projection of $\point$ onto the model $\model$, this requirement can be measured by the energy:
+% 
 \begin{equation}
-E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\parpose_n, \parposture, \centers, \radii)}(\point)\|_2^1
+E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\pars_n)}(\point)\|_2^1
 \label{eq:d2m}
 \end{equation}
 % 
-The operator $\proj$ computes the projection of $\point$ onto our model $\model$, therefore this energy is the integral length of ICP correspondences. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix, especially for the ones in \Eq{step2}}.
+The energy amount to the integral length of ICP correspondence vectors. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix? especially for the ones in \Eq{step2}}.
+
+
 
 \paragraph{Model $\rightarrow$ Data}
 As we are seeking for a model which is \emph{strictly sufficient} to represent our data, we need to ensure that no portion of the model remains unused. The data-to-model term encodes an approximation of the one-sided Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
@@ -93,16 +95,6 @@ Step3: simplifying assumption, just use the $\centers$
 \begin{DRAFT}
 The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
 \end{DRAFT}
-
-\newpage
-
-\begin{DRAFT}
-\subsection{Initializing the kinematic chain.}
-While our convolution model is fully specified by sphere positions and radii, most tracking systems, including the one we build upon, parameterize the pose through the specification of a kinematic chain. Every node of the kinematic chain is associated with a frame of reference according to which local transformations are specified~\cite[Fig.2-(middle)]{tagliasacchi2015robust}. For example, transformations at the base of the index finger are parameterized so to produce a \todo{flexion} by performing as rotation around the local $x$ axis, and an abduction as a \todo{rotation} around the local $y$ axis. In most systems the orthogonal frame origin and rotation is manually specified offline by a 3D modeling artist, and is therefore not adapted to the user. 
-% 
-While rotation frames for most fingers are typically initialized with a rotation matrix, it is extremely difficult to identify an appropriate rotation frame for the thumb articulation, and as we show in the video at frame \todo{[00:00]} this can result in imprecise tracking. Therefore in our technique we automatically discover the structure of the kinematic chain from input data. 
-\end{DRAFT}
-
 
 \endinput
 
