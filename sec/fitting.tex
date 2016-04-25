@@ -54,14 +54,14 @@ In the first step, pose and posture are optimized jointly by fixing the geometry
 We now describe in details the various energies of our optimization. For notational brevity, we gather the parameters of our model as $\pars_n=[\parpose_n, \parposture, \centers, \radii]$.
 
 \paragraph{Data $\rightarrow$ Model}
-Every measurement $\point$ in our data frame $\depth_n$ should be explained by our model. Given an operator $\proj_\model$ computing the projection of $\point$ onto the model $\model$, this requirement can be measured by the energy:
+Every measurement $\point$ in our data frame $\depth_n$ should be explained by our model. Given an operator $\proj_\model$ computing the projection of $\point$ onto the model $\model$, this requirement is quantified by the energy:
 % 
 \begin{equation}
 E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\pars_n)}(\point)\|_2^1
 \label{eq:d2m}
 \end{equation}
 % 
-The energy amount to the integral length of ICP correspondence vectors. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix? especially for the ones in \Eq{step2}}.
+Simply stated, this energy measures to the integral length of ICP correspondence vectors. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. \TODO{Mention gradients in the appendix? especially for the ones in \Eq{step2}}.
 
 
 
@@ -87,9 +87,8 @@ A pill becomes degenerate if one of the spheres is completely inside of another 
 % \AT{This is now obsolete, as we encode common rotation frames for nodes of the kinematic chain} This energy ensures that initial rotations are similar for all the poses. The common initial rotations are computed as described in the section ``Initial Rotations''. The energy minimizes the distance between the current centers and the centers locations with common initial rotations. This energy is very important, because it constraints fingers motion in meaningful way. In the absence of this energy each joint bends in arbitrary direction.
 
 \subsection{Optimization}
-Step1: this step is analogous to the one used for real-time tracking\\
-Step2: ARAP like solve\\
-Step3: simplifying assumption, just use the $\centers$
+Step1: similar to real-time tracking\\
+Step2: ARAP-like solve\\
 
 \begin{DRAFT}
 The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
