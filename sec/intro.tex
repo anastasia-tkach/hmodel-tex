@@ -32,14 +32,14 @@ In modern digital production representing objects by a piecewise linear meshing 
 \paragraph{Hybrid tracking model.}
 The model we propose in this paper is a variant of a convolution surface~\cite{bloomenthal1991convolution}, and its fundamental building block is illustrated in \Figure{convsurf}. Such a construct is nothing but the zero iso-surface of the scalar function:
 \begin{equation}
-\phi(\mathbf{x}) = \min \int_{\mathbf{c} \in \mathcal{M}} \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) \: d\mathbf{c},
+\phi(\mathbf{x}) = \min \int_{\mathbf{c} \in \skeleton} \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) \: d\mathbf{c},
 \label{eq:convsurf}
 \end{equation}
-where $\mathcal{M}$ is a skeletal control mesh (a segment or a triangle with respect to the simple example in \Figure{convsurf}), and $\mathcal{B}$ is the implicit function of a sphere parameterized by its center $\mathbf{c}$ and radii $r$:
+where $\skeleton$ is a skeletal control mesh (a segment or a triangle with respect to the simple example in \Figure{convsurf}), and $\mathcal{B}$ is the implicit function of a sphere parameterized by its center $\mathbf{c}$ and radii $r$:
 \begin{equation}
 \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
 \end{equation}
-The spheres centers $\mathbf{c}$ span the skeleton $\mathcal{M}$, while the radii is a function of the position $\mathbf{c}$ within an element, and more specifically, it is linearly interpolated from values specified on the skeletal mesh vertices $r_*=r(c_*)$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\mathcal{S} = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\mathcal{M}$ is an explicit representation (a piecewise-parameterized \todo{surface}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
+The spheres centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii is a function of the position $\mathbf{c}$ within an element, and more specifically, it is linearly interpolated from values specified on the skeletal mesh vertices $r_*=r(c_*)$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\mathcal{S} = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\mathcal{M}$ is an explicit representation (a piecewise-parameterized \todo{surface}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
 \todo{While the integral in \Eq{convsurf} might be difficult to evaluate, distances to $\mathcal{S}$ can conveniently be computed by querying distances to the piecewise linear structures composing $\mathcal{M}$; see \Figure{convsurf}.}
 
 \input{fig/topology/item.tex}
