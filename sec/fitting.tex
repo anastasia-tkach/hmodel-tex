@@ -1,3 +1,4 @@
+
 \section{Calibration}
 \brief{Multi-Pose Data}
 Our calibration procedure tailors our hand model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
@@ -33,22 +34,30 @@ We employ a set of energies $\termscalib$ to balance different desired traits. O
 To make this calibration more approachable numerically, we rewrite \Eq{calibration} as an iterative alternating optimization problem:
 % 
 \begin{eqnarray}
-\argmin_{\parposes,\parposture} 
+\tilde\centers = 
+\argmin_{\parposes,\parposture,\centers} 
 \sum_{n=1}^N 
 \sum_{\mathcal{T} \in \termscalib}
-w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii) 
-&& \text{(Step 1)}
+w_\mathcal{T} E_\mathcal{T}(\parpose_n, \parposture, \centers) 
+& \text{(Step 1)}
 \label{eq:step1}
 \\
+\left[ \centers, \radii \right] =
 \argmin_{\centers, \radii} 
 \sum_{n=1}^N 
 \sum_{\mathcal{T} \in \termscalib}
-w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
-&& \text{(Step 2)}
+w_\mathcal{T} E_\mathcal{T}(\depth_n, \tilde\centers, \radii)
+& \text{(Step 2)}
 \label{eq:step2}
 \end{eqnarray}
 % 
-In the first step, pose and posture are optimized jointly by fixing the geometry of the template and aligning multiple instances to each frame. The kinematic chain is adjusted by refining the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational degrees of freedom of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$. In the second step, sphere centers and radii of our convolution model are adjusted, thus altering the rest pose geometry of the convolution model to better conform to the user.
+In the first step, pose and posture are optimized jointly by fixing the geometry of the template and aligning multiple instances to each frame. The kinematic chain is adjusted by refining the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational degrees of freedom of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$. 
+\todo{This optimization projects the poses centers positions $\centers$ onto the manifold of convolution surfaces respecting kinematic constraints.}
+% 
+In the second step, sphere centers and radii of our convolution model are adjusted, thus altering the rest pose geometry of the convolution model to better conform to the user.
+
+\paragraph{Optimization and Initialization}
+The energies above are non-linear and non-convex, but can be conveniently optimized offline, as only the fully calibrated model is needed for tracking. For this reason, we can use Matlab's $lsqnonlin$ requiring us to specify the energies gradients (see \Appendix{gradients}) as well as an initialization point. The initialization of $\centers$ is performed by simply scaling the vertices of a generic template to roughly fit the rest pose. The initial transformation frame rotations $\parposture$ are retrieved from the default template, while $\parposes$ are obtained by either aligning the rough template to the input data (for depth images) or by executing IK registration of a few manually selected key-points (for MVS reconstructed models).
 
 \subsection{Energies}
 We now describe in details the various energies of our optimization. For notational brevity, we gather the parameters of our model as $\pars_n=[\parpose_n, \parposture, \centers, \radii]$.
@@ -61,10 +70,10 @@ E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\pars_n)}(\point)\|_2^
 \label{eq:d2m}
 \end{equation}
 % 
-Simply stated, this energy measures to the integral length of ICP correspondence vectors. Note we employ a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. 
+Simply stated, this term measures to the integral length of ICP correspondence vectors. Note the use of a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. 
 
 \paragraph{Model $\rightarrow$ Data}
-As we are seeking for a model which is \emph{strictly sufficient} to represent our data, we need to ensure that \todo{no portion of the model remains unused}. The data-to-model term encodes an approximation of the one-sided Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
+As we are seeking for a model which is strictly sufficient to represent our data, we need to ensure that \todo{no portion of the model remains unused} \AT{better way of saying this?}. The data-to-model term encodes an approximation of the \emph{one-sided} Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
 \begin{equation}
 E_{d2m} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)\|_2^1
 \label{eq:m2d}
@@ -72,13 +81,16 @@ E_{d2m} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)
 The set of points $\point$ can be obtained by rasterizing our model. Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data being used. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator is similar to the one used for \Eq{d2m}: we build a kd-tree for the point cloud in frame $\depth_n$ and fetch the closest point to $\point$. Conversely, if the data in $\depth_n$ has been obtained through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
 
 \paragraph{Rigidity}
-It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose. We encode this requirement by requiring each edge $\edge_k$ in each posed skeleton $\skeleton_n$ to be a rotation of rotation $R_{k}$ of its rest-pose configuration~$\bar\edge_k$: 
+It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose.
+\begin{DRAFT}
+We encode this requirement by requiring each edge $\edge_k$ in each posed skeleton $\skeleton_n$ to be a rotation of rotation $R_{k}$ of its rest-pose configuration~$\bar\edge_k$:
 % 
 \begin{equation}
-E_{\text{rigid}} = \sum_{\edge_k \in \skeleton_n} \| \edge_k - R_{k}{\bar\edge_k} \|_2^2
+E_{\text{rigid}} = \sum_{\edge_k \in \skeleton_n} \| \edge_k  - R_{k}{\bar\edge_k} \|_2^2
 \label{eq:rigidity}
 \end{equation} 
-Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy this rigidity requirement. At the cost of introducing auxiliary variables $R_{i}$, this energy becomes independent from pose $\parposes$ and posture $\parposture$ angles. In \Section{optimization} we detail how this leads to an efficient optimization scheme for \Equation{step2}. 
+Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy this rigidity requirement. At the cost of introducing auxiliary variables $R_{i}$, this energy becomes independent from pose $\parposes$ and posture $\parposture$ angles.
+\end{DRAFT}
 
 \paragraph{Validity}
 It is essential to prevent the calibration optimization from producing degenerate configurations. For example, a pill degenerates into a sphere when one of its balls is fully contained within the the volume of other. Analogously a wedge can degenerate into a pill, or even a sphere. We monitor validity by an indicator function $\chi(\ball_i)$ evaluating to one if $\ball_i$ is degenerate and zero otherwise.
@@ -89,20 +101,6 @@ E_{\text{valid}} = \sum_{\ballcenter_k \in \skeleton} \chi(\ball_k) \| \ballcent
 \end{equation}
 % 
 In this equation, we make a conservative choice and use $\chi(\ballcenter_i)$, which verifies whether $\ballcenter_i$ is inside $\model \setminus \ball_i$, the model obtaining by removing a vertex, as well as all its adjacent edges, from $\skeleton$. 
-
-\subsection{Optimization \TODO{Andrea}}
-\label{sec:optimization}
-
-\paragraph{Step 1: pose and posture}
-similar to real-time tracking
-\paragraph{Step 2: geometry}
-ARAP-like solve
-
-\TODO{Mention gradients in the appendix? especially for the ones in \Eq{step2}}.
-
-\begin{DRAFT}
-The initial values of the parameters for each pose  $\{[c^0_1 , r^0]$, ..., $[c^0_n, r^0]\}$ are found tracking an input depth sequence with a template hand model globally scaled such that the length of the model hand matches the data.
-\end{DRAFT}
 
 \endinput
 
