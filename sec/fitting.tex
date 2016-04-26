@@ -13,7 +13,7 @@ Let us partition our free parameters into two sets $\parposture$ and $\parpose$.
 The vector $\parpose_n$ contains the pose parameters optimally aligning the rest-pose template to the data frame $\depth_n$, (i.e. pose). 
 The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. posture).
 % 
-Our calibration optimization can then be written as:
+\AT{We should write $\restcenters$ as the positions at rest, while $\posedcenters$ as the set of posed convolution models. This would make the formulation cleaner.} Our calibration optimization can then be written as:
 \begin{eqnarray}
 \argmin_{\parposture, \centers, \radii}
 \sum_{n=1}^N 
@@ -52,12 +52,12 @@ w_\mathcal{T} E_\mathcal{T}(\depth_n, \tilde\centers, \radii)
 \end{eqnarray}
 % 
 In the first step, pose and posture are optimized jointly by fixing the geometry of the template and aligning multiple instances to each frame. The kinematic chain is adjusted by refining the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational degrees of freedom of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$. 
-\todo{This optimization projects the poses centers positions $\centers$ onto the manifold of convolution surfaces respecting kinematic constraints.}
+\todo{This optimization projects the posed centers $\posedcenters$ onto the closest point on the manifold of convolution surfaces respecting the given kinematic constraints.}
 % 
-In the second step, sphere centers and radii of our convolution model are adjusted, thus altering the rest pose geometry of the convolution model to better conform to the user.
+In the second step, sphere centers and radii of our convolution model are adjusted, thus altering the rest pose geometry $\restcenters$ of the convolution model to better conform to the user.
 
 \paragraph{Optimization and Initialization}
-The energies above are non-linear and non-convex, but can be conveniently optimized offline, as only the fully calibrated model is needed for tracking. For this reason, we can use Matlab's $lsqnonlin$ requiring us to specify the energies gradients (see \Appendix{gradients}) as well as an initialization point. The initialization of $\centers$ is performed by simply scaling the vertices of a generic template to roughly fit the rest pose. The initial transformation frame rotations $\parposture$ are retrieved from the default template, while $\parposes$ are obtained by either aligning the rough template to the input data (for depth images) or by executing IK registration of a few manually selected key-points (for MVS reconstructed models).
+The energies above are non-linear and non-convex, but can be conveniently optimized offline, as in real-time tracking we can use a pre-calibrated model. For this reason, we can use the convenient $lsqnonlin$ routine from Matlab, requiring us to specify the energies gradients (see \Appendix{gradients}) as well as an initialization point. The initialization of $\centers$ is performed by simply scaling the vertices of a generic template to roughly fit the rest pose. The initial transformation frame rotations $\parposture$ are retrieved from the default template, while $\parposes$ are obtained by either aligning the rough template to the input data (for depth images) or by executing IK registration of a few manually selected key-points (for MVS reconstructed models).
 
 \subsection{Energies}
 We now describe in details the various energies of our optimization. For notational brevity, we gather the parameters of our model as $\pars_n=[\parpose_n, \parposture, \centers, \radii]$.
@@ -81,10 +81,29 @@ E_{d2m} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)
 The set of points $\point$ can be obtained by rasterizing our model. Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data being used. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator is similar to the one used for \Eq{d2m}: we build a kd-tree for the point cloud in frame $\depth_n$ and fetch the closest point to $\point$. Conversely, if the data in $\depth_n$ has been obtained through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
 
 \paragraph{Rigidity}
-It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose.
-\begin{DRAFT}
-We encode this requirement by requiring each edge $\edge_k$ in each posed skeleton $\skeleton_n$ to be a rotation of rotation $R_{k}$ of its rest-pose configuration~$\bar\edge_k$:
+It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose. This can be achieved by simply requiring that each segment $\edge$ in our posed control skeleton $\skeleton_n$ to have the same length as the corresponding segment $\bar\edge$ in the rest pose configuration:
 % 
+\begin{equation}
+E_{\text{rigid}} = \sum_{\edge \in \skeleton_n} (\| \edge \| - \| \bar\edge \|)^2
+\end{equation}
+% 
+Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy the rigidity condition.
+
+\paragraph{Validity}
+It is essential to prevent the calibration optimization from producing degenerate configurations. For example, a pill degenerates into a sphere when one of its balls is fully contained within the the volume of other. Analogously a wedge can degenerate into a pill, or even a sphere. We monitor validity by an indicator function $\chi(\ball_i)$ evaluating to one if $\ball_i$ is degenerate and zero otherwise.
+Degeneracies can be avoided by including the energy term:
+% 
+\begin{equation}
+E_{\text{valid}} = \sum_{\ballcenter_k \in \skeleton} \chi(\ballcenter_k) \| \ballcenter_k - \proj_{\model \setminus \ball_k}(\ballcenter_k) \|_2^2
+\end{equation}
+% 
+In this equation, we make a conservative choice and use $\chi(\ballcenter_i)$, which verifies whether $\ballcenter_i$ is inside $\model \setminus \ball_i$, the model obtaining by removing a vertex, as well as all its adjacent edges, from $\skeleton$. 
+
+\endinput
+
+\paragraph{Rigidity - OLD}
+\begin{DRAFT}
+We encode this requirement by requiring each edge $\edge_k$ in each posed skeleton $\skeleton_n$ to be a rotation of rotation $R_{k}$ of its rest-pose configuration~$\bar\edge_k$: 
 \begin{equation}
 E_{\text{rigid}} = \sum_{\edge_k \in \skeleton_n} \| \edge_k  - R_{k}{\bar\edge_k} \|_2^2
 \label{eq:rigidity}
@@ -92,17 +111,6 @@ E_{\text{rigid}} = \sum_{\edge_k \in \skeleton_n} \| \edge_k  - R_{k}{\bar\edge_
 Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy this rigidity requirement. At the cost of introducing auxiliary variables $R_{i}$, this energy becomes independent from pose $\parposes$ and posture $\parposture$ angles.
 \end{DRAFT}
 
-\paragraph{Validity}
-It is essential to prevent the calibration optimization from producing degenerate configurations. For example, a pill degenerates into a sphere when one of its balls is fully contained within the the volume of other. Analogously a wedge can degenerate into a pill, or even a sphere. We monitor validity by an indicator function $\chi(\ball_i)$ evaluating to one if $\ball_i$ is degenerate and zero otherwise.
-Degeneracies can be avoided by including the energy term:
-% 
-\begin{equation}
-E_{\text{valid}} = \sum_{\ballcenter_k \in \skeleton} \chi(\ball_k) \| \ballcenter_k - \proj_{\model \setminus \ball_k}(\ballcenter_k) \|_2^2
-\end{equation}
-% 
-In this equation, we make a conservative choice and use $\chi(\ballcenter_i)$, which verifies whether $\ballcenter_i$ is inside $\model \setminus \ball_i$, the model obtaining by removing a vertex, as well as all its adjacent edges, from $\skeleton$. 
-
-\endinput
 
 % The first reason is that we want ensure that the resulting hand model will be able to assume all the poses that a real hand can, or at least the subset of poses for which we have the point clouds.
 % The second reason is that the artifacts present in some input point clouds might be compensated by the others, so it is possible to accumulate information this way.
