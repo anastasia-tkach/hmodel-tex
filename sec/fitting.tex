@@ -85,7 +85,7 @@ It is essential to prevent the calibration optimization from producing degenerat
 Degeneracies can be avoided by including the energy term:
 % 
 \begin{equation}
-E_{\text{valid}} = \sum_{\ballcenter_k \in \skeleton} \chi(\ball_k) \proj_{\model \setminus \ball_k}(\ballcenter_k) 
+E_{\text{valid}} = \sum_{\ballcenter_k \in \skeleton} \chi(\ball_k) \| \ballcenter_k - \proj_{\model \setminus \ball_k}(\ballcenter_k) \|_2^2
 \end{equation}
 % 
 In this equation, we make a conservative choice and use $\chi(\ballcenter_i)$, which verifies whether $\ballcenter_i$ is inside $\model \setminus \ball_i$, the model obtaining by removing a vertex, as well as all its adjacent edges, from $\skeleton$. 
