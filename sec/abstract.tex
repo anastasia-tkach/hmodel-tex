@@ -1,18 +1,22 @@
 \begin{abstract}
 %--- Background
-Modern systems for real-time tracking rely on a combination of discriminative and generative approaches to robustly recover the hand's pose. Generative approaches require the specification of the geometric model, where the fitness of this model to the user heavily affects tracking precision.
+Modern systems for real-time hand tracking rely on a combination of discriminative and generative approaches to robustly recover the hand's pose. Generative approaches require the specification of a geometric model. How tightly this model fits a specific user heavily affects tracking precision.
+%, where the fitness of this model to the user heavily affects tracking precision.
 %--- Core point
-In this paper, we propose to use a special instance of convolution surfaces as a novel geometric representation for real-time hand tracking. 
+In this paper, we propose a special instance of convolution surfaces as a novel geometric representation for real-time hand tracking. 
 % 
 % 
 %--- Model Adaptation
-We first derive an optimization to non-rigidly deform the template to fit the user data in a number of poses, thus producing a 3D model that jointly captures the user's static and dynamic geometry.
+We first derive an optimization to non-rigidly deform a template model to fit the user data in a number of poses.
 % \Anastasia{Initial transformations of the fingers are as important for tracking as precise geometry. We find both geometry and transformations.}
 % \AT{this is already captured by ``dynamic geometry''?}
 % 
 % 
 %--- Performance
-While the convolution model fits the model tightly, allowing high-precision registration, the limited number of primitives in the model allows us to retain excellent tracking performance. We confirm this by embedding our models in an open source real-time tracking algorithm and obtaining a tracker steadily running at 60 frames per second.
+This optimization jointly captures the user's static and dynamic hand geometry at high accuracy, thus facilitating high-precision registration.
+At the same time,  the limited number of primitives in the convolution model allows us to retain excellent tracking performance. We confirm this by embedding our models in an open source real-time registration algorithm to obtain a tracker steadily running at 60 frames per second.
+%
+%While the convolution model fits the model tightly, allowing high-precision registration, the limited number of primitives in the model allows us to retain excellent tracking performance. We confirm this by embedding our models in an open source real-time tracking algorithm and obtaining a tracker steadily running at 60 frames per second.
 % \Anastasia{Moreover, we introduce the fist model type that represents all the degrees of freedom of a real hand without introducing non-existing degrees of freedom. The model type allows to natively specify whether the current part is rigid, articulated or elastic.}
 % \AT{It might be risky to say this... People might say: you can just use dimensionality reduction}
 % \Anastasia{The increased tracking fidelity of the model has allowed us NOT TO USE RE-INITIALIZATION AT ALL. The absence of re-initialization component in our system is not a drawback of our approach, there is nothing that prohibits to add it. Our intension is to push pure tracking as far as possible and to demonstrate its power.}
@@ -20,5 +24,5 @@ While the convolution model fits the model tightly, allowing high-precision regi
 %--- Why should I believe you?
 We demonstrate the effectiveness of our solution by qualitatively and quantitively evaluating tracking precision across a number of users, and on a variety of complex motions.
 %--- Data release
-To enable further research in the area of high-precision tracking, we disclose our datasets altogether with the corresponding quantitative evaluation metrics.
+To enable further research in the area of high-precision tracking, we disclose our datasets together with the corresponding quantitative evaluation metrics.
 \end{abstract}
