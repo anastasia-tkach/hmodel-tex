@@ -14,6 +14,7 @@ The vector $\parpose_n$ contains the pose parameters optimally aligning the rest
 The vector $\parposture$ contains the Euler angles parameterizing the rest-pose transformations $\mathbf{\bar{T}}$ in \Eq{kinematic} (i.e. posture).
 % 
 \AT{We should write $\restcenters$ as the positions at rest, while $\posedcenters$ as the set of posed convolution models. This would make the formulation cleaner.} Our calibration optimization can then be written as:
+% 
 \begin{eqnarray}
 \argmin_{\parposture, \centers, \radii}
 \sum_{n=1}^N 

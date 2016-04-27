@@ -5,6 +5,13 @@
 % 
 \TODO{computation of line (normal+point) tangent to two circles}
 
+% Let us assume $r_1 > r_2$ and define $\mathbf{u} = \ballcenter_2-\ballcenter_1$, $\mathbf{\vec{u}} = \mathbf{u}/\|\mathbf{u}\|$, $\mathbf{v} = \point-\ballcenter_1$, $\alpha=\mathbf{\vec{u}} \cdot \mathbf{v}$. The orthogonal projection of $\point$ onto the segment is $\mathbf{t} = \mathbf{c}_1 + \alpha \mathbf{u}$. The distance $\omega$ can be derived with the Pythagorean theorem as $\omega^2 = \mathbf{u}^T \mathbf{u} - (r_1 - r_2)^2$ while $\delta$ is derived leveraging triangle similarity $\delta / \| \point - \mathbf{t} \| = (r_1-r_2)/\omega$. Finally, our skewed projection $\skewproj$ is $\skewproj = \mathbf{t} - \delta \mathbf{\vec{u}}$. 
+% \begin{DRAFT}
+% According to the position of $\skewproj$ we have two solutions:
+% (1) If $\skewproj$ lies on the segment $\segment$, then $\point$ projects onto the pill's conic surface as $\footpoint=\mathbf{s}+(\gamma+r_2) \overrightarrow{\mathbf{\skewproj} \point}$, where $\overrightarrow{\skewproj \point} = (\point-\skewproj)/ \|\point-\skewproj\|$.
+% (2) if $\skewproj$ lies outside the segment and closer to the ball $\ball_*$, then $\point$ projects onto the sphere as $\footpoint_e = \ballcenter_* + r_*(\overrightarrow{\point \ballcenter_*})$.
+% \end{DRAFT}
+
 \paragraph{Tangent planes to three spheres}
 \label{app:wedgecorr}
 % 

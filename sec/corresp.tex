@@ -30,21 +30,10 @@ Therefore, given a query point $\point$, we can first compute the closest-points
 
 \input{fig/corresp/item.tex}
 \paragraph{Pill Correspondences: $\footpoint=\proj_\text{pill}(\point)$}
-A pill is defined by two balls $\ball_1(\ballcenter_1,r_1)$ and $\ball_2(\ballcenter_2,r_2)$. 
-\begin{DRAFT}
-Let us first compute the position of the skewed projection $\skewproj$; see \Figure{corresp}-(left). 
-% 
-\AT{re-write using the simplified approach}
-% 
-Let us assume $r_1 > r_2$ and define $\mathbf{u} = \ballcenter_2-\ballcenter_1$, $\mathbf{\vec{u}} = \mathbf{u}/\|\mathbf{u}\|$, $\mathbf{v} = \point-\ballcenter_1$, $\alpha=\mathbf{\vec{u}} \cdot \mathbf{v}$. The orthogonal projection of $\point$ onto the segment is $\mathbf{t} = \mathbf{c}_1 + \alpha \mathbf{u}$. The distance $\omega$ can be derived with the Pythagorean theorem as $\omega^2 = \mathbf{u}^T \mathbf{u} - (r_1 - r_2)^2$ while $\delta$ is derived leveraging triangle similarity $\delta / \| \point - \mathbf{t} \| = (r_1-r_2)/\omega$. Finally, our skewed projection $\skewproj$ is $\skewproj = \mathbf{t} - \delta \mathbf{\vec{u}}$.
-% 
-According to the position of $\skewproj$ we have two solutions: 
-(1) If $\skewproj$ lies on the segment $\segment$, then $\point$ projects onto the pill's conic surface as $\footpoint=\mathbf{s}+(\gamma+r_2) \overrightarrow{\mathbf{\skewproj} \point}$, where $\overrightarrow{\skewproj \point} = (\point-\skewproj)/ \|\point-\skewproj\|$. 
-(2) if $\skewproj$ lies outside the segment and closer to the ball $\ball_*$, then $\point$ projects onto the sphere as $\footpoint_e = \ballcenter_* + r_*(\overrightarrow{\point \ballcenter_*})$.
-\end{DRAFT}
+A pill is defined by two spheres $\ball_1(\ballcenter_1,r_1)$ and $\ball_2(\ballcenter_2,r_2)$. By construction the closest point correspondence will lies on the plane passing through the triplet $\{ \ballcenter_1, \ballcenter_2, \point \}$, thus allowing us to solve the problem in 2D; see \Figure{corresp}-(left). The computation of the tangent line $\mathcal{L}(\mathbf{t}_0, \mathbf{n})$ is detailed in \Appendix{pillcorr}. We then compute the intersection point $\skewproj$ of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the segment $\segment$ and parametrize its location in barycentric coordinates as $\skewproj = \alpha\ballcenter_1 + (1-\alpha)\ballcenter_2$. If $\alpha \in [0,1]$ our closest point correspondence is given by $\footpoint=\proj_\mathcal{L}(\point)$, that is, the intersection of $\mathcal{L}$ and $\mathbf{r}(t)$. While if $\alpha<0$ and $\alpha>1$ the closest point will be (respectively) $\footpoint=\proj_{\ball_1}(\point)$ and $\footpoint=\proj_{\ball_2}(\point)$. 
 
 \paragraph{Wedge Correspondences: $\footpoint=\proj_\text{wedge}(\point)$}
-A wedge is defined by three spheres $\ball_i = \{\ballcenter_i, r_i\}$. By inspecting \Figure{convsurf}, it is apparent that a wedge element can be decomposed in three parts: \emph{spherical}, \emph{conical} and \emph{planar} elements respectively associated with vertices, edges and faces of the triangular convolution skeleton. Having identified the planar element $\mathcal{P}(\mathbf{n}, \mathbf{t}_0)$ with normal $\mathbf{n}$ and tangent $\mathbf{t}_0$ to $\ball_0$ (see \Appendix{wedgecorr}), we compute the skewed projection $\skewproj$ by finding the intersection of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the triangle $\mathcal{T}$ formed by $\ballcenter_1$, $\ballcenter_2$ and $\ballcenter_3$. 
+A wedge is defined by three spheres $\ball_i = \{\ballcenter_i, r_i\}$. By inspecting \Figure{convsurf}, it is apparent that a wedge element can be decomposed in three parts: \emph{spherical}, \emph{conical} and \emph{planar} elements respectively associated with vertices, edges and faces of the triangular convolution skeleton. Having identified the planar element $\mathcal{P}(\mathbf{t}_0,\mathbf{n})$ with normal $\mathbf{n}$ and tangent $\mathbf{t}_0$ to $\ball_0$ (see \Appendix{wedgecorr}), we compute the skewed projection $\skewproj$ by finding the intersection of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the triangle $\mathcal{T}$ formed by $\ballcenter_1$, $\ballcenter_2$ and $\ballcenter_3$. 
 % 
 According to the position of $\skewproj$ we have two solutions:
 (1) If the skewed $\skewproj$ lies inside the triangle $\mathcal{T}$, then our footpoint is $\footpoint = \proj_\mathcal{P}(\point)$, otherwise 
