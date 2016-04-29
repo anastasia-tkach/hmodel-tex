@@ -1,4 +1,8 @@
+% !TEX root = ../hmodel.tex
+
 \section{Convolution Models}
+\label{sec:model}
+
 \todo{Here we describe all the stuff that is common to both modeling and tracking applications: correspondence computation and rendering.}
 
 \input{fig/posing/item.tex}
@@ -26,7 +30,7 @@ Our correspondence search leverages the structure of \Eq{convsurf}, by decomposi
 \implicit_\surface(\point) = \argmin_{e=1 \dots E} \implicit_e(\point)
 \label{eq:piecewise}
 \end{equation}
-Therefore, given a query point $\point$, we can first compute the closest-points $\footpoint_e = \proj_{\element}(\point)$ to each element independently; within this set, the closest-point projection to the full model $\footpoint = \proj_\surface(\point)$ is the one with the smallest associated implicit function value $\implicit_e(\point)$. In a tracking session with an average of \todo{1000 points/frame} the computation of closest-point correspondences takes \todo{300 $\mu s$/iteration}. We now describe in details how the projection is evaluated on each element in \todo{close form}. 
+Therefore, given a query point $\point$, we can first compute the closest-points $\footpoint_e = \proj_{\element}(\point)$ to each element independently; within this set, the closest-point projection to the full model $\footpoint = \proj_\surface(\point)$ is the one with the smallest associated implicit function value $\implicit_e(\point)$. In a tracking session with an average of \todo{1000 points/frame} the computation of closest-point correspondences takes \todo{300 $\mu s$/iteration}. We now describe in details how the projection is evaluated on each element in \todo{closed form}. 
 
 \input{fig/corresp/item.tex}
 \paragraph{Pill Correspondences: $\footpoint=\proj_\text{pill}(\point)$}
@@ -49,8 +53,9 @@ The \emph{object-space silhouette} $\partial \surface$ is a (3D) curve separatin
 
 \input{fig/calibration/item.tex}
 \subsection{Rendering}
-Rendering the convolution model in real time is not only employed for visual verification of tracking performance; e.g. \Figure{coarsemodel}. The real-time tracking algorithm reviewed in \Section{overview} performs a 2D registration in the image plane that requires the computation of an (image-space) silhouette. There are two alternatives for rendering a  convolution model like the one shown in \Figure{topology}. One possibility is to explicitly extract the surface of individual convolution element by computing the convex hull of pairs or triplets of spheres; see \Figure{convsurf} and \cite{ando2013liquid}. While this process would be suitable in applications where the model is fixed, it is hardly appropriate to our scenario where we want to calibrate the model to the user. Therefore, we instead efficiently ray-trace the convolution model on the GPU. We render a unit fullscreen quad, and in the fragment shader we leverage the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each of this ray is intersected with each convolution element of our model in \todo{close form}, and only the closest intersection point is retained. \AT{how do you perform the intersection tests? do you decompose the surfaces into planes, cones, and spheres or what?} Surface normals at the intersection point are also computed for shading purposes.
+Rendering the convolution model in real time is not only employed for visual verification of tracking performance; e.g. \Figure{coarsemodel}. The real-time tracking algorithm reviewed in \Section{overview} performs a 2D registration in the image plane that requires the computation of an (image-space) silhouette. There are two alternatives for rendering a  convolution model like the one shown in \Figure{topology}. One possibility is to explicitly extract the surface of individual convolution element by computing the convex hull of pairs or triplets of spheres; see \Figure{convsurf} and \cite{ando2013liquid}. While this process would be suitable in applications where the model is fixed, it is hardly appropriate to our scenario where we want to calibrate the model to the user. Therefore, we instead efficiently ray-trace the convolution model on the GPU. We render a unit fullscreen quad, and in the fragment shader we leverage the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each of this ray is intersected with each convolution element of our model in \todo{closed form}, and only the closest intersection point is retained. \AT{how do you perform the intersection tests? do you decompose the surfaces into planes, cones, and spheres or what?} Surface normals at the intersection point are also computed for shading purposes.
 
+\MP{The paragraph below can be shortened to one sentence (and without the paragraph heading)}
 \paragraph{Optimization}
 Ray tracing our surface on a framebuffer of size $1280 \times 960$ would consume in average \todo{$\approx 4$ ms/iteration}. However, our optimization requires in the order of 10 iterations to converge, thus upper-bounding the performance of the tracker to 25 \FPS{}. We overcome this issue by rendering the model to a smaller $320 \times 240$ framebuffer texture (the same resolution of textures fetched from the sensor) and up-sampling it with linearly interpolation whenever necessary. This process allows us to reduce the rendering time to~\todo{$\approx.6$~ms/iteration}.
 

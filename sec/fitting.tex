@@ -1,5 +1,32 @@
+% !TEX root = ../hmodel.tex
 
-\section{Calibration}
+\section{Modeling}
+\label{sec:modeling}
+
+\MP{I propose to re-structure his section and shorten it: First explain how the template is build  from MVS scans, then how we can adapt it to a user only with RGBG data.}
+
+In this section explain how we build our template model in an off-line preprocess and then discuss how this template can be adjusted to a specific user from RGBD sensor data.
+
+
+\subsection{Template construction}
+
+To obtain an accurate representation of hand geometry in different articulations, we scan a hand by taking on the order of ?? high-resolution photographs from different viewpoints for ?? different poses. From these images we compute dense point clouds for each pose using \emph{Agisoft Photoscan~\textcopyright}.
+
+We manually specified the topology of our convolution surface depicted in Figure~\ref{fig:topology}.  
+Then we optimize for the positions and radii, using manually specified initial values.
+
+
+
+\subsection{User calibration} 
+
+
+
+\TODO{Integrate text below}
+
+
+
+
+
 \brief{Multi-Pose Data}
 Our calibration procedure tailors our hand model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
 
