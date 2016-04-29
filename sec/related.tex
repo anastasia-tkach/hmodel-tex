@@ -6,8 +6,32 @@
 
 \section{Related Work}
 \label{sec:related}
-\AT{\textbf{WARNING}: copy/pasted from msr siggraph paper. Mark if you want you can re-write it by paraphrasing it?}
-\TODO{it is missing a section on convolution models and implicit skinning}
+% place a camera directly on the user's wrist~\cite{kim2012digits}.
+
+\brief{Instrumented + Multi-Camera}
+The simplest way of tracking a hand in motion is by instrumentation. We can place retro-reflective markers on the hand~\cite{zhao2012marker}, wear a data glove with embedded abduction and flexion sensors~\cite{dipietro2008survey} or a colored glove~\cite{wang2009colorglove}. While effective, active instrumentation can be cumbersome as it requires lengthy preparation and/or calibration. Systems solely relying on computer vision (i.e. color cameras) are highly desirable, but pose estimation  relying on color information is extremely challenging~\cite{erol2007survey}: the complexity of hand motion, the large number of self-occlusions and rapidly changing backgrounds all contribute to its limited success. Multiple-camera acquisition can mitigate these challenges. In \cite{ballan2013salient}, the authors demonstrate high-quality tracking of two-hand and hand-object interactions, while \cite{wang2013physics} additionally considers the physics of motion interaction. However, due to the substantial increase in data bandwidth, these algorithms do not scale to real-time performance. A notable exception is the 10Hz system of  \cite{sridhar2013multicam}, but this acquisition setup also considers the data from depth sensor. While providing accurate results, multi-camera rigs are completely impractical for consumer-level applications. Therefore, we limit our attention to techniques relying on data from a \emph{single} depth camera; with a slight abuse of wording we refer to this as a \emph{monocular} acquisition setup.
+
+\paragraph{Discriminative, generative and hybrid}
+Pose estimation techniques can be grouped into \emph{discriminative} (i.e. appearance-based) and \emph{generative} (i.e. model-based) approaches. 
+% Generative
+Generative approaches fit a template through a temporal sequence of images. Given an accurate template of the user being tracked these methods can resolve highly accurate motion. However, their optimization is initialized from the previous frame, and this can lead to loss-of-tracking. 
+% Discriminative
+Conversely, discriminative methods estimate the pose by extracting features from each image independently by learning from a large dataset of annotated exemplars. While discriminative methods are robust to tracking drift, they lack the accuracy of generative methods. 
+% Hybrid
+The state-of-the-art in tracking performance is achieved by a combination of these two methods. These \emph{hybrid} algorithm estimate (potentially) multiple per-frame coarse poses leveraging discriminative techniques and refine its alignment with a generative fitting~\cite{sharp2015accurate,sridhar2015fast}. \AT{Is it true that SridharCVPR15 is doing this?}.
+% What we cover?
+Note that as in this paper we are considering template adaptation we focus on generative approaches, and refer the reader to recent works in discriminative methods for a comparative analysis of those techniques~\cite{}.
+
+\paragraph{Generative or Model-based}
+
+\paragraph{Calibration}
+[de La Gorce]
+
+\paragraph{Commercial Products}
+
+\paragraph{Convolution Models}
+
+
 
 \begin{DRAFT}
 Classical approaches to hand tracking include wearing data gloves [Dipietro et al. 2008], markers [Wang and Popovic 2009; Zhao et al. 2012] or wearable cameras [Kim et al. 2012], but this type of user instrumentation can act as a barrier for unencumbered natural interaction. Therefore the field has moved towards vision-based techniques without direct user instrumentation. Techniques include discriminative approaches [Keskin et al. 2012; Xu and Cheng 2013; Sun et al. 2015], which directly estimate hand pose by extracting image features e.g. using classification and/or regression techniques. These often do not rely on temporal information and attempt to directly estimate the hand joint configuration, thus making them useful as robust re-initializers [Shotton et al. 2011]. Conversely, generative (or model-based) methods use an explicit hand model to recover pose across a temporal sequence of images [Oikonomidis et al. 2011; Tagliasacchi et al. 2015]. Discriminative approaches are typically robust, but lack the accuracy inherent in model fitting. Generative approaches can suffer from a dependency on needing to initialize from the previous frame, making recovery from errors more challenging. Hybrid methods address this by combining discriminative and generative to improve the robustness of frame-to-frame model fitting with per-frame reinitialization [Ballan et al. 2012; Sridhar et al. 2013; Sridhar et al. 2015; Qian et al. 2014; Sharp et al. 2015].
