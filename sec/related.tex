@@ -10,15 +10,12 @@
 \section{Related Work}
 \label{sec:related}
 % \AT{we cover tracking and convsurf, should we have a sentence or two stating that?}
-\paragraph{Overkill} %< Instrumented + Multi-Camera
+
+% \paragraph{Overkill} %< Instrumented + Multi-Camera
 The simplest way of tracking a hand in motion is by instrumentation. We can place retro-reflective markers on the hand~\cite{zhao2012marker}, wear a data glove with embedded abduction and flexion sensors~\cite{dipietro2008survey} or a colored glove~\cite{wang2009colorglove}. While effective, active instrumentation can be cumbersome as it requires lengthy preparation and/or calibration. Systems solely relying on computer vision (i.e. color cameras) are highly desirable, but pose estimation  relying on color information is extremely challenging~\cite{erol2007survey}: the complexity of hand motion, the large number of self-occlusions and rapidly changing backgrounds all contribute to its limited success. Multiple-camera acquisition can mitigate these challenges. In \cite{ballan2013salient}, the authors demonstrate high-quality tracking of two-hand and hand-object interactions, while \cite{wang2013physics} additionally considers the physics of motion interaction. However, due to the substantial increase in data bandwidth, these algorithms do not scale to real-time performance (a notable exception is the 10Hz system of  \cite{sridhar2013multicam}, but this acquisition setup also considers data from a depth sensor). While providing accurate results, multi-camera rigs are completely impractical for consumer-level applications. Therefore, we limit our attention to techniques relying on data from a \emph{single} depth camera; with a slight abuse of wording we refer to it as a \emph{monocular} acquisition setup.
 % IGNORED THIS: place a camera directly on the user's wrist~\cite{kim2012digits}.
 
-
-\MP{I think we can skip this paragraph, we already mention some of it in the introduction.}
-
-
-\paragraph{Hybrid = discriminative + generative}
+\paragraph{Hybrid = discriminative + generative \todo{SKIP or CONDENSE?}}
 Pose estimation techniques can be grouped into \emph{discriminative} (i.e.\ appearance-based) and \emph{generative} (i.e.\ model-based) approaches. 
 % Generative
 Generative approaches fit a template through a temporal sequence of images~\cite{oiko2011hand,melax2013dynamics,schroder2014real,tagliasacchi2015robust}. Given an accurate template of the user being tracked, these methods can resolve highly accurate motion. However, as the alignment optimization is initialized from the previous frame tracking loss can occur. \AT{mention re-init heuristics?}
@@ -29,26 +26,21 @@ The state-of-the-art in tracking performance is achieved by \emph{hybrid} algori
 \AT{was Sridhar doing this? or was he just using pixel-classification?}.
 % What we (do not) cover?
 Our literature review focuses on generative approaches, while we refer the reader to the very recent work by Taylor and colleagues \shortcite{taylor2016concerto} for a review of recent discriminative methods. Commercial systems for hand tracking like the \emph{NimbleVR\textcopyright}, the \emph{LeapMotion\textcopyright} and the \emph{Intel Perceptual SDK\textcopyright} also exist, but it is difficult to consider them as the underlying technology is undisclosed. 
-\AT{I testing them and I \emph{think} they are discriminative}
+\AT{I tested them and I \emph{think} they are discriminative}
 
-\paragraph{Generative Methods}
-\TODO{differentiable renderer \cite{bogo2015detailed}}
-\TODO{Oberwerger: synthesize a tracking model \cite{}}
-\AT{Do we really need to go deep in describing the various generative models? If so, I would say the comparison can be done according to the type of model used... aka \Figure{handmodels}}
-% Oikonomidis et. al. \cite{oikonomidis2014evolutionary}
-% Schroder et. al. \cite{schroder2014real}
-% Tompson et. al. \cite{tompson2014real}
-% Sridhar et. al. \cite{sridhar2015fast}
-% Sun et. al. \cite{sun2015cascaded}
-% Sharp et. al. \cite{sharp2015accurate}
+\paragraph{Generative tracking models}
+The capsule model originally proposed by~\cite{rehg1994tracking} has been adopted by a number of researchers \cite{oiko2011hand,schroder2014real,fleishman2015icpik,tagliasacchi2015robust}; see \Figure{handmodels}(a). Such a coarse representation is suitable to the task given the low signal-to-noise ratio in modern depth sensors, while its simplicity enables the efficient closed-form computation of alignment queries. Cylinders can also be approximated by a small set of disconnected spheres~\cite{qian2014realtime}, but this rough approximation is only sufficient for coarse-scale tracking; see \Figure{handmodels}(b). An alternative to the use of cylinders and spheres is the use of isotropic~\cite{sridhar2013multicam,sridhar2015fast}, as well as anisotropic~\cite{sridhar2014anisotropic}, gaussians; while registration gradients can conveniently be computed in closed-form, the resulting tracking model is not appropriate for high-precision tracking.
+% 
+% \todo{Our research pioneers the generalization of these tracking templates into convolution surfaces, and by doing so it demonstrates a substantial increase in real-time tracking precision.}
+%
+The use of surface meshes, while widespread in other domains (e.g. face tracking~\cite{bouaziz2013online} or offline registration~\cite{wang2013physics,loper_eccv14}), has been limited to the visualization of tracking performance through skinned model animations~\cite{tompson2014real,schroder2014real}. Sharp et al.~\shortcite{sharp2015accurate} employed mesh models for tracking in a render-and-compare framework, while the very recent work of~\cite{taylor2016concerto} presents the very first attempt towards continuous registration framework for meshes; see~\Figure{handmodels}(c).
+%
+Other variants of tracking models include the union of convex bodies from~\cite{melax2013dynamics}, or the use of geometry synthetically generated from a neural network~\cite{oberweger2015feedback}~\TODO{check}.
 
-
-\MP{I think we do need to discuss them, otherwise it would make it too easy for reviewers to say that we missed relevant related work. But I agree that the comparison should focus on the model that is used.}
-
-\paragraph{Template Calibration}
+\paragraph{Template calibration}
 Albrecht et al~\shortcite{albrecht2003construction} pioneered the creation of a realistic hand model (i.e. bones and muscles) by aligning a template mesh to data acquired by a laser-scanned plaster cast. Leveraging a simpler setup consisting of a single color image, \cite{rhee2006hand} identified approximate joint locations by localizing skin creases, and adapted a mesh template to conform to its silhouette. While these methods focused on a static template, in \cite{delagorce2011model} a model is roughly adapted to the user (\todo{through simple bone scaling}) to produce the first \emph{animatable} template. More advanced calibration was further investigated by~\cite{taylor2014user}, where the model is adjusted to \emph{jointly} fit a set of depth frames. This method was extended in~\cite{khamis15learning}, where the authors pioneered compact \AT{compact == low DOF} \todo{?linear?} shape-spaces of human hand geometry.
 % 
-The method in \cite{taylor2014user} shares a few similarities with our work, but with a fundamental difference in the way in which geometry is represented. \todo{As discussed next, our convolutional model is \emph{naturally compact}, leading to a straightforward calibration and tracking algorithms.}
+The method in \cite{taylor2014user} shares a few similarities with our work, but with a fundamental difference in the way in which geometry is represented. Our convolutional model is \emph{naturally compact}, leading to straightforward calibration and tracking algorithms. \TODO{missing the calibration work from forth?}
 
 \input{fig/zsphere/item.tex}
 \paragraph{Convolution Modeling}

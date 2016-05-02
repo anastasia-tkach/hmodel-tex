@@ -16,7 +16,7 @@
 With the imminent advent of consumer-level virtual and augmented reality technology, the ability to interact with the digital world with the most natural mean of interaction, our hands, becomes of paramount importance. Most importantly, the degree of immersion in the virtual world is directly correlated to whether the user perceives his own realistic hands~\todo{\cite{immersion}}. Over the past two decades the research community has explored a number of techniques to address this problem, from expensive and unwieldy marker-based mocap~\todo{\cite{mocapsurvey}} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the ~10 fps system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), as commonly predicted to be readily available in a typical AR/VR consumer experience.
 
 \paragraph{Tracking: discriminative v.s. generative}
-Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{oberweger2015feedback}, and \emph{generative} approaches such as \cite{tagliasacchi2015robust}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud \AT{temporal?}. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
+Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{keskin2012hand}, and \emph{generative} approaches such as \cite{oiko2011hand}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud and to regularize its motion through time. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
 \TODO{mention no need to re-init $\gg$FPS?}.
 
 The main goal of this paper is to explore novel tracking models that strike an optimal balance between accuracy and performance. More specifically, we propose a geometric model that more accurately captures the user's hand geometry, while retaining the ability to answer registration queries in closed form with very high efficiency. In \Figure{coarsemodel} and \todo{Video [00:00]} we illustrate the importance of employing a tracking template that strikes this delicate balance.
@@ -25,14 +25,12 @@ The main goal of this paper is to explore novel tracking models that strike an o
 % As generative models perform tracking by fitting a geometric model to what is measured by the sensor, our template should be able to represent well the observed data. However, even in modern trackers, the discrepancy between the optimal model pose given the data and the true hand pose can be significant. For example, the sources of discrepancy in \Figure{coarsemodel} include the incorrect length of fingers and the lack of the \todo{[pinky-ring]} degree of freedom. \todo{In the literature, the creation of user-specific models for tracking is referred to as \emph{calibration}.}
 
 \input{fig/coarsemodel/item.tex}
-\paragraph{Surface v.s. volumetric templates}
-In modern digital production representing objects by a surface mesh of their boundary (e.g.\ triangle or quad meshes) is the de-facto standard. Fast rendering and easy direct manipulation make explicit surface representation attractive for many applications.
+\paragraph{Implicit v.s. explicit templates}
+In modern digital production representing objects by a surface mesh of their boundary (e.g.\ triangle or quad meshes) is the de-facto standard. Fast rendering and easy direct manipulation make \emph{explicit} surface representation attractive for many applications.
 %
-However, unlike volumetric models~\cite{bloomenthal1997book}, surface representations cannot efficiently answer queries such as the distance from a point to the object's boundary, or whether a point lies inside/outside the model~\cite[Ch.1]{botsch2010book}. In tracking applications these queries play a fundamental role, as the optimization attempts to find configurations where the average \emph{distance} from model to data is minimized. Similarly, a tracker should prevent the model from assuming implausible configurations, for example by preventing self-intersections as measured by inside/outside predicates. For all these reasons, volumetric models appear optimal for registration applications; indeed, recent compelling results in joint rigid registration and reconstruction~\cite{newcombe2011kinfu} as well as its recent non-rigid variant~\cite{newcombe2015dynfusion} leverage volumetric models. One important observation is that such techniques assume the frame-rate is high compared to motion velocity, a condition that is in general not satisfied in our setting.  To address this challenge, we propose to employ a \emph{hybrid} model for tracking combining the advantages of surface and volumetric representations.
-\MP{I wonder if we should make the distinction in explicit vs. implicit representation rather than surface vs. volume. }
+However, unlike \emph{implicit} models~\cite{bloomenthal1997book}, surface representations cannot efficiently answer queries such as the distance from a point to the object's boundary, or whether a point lies inside/outside the model~\cite[Ch.1]{botsch2010book}. In tracking applications these queries play a fundamental role, as the optimization attempts to find configurations where the average \emph{distance} from model to data is minimized. Similarly, a tracker should prevent the model from assuming implausible configurations, for example by preventing self-intersections as measured by inside/outside predicates. For all these reasons, implicit models appear optimal for registration applications; indeed, recent compelling results in joint rigid registration and reconstruction~\cite{newcombe2011kinfu} as well as its recent non-rigid variant~\cite{newcombe2015dynfusion} leverage implicit models. One important observation is that such techniques assume the frame-rate is high compared to motion velocity, a condition that is in general not satisfied in our setting.  To address this challenge, we propose to employ a \emph{hybrid} model for tracking combining the advantages of explicit and implicit representations.
 
 \input{fig/convsurf/item.tex}
-
 \paragraph{Hybrid tracking model}
 The model we propose in this paper is a variant of a convolution surface~\cite{bloomenthal1991convolution}, and its fundamental building blocks are illustrated in \Figure{convsurf}. Such a construct is nothing but the zero iso-surface of the scalar function:
 \begin{equation}
@@ -48,10 +46,8 @@ The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii a
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models}
-Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. 
+Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller~(\todo{25 in our model}) than the number of polygons in a typical triangular mesh surface representation~\cite{thiery2013sphere}. 
 Therefore, distance queries can be performed efficiently using a brute force approach, which leads to a simple algorithm that is trivially parallelizable and executes at a fixed frame-rate. (2)~Our hand model parameterization is compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. This allows adapting the model to the hand geometry of a specific user.
-
-%\MP{not sure if we want the following parts here. It's still the introduction, so I would keep it short} A direct approach to building a calibrated model is to let the artist manually adjust these quantities; this process is known as  \emph{ZSphere~{\textcopyright}} modeling in the popular \emph{ZBrush~\textcopyright} 3D modeling software. \TODO{Something about why this makes the model efficient.} \TODO{Something about many recent SphereMeshes and ImplicitSkinning papers at SIGGRAPH?}
 
 \paragraph{Contributions}
 % Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
@@ -62,13 +58,6 @@ The core contribution of this paper is to demonstrate that convolutional models 
 %In addition, instead of relying on an artist-built IK skeleton, we automatically identify the kinematic decomposition of motion from data.
 The improved geometric fidelity compared to existing representations leads to quantifiable reductions in registration error and allows accurate tracking even for intricate hand poses and complex motion sequences that previous methods have difficulties with. 
 At the same time, due to a very compact model representation and closed-form correspondences queries, our generative model retains high computational performance, leading to sustained tracking at 60 FPS.
-
-
-
-
-
-
-
 
 
 %(1)~We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. 
