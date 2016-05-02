@@ -3,7 +3,6 @@
 \section{Modeling}
 \label{sec:modeling}
 
-\MP{I propose to re-structure his section and shorten it: First explain how the template is build  from MVS scans, then how we can adapt it to a user only with RGBG data.}
 
 In this section explain how we build our template model in an off-line preprocess and then discuss how this template can be adjusted to a specific user from RGBD sensor data.
 
@@ -28,7 +27,7 @@ Then we optimize for the positions and radii, using manually specified initial v
 
 
 \brief{Multi-Pose Data}
-Our calibration procedure tailors our hand model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
+Our calibration procedure tailors our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
 
 \brief{Geometric Model}
 The rest-pose geometry of a convolution model is fully specified by the set of sphere positions and radii. Thus, our optimization will be parameterized by two matrices $\centers$ and $\radii$, respectively containing centers $\ballcenter_i$ and their radii $r_i$. However this is not sufficient, as most tracking systems, including the one we build upon, parameterize a pose through the specification of a kinematic chain. 
@@ -98,7 +97,7 @@ E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\pars_n)}(\point)\|_2^
 \label{eq:d2m}
 \end{equation}
 % 
-Simply stated, this term measures to the integral length of ICP correspondence vectors. Note the use of a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. 
+Simply stated, this term measures the integral length of ICP correspondence vectors. Note the use of a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. 
 
 \paragraph{Model $\rightarrow$ Data}
 As we are seeking for a model which is strictly sufficient to represent our data, we need to ensure that \todo{no portion of the model remains unused} \AT{better way of saying this?}. The data-to-model term encodes an approximation of the \emph{one-sided} Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
