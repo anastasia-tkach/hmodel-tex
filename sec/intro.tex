@@ -43,17 +43,16 @@ where $\skeleton$ is a skeletal control mesh (a segment or a triangle in the sim
 \begin{equation}
 \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
 \end{equation}
-The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii are a function of the position $\mathbf{c}$ within an element, linearly interpolated from values $r_*=r(c_*)$ specified on the skeletal mesh vertices $c_*$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\mathcal{S} = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\mathcal{M}$ is an explicit representation (a piecewise-parameterized \todo{surface}\MP{maybe simplicial complex?}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
-\todo{While the integral in \Eq{convsurf} might be difficult to evaluate, distances to $\mathcal{S}$ can conveniently be computed by querying distances to the piecewise linear structures composing $\mathcal{M}$; see \Figure{convsurf}.}
+The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii are a function of the position $\mathbf{c}$ within an element, linearly interpolated from values $r_*=r(c_*)$ specified on the skeletal mesh vertices $c_*$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\surface = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\skeleton$ is an explicit representation (a piecewise-parameterized \todo{surface}\MP{maybe simplicial complex?}). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
+\todo{While the integral in \Eq{convsurf} might be difficult to evaluate, distances to $\surface$ can conveniently be computed by querying distances to the piecewise linear structures composing $\mathcal{M}$; see \Figure{convsurf}.}
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models}
-Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere} \MP{Should be S, no?}. 
+Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller (\todo{25} in our model) than the number of polygons in a typical triangular mesh representation of $\surface$~\cite{thiery2013sphere}. 
 Therefore, distance queries can be performed efficiently using a brute force approach, which leads to a simple algorithm that is trivially parallelizable and executes at a fixed frame-rate. (2)~Our hand model parameterization is compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. This allows adapting the model to the hand geometry of a specific user.
 
 %\MP{not sure if we want the following parts here. It's still the introduction, so I would keep it short} A direct approach to building a calibrated model is to let the artist manually adjust these quantities; this process is known as  \emph{ZSphere~{\textcopyright}} modeling in the popular \emph{ZBrush~\textcopyright} 3D modeling software. \TODO{Something about why this makes the model efficient.} \TODO{Something about many recent SphereMeshes and ImplicitSkinning papers at SIGGRAPH?}
 
-\input{fig/handmodels/item.tex}
 \paragraph{Contributions}
 % Technical Contribution: What's the key technical idea to solve the problem? Why is it beautiful?
 % Applications / Future Work: What will your solution enable? How does it project into the future? How will it inspire future work?
