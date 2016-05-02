@@ -1,32 +1,52 @@
-% !TEX root = ../hmodel.tex
+% USE THIS? (good hand model key to high-quality in-hand scanning)
+% http://files.is.tue.mpg.de/dtzionas/In-Hand-Scanning/
 
+% I IGNORED THIS ONE, NOT ENOUGH DETAILS:
+% Straka et al. \cite{straka2012simultaneous} also fit the template mesh with attached skeleton to 3D data. The model is deformed to explain the data while keeping the vertices attached to their corresponding bones. It is on clear whether the approach whether be able to handle a hand motion sequence, since the results are demonstrated on a full body model.
 
-
+% \input{fig/handmodels/item.tex}
 \section{Related Work}
 \label{sec:related}
-\AT{\textbf{WARNING}: copy/pasted from msr siggraph paper. Mark if you want you can re-write it by paraphrasing it?}
-\TODO{it is missing a section on convolution models and implicit skinning}
+% \AT{we cover tracking and convsurf, should we have a sentence or two stating that?}
+\paragraph{Overkill} %< Instrumented + Multi-Camera
+The simplest way of tracking a hand in motion is by instrumentation. We can place retro-reflective markers on the hand~\cite{zhao2012marker}, wear a data glove with embedded abduction and flexion sensors~\cite{dipietro2008survey} or a colored glove~\cite{wang2009colorglove}. While effective, active instrumentation can be cumbersome as it requires lengthy preparation and/or calibration. Systems solely relying on computer vision (i.e. color cameras) are highly desirable, but pose estimation  relying on color information is extremely challenging~\cite{erol2007survey}: the complexity of hand motion, the large number of self-occlusions and rapidly changing backgrounds all contribute to its limited success. Multiple-camera acquisition can mitigate these challenges. In \cite{ballan2013salient}, the authors demonstrate high-quality tracking of two-hand and hand-object interactions, while \cite{wang2013physics} additionally considers the physics of motion interaction. However, due to the substantial increase in data bandwidth, these algorithms do not scale to real-time performance (a notable exception is the 10Hz system of  \cite{sridhar2013multicam}, but this acquisition setup also considers data from a depth sensor). While providing accurate results, multi-camera rigs are completely impractical for consumer-level applications. Therefore, we limit our attention to techniques relying on data from a \emph{single} depth camera; with a slight abuse of wording we refer to it as a \emph{monocular} acquisition setup.
+% IGNORED THIS: place a camera directly on the user's wrist~\cite{kim2012digits}.
 
-\begin{DRAFT}
-Classical approaches to hand tracking include wearing data gloves [Dipietro et al. 2008], markers [Wang and Popovic 2009; Zhao et al. 2012] or wearable cameras [Kim et al. 2012], but this type of user instrumentation can act as a barrier for unencumbered natural interaction. Therefore the field has moved towards vision-based techniques without direct user instrumentation. Techniques include discriminative approaches [Keskin et al. 2012; Xu and Cheng 2013; Sun et al. 2015], which directly estimate hand pose by extracting image features e.g. using classification and/or regression techniques. These often do not rely on temporal information and attempt to directly estimate the hand joint configuration, thus making them useful as robust re-initializers [Shotton et al. 2011]. Conversely, generative (or model-based) methods use an explicit hand model to recover pose across a temporal sequence of images [Oikonomidis et al. 2011; Tagliasacchi et al. 2015]. Discriminative approaches are typically robust, but lack the accuracy inherent in model fitting. Generative approaches can suffer from a dependency on needing to initialize from the previous frame, making recovery from errors more challenging. Hybrid methods address this by combining discriminative and generative to improve the robustness of frame-to-frame model fitting with per-frame reinitialization [Ballan et al. 2012; Sridhar et al. 2013; Sridhar et al. 2015; Qian et al. 2014; Sharp et al. 2015].
+\paragraph{Hybrid = discriminative + generative}
+Pose estimation techniques can be grouped into \emph{discriminative} (i.e. appearance-based) and \emph{generative} (i.e. model-based) approaches. 
+% Generative
+Generative approaches fit a template through a temporal sequence of images~\cite{oiko2011hand,melax2013dynamics,schroder2014real,tagliasacchi2015robust}. Given an accurate template of the user being tracked, these methods can resolve highly accurate motion. However, as the alignment optimization is initialized from the previous frame tracking loss can occur. \AT{mention re-init heuristics?}
+% Discriminative
+Conversely, discriminative methods estimate the pose by extracting features from each image independently by learning from a large dataset of annotated exemplars~\cite{keskin2012hand,tang2013real,tejani2014latent,sun2015cascaded}. While discriminative methods are robust to tracking drift, they lack the accuracy of generative methods. \AT{also the joint estimates might violate kinematic constraints?}
+% Hybrid
+The state-of-the-art in tracking performance is achieved by \emph{hybrid} algorithms that combine the two approches. These hybrid algorithms estimate (potentially) multiple per-frame coarse poses leveraging discriminative frameworks, and then refine the alignment with a generative fitting~\cite{tompson2014real,qian2014realtime,sharp2015accurate,sridhar2015fast}. 
+\AT{was Sridhar doing this? or was he just using pixel-classification?}.
+% What we (do not) cover?
+Our literature review focuses on generative approaches, while we refer the reader to the very recent work by Taylor and colleagues \shortcite{taylor2016concerto} for a review of recent discriminative methods. Commercial systems for hand tracking like the \emph{NimbleVR\textcopyright}, the \emph{LeapMotion\textcopyright} and the \emph{Intel Perceptual SDK\textcopyright} also exist, but it is difficult to consider them as the underlying technology is undisclosed. 
+\AT{I testing them and I \emph{think} they are discriminative}
 
-\paragraph{Single RGB-based Approaches}:
-Early vision-based systems used monocular RGB cameras, making the problem very challenging (see [Erol et al. 2007] for a survey). Understandably most approaches were offline. Discriminative approaches used small databases of restricted hand poses [Athitsos and Sclaroff 2003; Wu and Huang 2000] and had limited accuracy. Generative methods used models with restricted degrees of freedom (DoF), working with simplified hand representations based on 2D, 2.5D or inverse kinematics (IK) (e.g. [Stenger et al. 2001; Wu et al. 2001]), again resulting in limited accuracy. Bray et al. [2004] used a more detailed 3D hand model. Further user-personalization was added by de La Gorce et al. [2011], who automatically applied a scaling to the bones in the hand model during tracking. An early example of online (10Hz) tracking with a simplified deformable hand model is [Heap and Hogg 1996]. This work, as with other RGB-based methods, struggled with complex poses, changing backgrounds, and occlusions, thus limiting general applicability. In our work, we use a single commodity depth camera; while such cameras typically also provide RGB data, we focus purely on the depth signal to ensure robustness to lighting changes and to reduce computational load. Multi-camera Performance Capture: Possibly the first attempt at unencumbered hand tracking was by Rehg and Kanade [1994], using two video cameras to resolve 27 DoF using a Gauss-Newton solver and local edge search based on a capsule model. Their system ran at 10Hz, with the limitations that the hand should be almost entirely unoccluded. There has also been recent work on high quality, offline (non-interactive) performance capture of hands using multi-camera rigs. Ballan et al. [2012] demonstrate high-quality results closely fitting a detailed scanned mesh model to complex two handed and hand-object interactions. Zhao et al. [2012] use a depth camera, motion capture rig, and markers worn on the user’s hand to capture complex single-hand poses, again offline. Wang et al. [2013] and Tzionas et al. [2015] show complex hand-object interactions by using a physics engine, but take minutes per frame. The first multi camera real-time system was that of Sridhar et al.[2013], where five RGB cameras and a time-of-flight (ToF) sensor is used to track a user’s hand at 10Hz. We provide a direct comparison later in this paper. The above systems can produce highly accurate results, but are impractical for interactive consumer scenarios due to their computational cost and the heavyweight multi-camera setups. Single Depth Cameras: The advent of consumer depth cameras such as Kinect has made computer vision more tractable, for ex ample through robustness to lighting changes and improved invariance to foreground and background appearance. However, most high-accuracy real-time methods are still extremely computationally demanding (typically using the GPU), making their use on mobile devices still limited.
+\paragraph{Generative Methods}
+\TODO{differentiable renderer \cite{bogo2015detailed}}
+\TODO{Oberwerger: synthesize a tracking model \cite{}}
+\AT{Do we really need to go deep in describing the various generative models? If so, I would say the comparison can be done according to the type of model used... aka \Figure{handmodels}}
+% Oikonomidis et. al. \cite{oikonomidis2014evolutionary}
+% Schroder et. al. \cite{schroder2014real}
+% Tompson et. al. \cite{tompson2014real}
+% Sridhar et. al. \cite{sridhar2015fast}
+% Sun et. al. \cite{sun2015cascaded}
+% Sharp et. al. \cite{sharp2015accurate}
 
-\paragraph{Generative Approaches} 
-Oikonomidis et al. [2011] present a gener ative method based on particle swarm optimization (PSO) for full DoF hand tracking (at 15Hz) using a depth sensor. The hand is tracked from a known initial pose, and the method cannot recover from loss of track. Other stochastic optimization schemes have also been explored for real-time hand model fitting but again these lack the benefits of discriminative approaches [Oikonomidis et al. 2011; Makris et al. 2015]. Melax et al. [2013] use a generative approach driven by a physics solver to generate 3D pose estimates. Both Fleishman et al. [2015] and Tagliasacchi et al. [2015] show impressive high speed tracking results using a fast, articulated variant of ICP. These systems however do not recover from tracking loss, and the latter requires the user to wear a wristband for hand localization. Despite this, Tagliasacchi et al. [2015] have shown state of the art results for hand tracking. Discriminative Approaches: Keskin et al. [2012] propose a discriminative method using a multi-layered random-forest to predict hand parts and thereby to fit a simple skeleton. The system runs at 30Hz on consumer CPU hardware, but can fail under occlusion. A variety of systems extend this work [Tang et al. 2013; Tejani et al. 2014; Tang et al. 2015; Sun et al. 2015] using novel classification or regression architectures to demonstrate more complex poses. Other discriminative methods include [Xu and Cheng 2013; Oberweger et al. 2015b; Li et al. 2015; Neverova et al. 2015; Poier et al. 2015], which estimate hand pose directly in a single shot using different cascaded learning-based architectures. Wang et al. [2009; 2011] demonstrate a discriminative nearest-neighbor lookup scheme using a large hand pose database, and IK for pose refinement. Nearest neighbor methods are highly dependent on the database of poses, and can struggle to generalize to unseen poses. Purely discriminative systems do not include an explicit model-fitting step, and so results may often not be kinematically valid (e.g. implausible articulations or finger lengths).
+\paragraph{Template Calibration}
+Albrecht et al~\shortcite{albrecht2003construction} pioneered the creation of a realistic hand model (i.e. bones and muscles) by aligning a template mesh to data acquired by a laser-scanned plaster cast. Leveraging a simpler setup consisting of a single color image, \cite{rhee2006hand} identified approximate joint locations by localizing skin creases, and adapted a mesh template to conform to its silhouette. While these methods focused on a static template, in \cite{delagorce2011model} a model is roughly adapted to the user (\todo{through simple bone scaling}) to produce the first \emph{animatable} template. More advanced calibration was further investigated by~\cite{taylor2014user}, where the model is adjusted to \emph{jointly} fit a set of depth frames. This method was extended in~\cite{khamis15learning}, where the authors pioneered compact \AT{compact == low DOF} \todo{?linear?} shape-spaces of human hand geometry.
+% 
+The method in \cite{taylor2014user} shares a few similarities with our work, but with a fundamental difference in the way in which geometry is represented. \todo{As discussed next, our convolutional model is \emph{naturally compact}, leading to a straightforward calibration and tracking algorithms.}
 
-\paragraph{Hybrid Approaches} 
-Qian et al. [2014] extend [Oikonomidis et al. 2011] by adding a guided PSO step and a reinitializer that requires fingertips to be clearly visible. Sridhar et al. [2014] use a sum-of- Gaussians representation for efficient model fitting with reinitialization. All these systems so far are based on simple hand models; our approach exploits a full 3D hand mesh model that, as shown, is better able to fit to the observed data. Tompson et al. [2014] demon strate impressive hand tracking results using deep neural networks to predict feature locations and IK to infer a mesh skeleton. While real-time, the approach only tackles close-range scenarios. Sharp et al. [2015] use a detailed mesh model and PSO in combination with a robust fern and forest re-initializer to generate impressive results, including far distances or moving camera scenarios, but with heavy demand of a high-end GPU.
-
-\paragraph{Commercial systems} 
-Beyond this research, there have also been commercial hand tracking systems. The 3Gear/NimbleVR Systems [3Gear Systems Inc 2013] (based on prior work ofWang et al. [2009; 2011]) and the second-generation software for the Leap Motion [Leap Motion Inc 2013] have shown tracking of a range of complex poses, including two-handed interaction. Whilst their videos are extremely impressive, Sharp et al. [2015] have shown that these systems suffer from poor tracking of complex poses. In our work we directly compare to, and compare favorably to, Sharp et al..
-\end{DRAFT}
-
-
-\subsection{Review of HTrack}
-\TODO{more details, with energies and all the computational elements we need for our approach (e.g. correspondence search, silhouette, etc.)}
-
+\input{fig/zsphere/item.tex}
+\paragraph{Convolution Modeling}
+In contrast to explicit polygonal modeling, sculpting implicit surfaces provides a more natural way of designing complex geometry, and this process lies at the basis of the enormous success of the \emph{PixoLogic ZBrush~\textcopyright} product line. 
+For articulated geometry, it is also convenient to first create a coarse geometric structure analogous to the one described in~\Equation{convsurf}, a process that \emph{PixoLogic} has re-branded as \emph{ZSphere~{\textcopyright}} modeling; see \Figure{zsphere}. Manually calibrating a convolution model is intuitive for a human, as it involves editing of a few sphere centers and radii. This leads to a simple and effective automated calibration algorithm. Note that any geometric model can be approximated, to any desired precision, as a union of spheres~\cite{tagliasacchi2016skeletons}. 
+However, by considering spheres that are linearly interpolated across edges, we can heavily reduce the required number of primitives. Following this principle, \cite{thiery2013sphere} recently investigated a method to automatically generate \emph{Sphere Meshes} provided a  (static) model in input. Extending this work, \cite{thiery2016spheremesh} proposed a method to fit a model through an (dynamic) animated mesh. While seemingly related, our calibration optimization is solving a fundamentally different problem, as in our technique a template is provided in input. 
+Tracking with an implicit model has also received little attention in the literature, with \cite{fua2003soft} being a notable exception. However, a mixture of implicit and explicit representations is key in achieving high quality skinning deformations at interactive rates \cite{vaillant2013implicit,vaillant2014robust}.
 
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
@@ -35,45 +55,12 @@ Beyond this research, there have also been commercial hand tracking systems. The
 %----------------------------------------------------------------------
 \endinput
 
-% MORE STUFF
-% http://files.is.tue.mpg.de/dtzionas/In-Hand-Scanning/
+% Taylor et. al.  generate a user-specific hand model from an RGBD video sequence. The model is represented as a triangular mesh with an embedded skeleton. In each frame the hand pose is initialized using an appearance-based tracking algorithm. The hand model parameters are found by solving a single optimization problem formulated for the entire video sequence which also finds hand pose in each frame.
 
-\TODO{\cite{bogo2015detailed}}
-
-%--- ON SPHERE MODELS
-\TODO{A higher precision can be obtained by increasing the number of primitives, which defeats the purpose of model simplicity. Convolution surfaces representation gives higher precision for the same number of building blocks. \textcolor{mygray}{Add experimental or theoretical support for convolution surfaces.}}
+% Khamis et. al.   fit a hand model for a specific user by finding its shape coordinates in the basis of mesh matrices and bones locations. As in the approach by Taylor et. al, they optimize simultaneously for pose and shape parameters in all the frames of an RGBD sequence across all the subjects. Requires large number of subjects as a regularization for excessive degrees of freedom.
 
 %--- LINEAR BLEND SKINNING
-\TODO{The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. }
-
-%--- IMPLICIT SKINNING
-\TODO{The state of the art approaches in hand skinning are implicit surfaces-based (\cite{vaillant2013implicit},  \cite{vaillant2014robust} ).  A convolution surfaces model serves a ready to use input for such an approach.}
+% \TODO{The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. }
 
 %--- CLOSEST POINT COMPUTATIONS
-\TODO{For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.}
-
-%--- JUST A LIST OF PAPERS?
-\todo{A number of hand tracking algorithms has been recently proposed  Keskin et. al. \cite{keskin2012hand}, Melax et. al. \cite{melax2013dynamics}, Tang et. al. \cite{tang2013real}, Oikonomidis et. al. \cite{oikonomidis2014evolutionary}, Schroder et. al. \cite{schroder2014real},
-Tompson et. al. \cite{tompson2014real}, Qian et. al. \cite{qian2014realtime},  Tagliasacchi et. al. \cite{tagliasacchi2015robust}, Sridhar et. al. \cite{sridhar2015fast}, Sun et. al. \cite{sun2015cascaded} and Sharp et. al. \cite{sharp2015accurate}.}
-
-\begin{itemize}
-
-\item Albrecht et al. \cite{albrecht2003construction} developed an approach for creating an anatomically realistic hand model that includes bones and muscles structure. Their approach requires several prerequisites including plaster cast of a human hand and laser scanner for manually creating a physically realistic hand template. Given user-defined correspondences between 3D feature points and the hand image, a specific hand model is created by deforming a generic hand model. 
-
-\item Rhee et. al. \cite{rhee2006human} use a single image of a hand at rest pose to infer joint hand joint locations from skin creases. Given the skeleton obtained at the previous step and the hand contour from the image, they deform a template hand mesh to fit this data. 
-
-\item Straka et al. \cite{straka2012simultaneous} also fit the template mesh with attached skeleton to 3D data. The model is deformed to explain the data while keeping the vertices attached to their corresponding bones. It is on clear whether the approach whether be able to handle a hand motion sequence, since the results are demonstrated on a full body model.
-
-\item Taylor et. al. \cite{taylor2014user} generate a user-specific hand model from an RGBD video sequence. The model is represented as a triangular mesh with an embedded skeleton. In each frame the hand pose is initialized using an appearance-based tracking algorithm. The hand model parameters are found by solving a single optimization problem formulated for the entire video sequence which also finds hand pose in each frame. 
-
-\item Khamis et. al.  \cite{khamis12learning} fit a hand model for a specific user by finding its shape coordinates in the basis of mesh matrices and bones locations. As in the approach by Taylor et. al, they optimize simultaneously for pose and shape parameters in all the frames of an RGBD sequence across all the subjects. Requires large number of subjects as a regularization for excessive degrees of freedom. 
-
-The results generated by the approaches listed above could be used as an input for our system to create a hand model representation adapted for efficient tracking and animation.
-
-
-
-
-
-
-
-\end{itemize}
+% \TODO{For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.}
