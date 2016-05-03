@@ -1,6 +1,4 @@
 % !TEX root = ../hmodel.tex
-
-\clearpage
 \section{Results}
 \label{sec:results}
 
@@ -24,7 +22,9 @@ For this reason, we propose several easy-to-compute metrics to evaluate the qual
 % 
 We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \AT{We have to explain why the ``golden energy'' is not sufficient; perhaps we can say more once we see the results.}
 
-\paragraph{Data fitting residuals \TODO{better name?}}
+\input{fig/comp1/item.tex}
+
+\paragraph{Fitting residuals (3D)}
 As we are seeking high-quality alignement every pixel from the sensor data should lie in the proximity of the model. Here the $\proj_\depthrend$ computes the closest point correspondence to the point cloud of the rendered model:
 \begin{equation}
 \metricone = \frac{1}{|\depth|}\sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^2
@@ -32,19 +32,19 @@ As we are seeking high-quality alignement every pixel from the sensor data shoul
 \end{equation}
 Differently from tracking these can be fetched with a kd-tree.
 
-\paragraph{Silhouette overlap residuals \TODO{better name?}}
-Computing model-to-data registration residuals in 3D is not meaningful \todo{because blah}. Therefore, we evaluate the registration residual in the 2D projective space. \TODO{we cannot use $\point$, but I don't like ij as the name of a pixel...}
+\paragraph{Silhouette residuals (2D)}
+Computing model-to-data registration residuals in 3D is not meaningful \todo{because blah}. Therefore, we evaluate the registration residual in the 2D projective space. 
 \begin{eqnarray}
 \metrictwo 
 &=& \frac{1}{|\depthrend \setminus \partial\depth|} 
-\sum_{ij \in \depthrend \setminus \partial\depth} \| ij - \proj_{\partial\depth}(ij) \|_2^2 \\ 
+\sum_{\pixel \in \depthrend \setminus \partial\depth} \| \pixel - \proj_{\partial\depth}(\pixel) \|_2 \\ 
 &=& \frac{1}{|\depthrend \setminus \partial\depth|} 
-\sum_{ij \in \depthrend \setminus \partial\depth} \text{DT}(ij)^2
+\sum_{\pixel \in \depthrend \setminus \partial\depth} \text{DT}(\pixel)
 \label{eq:metric2}
 \end{eqnarray}
-Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Further, note that DT evaluates to zero for a pixel inside the silhouette.
+Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Further, note that DT evaluates to zero for a pixel inside the silhouette. 
 
-% To accelerate this task we compute the distance transform of the region of interest as $DT$
+\input{fig/comp2/item.tex}
 
 \paragraph{Golden Energy}
 Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:
@@ -53,3 +53,7 @@ E_{\text{Au}} = \sum_{ij} \rho(\depth(i,j) - \depthrend(i,j))
 \label{eq:golden}
 \end{equation}
 where $\rho(e)=\min(|e|,\tau)$ is a truncated $\ell_1$ distance to make the metric less sensitive to outliers ($\tau=100mm$). Pixels outside the region of interest are mapped to the far plane $\depth^\text{max}$.
+
+\input{fig/barchart/item.tex}
+\paragraph{Comparison to HTrack}
+% \protect\cite{tagliasacchi2015robust}

@@ -17,14 +17,7 @@ Then we optimize for the positions and radii, using manually specified initial v
 
 
 \subsection{User calibration} 
-
-
-
-\TODO{Integrate text below}
-
-
-
-
+\MP{Integrate text below} \AT{Integrate What? Where?}
 
 \brief{Multi-Pose Data}
 Our calibration procedure tailors our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary for a number of reasons: (1) in monocular acquisition the model acquired from a single view is highly incomplete; (2) it is not possible to understand the kinematic behavior by analyzing static datasets; (3) the redundancy of information across frames allows us to improve fitting precision. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g. \emph{Agisoft Photoscan~\textcopyright}), as well as single RGBD sensor. Our calibration formulation is \todo{very general} and can be readily adapted to either acquisition modalities.
