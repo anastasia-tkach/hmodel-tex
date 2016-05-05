@@ -1,6 +1,9 @@
+% !TEX root = ../hmodel.tex
+
+
 \input{fig/posing/item.tex}
-\section{Overview}
-\label{sec:overview}
+\section{Tracking}
+\label{sec:tracking}
 Given a calibrated hand model $\model$, in our real-time tracking algorithm we optimize the 26 degrees of freedom $\parpose$ so that our hand model matches the sensor input data; the generation of a calibrated model $\model$ for a user is detailed in \Section{modeling}. Directly extending the open source \emph{htrack} framework of \cite{tagliasacchi2015robust}, we write our tracking optimization in Gauss-Newton/Levenberg-Marquardt form
 % 
 \begin{eqnarray}
@@ -20,9 +23,9 @@ where fitting energies are combined with a number of priors to regularize the so
     \item[temporal] the hand is moving smoothly in time
 \end{description}
 % 
-We limit our discussion to the computational elements that are to be adapted to support our convolution model, while referring the reader to \cite{tagliasacchi2015robust} for further details. 
+We limit our discussion to the computational elements that need to be adapted to support our convolution model, while referring the reader to \cite{tagliasacchi2015robust} for further details. 
 % 
-Generally speaking, the similarity of two geometric models is measured by the so-called symmetric Hausdorff distance $d_{X \leftrightarrow Y}$:
+Generally speaking, the similarity of two geometric models is measured by the symmetric Hausdorff distance $d_{X \leftrightarrow Y}$:
 % 
 \begin{eqnarray*}
 d_{X \rightarrow Y} =& \max_{x \in X} \left[ \min_{y \in Y} d(x,y) \right] \\
