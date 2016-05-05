@@ -1,26 +1,7 @@
 % !TEX root = ../hmodel.tex
-
-\section{Convolution Models}
-\label{sec:model}
-
-\todo{Here we describe all the stuff that is common to both modeling and tracking applications: correspondence computation and rendering.}
-
-\input{fig/posing/item.tex}
-\subsection{Posing the model}
-\label{sec:posing}
-% 
-\begin{DRAFT}
-To pose a convolution model the centers ... 
-Where $\Pi$ left multiplies matrices by traversing the kinematic chain $K(i)$ of element $i$ towards the root.
-... $\bar\ballcenter_i$ are written in world coordinates.
-% 
-\begin{equation}
-\ballcenter_i = \left[ \Pi_{k \in K(i)} \mathbf{\bar{T}}_k \mathbf{T}_k \mathbf{\bar{T}}_k^{-1} \right] \bar\ballcenter_i
-\label{eq:kinematic}
-\end{equation}
-% 
-Basically we express the point int he coordinate frame of the k-th element, we apply the posing transformation, then we re-apply the rest pose transformation to bring the point back in world coordinates. ... \TODO{mention \Figure{posing}}
-\end{DRAFT}
+% \section{Convolution Models}
+\label{sec:model} %< OBSOLETE
+% \todo{Here we describe all the stuff that is common to both modeling and tracking applications: correspondence computation and rendering.}
 
 \subsection{Correspondences}
 \label{sec:corresp}
@@ -52,16 +33,19 @@ In monocular (i.e. single sensor) acquisition, an oracle registration algorithm 
 \input{fig/visibility/item.tex}
 
 \paragraph{Silhouette Computation}
-The \emph{object-space silhouette} $\partial \surface$ is a (3D) curve separating front-facing from back-facing portions of a shape~\cite[Sec.1]{olson2006eg}. Similarly to \cite{tagliasacchi2015robust}, to simplify the silhouette computation we approximate the perspective camera of the sensor with an orthographic one. We then offset all convolution elements on the 2D camera plane, and perform a cross-section with this plane. Spheres are replaced with circles and planes/cylinders with segments; see~\Figure{silhouette}-(left). We then compute an \emph{arrangement}, splitting curves whenever intersection or tangency occurs~\Figure{silhouette}-(center). We traverse this graph, starting from a point that is guaranteed to be on the outline (e.g. a point on the bounding box). The traversal selects the next element as the one whose tangent forms the smallest counter-clockwise angle thus identifying the silhouette. Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}. Note the process described above would compute the \emph{image-space silhouette} of our model. Therefore, we apply the process above to palm and fingers separately, and merge them in a second phase. The merge process simply checks whether vertices $v \in \partial \surface$ are contained within the model, that is it discards those where $\implicit_\surface(v)<0$. In our experiments, the average computation of silhouette on the CPU takes \todo{\emph{100 $\mu$s/iteration}}.
+The \emph{object-space silhouette} $\partial \surface$ is a (3D) curve separating front-facing from back-facing portions of a shape~\cite[Sec.1]{olson2006eg}. To simplify the silhouette computation we approximate the perspective camera of the sensor with an orthographic one. We then offset all convolution elements on the 2D camera plane, and perform a cross-section with this plane. Spheres are replaced with circles and planes/cylinders with segments; see~\Figure{silhouette}-(left). We then compute an \emph{arrangement}, splitting curves whenever intersection or tangency occurs~\Figure{silhouette}-(center). We traverse this graph, starting from a point that is guaranteed to be on the outline (e.g. a point on the bounding box). The traversal selects the next element as the one whose tangent forms the smallest counter-clockwise angle thus identifying the silhouette. Once the 2D silhouette has been computed, it can be re-projected in 3D; see \Figure{silhouette}. Note the process described above would compute the \emph{image-space silhouette} of our model. Therefore, we apply the process above to palm and fingers separately, and merge them in a second phase. The merge process simply checks whether vertices $v \in \partial \surface$ are contained within the model, that is it discards those where $\implicit_\surface(v)<0$. In our experiments, the average computation of silhouette on the CPU takes \todo{\emph{100 $\mu$s/iteration}}.
 
 \subsection{Rendering}
+\label{sec:rendering}
 Rendering the convolution model in real time is not only employed for visual verification of tracking performance; e.g. \Figure{coarsemodel}. The real-time tracking algorithm reviewed in \Section{overview} performs a 2D registration in the image plane that requires the computation of an (image-space) silhouette. There are two alternatives for rendering a  convolution model like the one shown in \Figure{topology}. One possibility is to explicitly extract the surface of individual convolution element by computing the convex hull of pairs or triplets of spheres; see \Figure{convsurf} and \cite{ando2013liquid}. While this process would be suitable in applications where the model is fixed, it is hardly appropriate to our scenario where we want to calibrate the model to the user. Therefore, we instead efficiently ray-trace the convolution model on the GPU. We render a unit fullscreen quad, and in the fragment shader we leverage the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each of this ray is intersected with each convolution element of our model in \todo{closed form}, and only the closest intersection point is retained. \AT{how do you perform the intersection tests? do you decompose the surfaces into planes, cones, and spheres or what?} Surface normals at the intersection point are also computed for shading purposes.
 \input{fig/silhouette/item.tex}
 
 
 \MP{The paragraph below can be shortened to one sentence (and without the paragraph heading)}
+\begin{DRAFT}
 \paragraph{Optimization}
 Ray tracing our surface on a framebuffer of size $1280 \times 960$ would consume in average \todo{$\approx 4$ ms/iteration}. However, our optimization requires in the order of 10 iterations to converge, thus upper-bounding the performance of the tracker to 25 \FPS{}. We overcome this issue by rendering the model to a smaller $320 \times 240$ framebuffer texture (the same resolution of textures fetched from the sensor) and up-sampling it with linearly interpolation whenever necessary. This process allows us to reduce the rendering time to~\todo{$\approx.6$~ms/iteration}.
+\end{DRAFT}
 
 \input{fig/calibration/item.tex}
 

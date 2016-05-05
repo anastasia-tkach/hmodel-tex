@@ -2,17 +2,15 @@
 
 \section{Modeling}
 \label{sec:modeling}
-
-
-In this section explain how we build our template model in an off-line preprocess and then discuss how this template can be adjusted to a specific user from RGBD sensor data.
-
+% 
+In this section explain how we build our template model in an off-line preprocess and then discuss how this template can be adjusted to a specific user from RGBD sensor data. \AT{this makes it sounds like a two-steps approach... but it's really not? Also see below.}
 
 \subsection{Template construction}
-
+\begin{DRAFT}
 To obtain an accurate representation of hand geometry in different articulations, we scan a hand by taking on the order of ?? high-resolution photographs from different viewpoints for ?? different poses. From these images we compute dense point clouds for each pose using \emph{Agisoft Photoscan~\textcopyright}.
-
-We manually specified the topology of our convolution surface depicted in Figure~\ref{fig:topology}.  
-Then we optimize for the positions and radii, using manually specified initial values.
+We manually specified the topology of our convolution surface depicted in Figure~\ref{fig:topology}. Then we optimize for the positions and radii, using manually specified initial values.
+\end{DRAFT}
+\AT{I am very confused about this ``template construction'' phase. As you can see in \Figure{calibration} there is not much to construct!}
 
 
 
@@ -26,6 +24,22 @@ Our calibration procedure tailors our template model to a specific user from a s
 The rest-pose geometry of a convolution model is fully specified by the set of sphere positions and radii. Thus, our optimization will be parameterized by two matrices $\centers$ and $\radii$, respectively containing centers $\ballcenter_i$ and their radii $r_i$. However this is not sufficient, as most tracking systems, including the one we build upon, parameterize a pose through the specification of a kinematic chain. 
 \brief{Kinematic Model}
 Every node of the kinematic chain is associated with an orthogonal frame $\mathbf{\bar{T}}_k$ according to which local transformations are specified; see~\Figure{posing}. An an example, transformations for the index finger are parameterized so to result in \todo{flexion} (resp. \todo{abduction}) as a rotation around the local $x$ (resp. $y$) axis. In most tracking systems frame origin and axes are manually specified by a 3D modeling artist, and often initialized as identity matrices. While for most articulations such an approximation is somewhat acceptable, it is particularly challenging to select the correct reference frame for the thumb articulation. In the accompanying video \todo{[00:00]}, we show how incorrect initialization of $\mathbf{\bar{T}}$ can be highly detrimental to tracking quality. For this reason, in our formulation the kinematic structure is automatically inferred from acquired data.
+
+\begin{DRAFT}
+\paragraph{Posing the model}
+\label{sec:posing}
+% 
+To pose a convolution model the centers ... 
+Where $\Pi$ left multiplies matrices by traversing the kinematic chain $K(i)$ of element $i$ towards the root.
+... $\bar\ballcenter_i$ are written in world coordinates.
+% 
+\begin{equation}
+\ballcenter_i = \left[ \Pi_{k \in K(i)} \mathbf{\bar{T}}_k \mathbf{T}_k \mathbf{\bar{T}}_k^{-1} \right] \bar\ballcenter_i
+\label{eq:kinematic}
+\end{equation}
+% 
+Basically we express the point int he coordinate frame of the k-th element, we apply the posing transformation, then we re-apply the rest pose transformation to bring the point back in world coordinates. ... \TODO{mention \Figure{posing}}
+\end{DRAFT}
 
 \paragraph{Formulation}
 Let us partition our free parameters into two sets $\parposture$ and $\parpose$. 
@@ -45,8 +59,10 @@ w_\mathcal{T} E_\mathcal{T}(\depth_n, \parpose_n, \parposture, \centers, \radii)
 We employ a set of energies $\termscalib$ to balance different desired traits. On one side we would like our model $\model$ to be a good fit to our data, on the other we require each posed model to be a piecewise-rigid posing of a non-degenerate convolution template. Our energies $\termscalib$ are:
 % 
 \begin{description}[labelsep=0em,labelwidth=.4in,labelindent=1cm]
-\item[d2m] the data should lie close to our model
-\item[m2d] the model should lie close to the data
+\item[d2m] each data point is explained by the model
+\item[m2d] the model lies in the sensor visual-hull
+% \item[d2m] the data should lie close to our model
+% \item[m2d] the model should lie close to the data
 \item[rigid] convolution elements are posed rigidly
 \item[valid] convolution elements should not degenerate
 \end{description}
@@ -82,23 +98,17 @@ The energies above are non-linear and non-convex, but can be conveniently optimi
 \subsection{Energies}
 We now describe in details the various energies of our optimization. For notational brevity, we gather the parameters of our model as $\pars_n=[\parpose_n, \parposture, \centers, \radii]$.
 
-\paragraph{Data $\rightarrow$ Model}
-Every measurement $\point$ in our data frame $\depth_n$ should be explained by our model. Given an operator $\proj_\model$ computing the projection of $\point$ onto the model $\model$, this requirement is quantified by the energy:
-% 
+\TODO{RE-WRITE THE FITTING ENERGIES?}
+\begin{DRAFT}
 \begin{equation}
-E_{d2m} = \sum_{p \in \depth_n} \| \point - \proj_{\model(\pars_n)}(\point)\|_2^1
-\label{eq:d2m}
-\end{equation}
-% 
-Simply stated, this term measures the integral length of ICP correspondence vectors. Note the use of a robust $\ell_1$ norm to make our correspondences resilient to noise and outliers. 
-
-\paragraph{Model $\rightarrow$ Data}
-As we are seeking for a model which is strictly sufficient to represent our data, we need to ensure that \todo{no portion of the model remains unused} \AT{better way of saying this?}. The data-to-model term encodes an approximation of the \emph{one-sided} Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences:
-\begin{equation}
-E_{d2m} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)\|_2^1
+E_{\model \rightarrow \depth} = \sum_{\point \in \model(\pars_n)} \| \point - \proj_{\depth_n}(\point)\|_2^1
 \label{eq:m2d}
 \end{equation}
-The set of points $\point$ can be obtained by rasterizing our model. Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data being used. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator is similar to the one used for \Eq{d2m}: we build a kd-tree for the point cloud in frame $\depth_n$ and fetch the closest point to $\point$. Conversely, if the data in $\depth_n$ has been obtained through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
+As we are seeking for a model which is strictly sufficient to represent our data, we need to ensure that \todo{no portion of the model remains unused} \AT{better way of saying this?}. 
+The data-to-model term encodes an approximation of the \emph{one-sided} Hausdorff distance, but this is insufficient in applications where the tracking template is unknown. An approximation of the \emph{symmetric} Hausdorff distance can be obtained by also accounting for model-to-data correspondences
+% 
+Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data being used. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator is similar to the one used for \Eq{d2m}: we build a kd-tree for the point cloud in frame $\depth_n$ and fetch the closest point to $\point$. Conversely, if the data in $\depth_n$ has been obtained through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
+\end{DRAFT}
 
 \paragraph{Rigidity}
 It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose. This can be achieved by simply requiring that each segment $\edge$ in our posed control skeleton $\skeleton_n$ to have the same length as the corresponding segment $\bar\edge$ in the rest pose configuration:
