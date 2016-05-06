@@ -1,15 +1,36 @@
+\providecommand{\tangent}{\mathbf{t}}
+\providecommand{\normal}{\mathbf{n}}
 \begin{figure}[t]
 \centering
 \begin{overpic} 
 [width=\linewidth]
-% [width=\linewidth,grid,tics=10]
+% [width=\linewidth,grid,tics=5]
 {fig/corresp/item.pdf}
-% \put(10,10){\todo{\Large Overlay Text}}
+%--- LEFT
+\put(13,12){$\ballcenter_1$}
+\put(10,27){$\tangent_1$}
+\put(41,11){$\ballcenter_2$}
+\put(42,23){$\tangent_2$}
+\put(27,12){$\skewproj$}
+\put(27,21){$\footpoint$}
+\put(27,28){$\normal$}
+\put(28,34){$\point$}
+%--- RIGHT
+\put(60,10){$\ballcenter_1$}
+\put(83,05){$\ballcenter_2$}
+\put(92,17){$\ballcenter_3$}
+\put(59,19){$\tangent_1$}
+\put(93,24){$\tangent_2$}
+\put(83,13){$\tangent_3$}
+\put(74,13){$\skewproj$}
+\put(74,19){$\footpoint$}
+\put(74,24){$\normal$}
+\put(74.5,31){$\point$}
 \end{overpic}
 \caption{
 % 
 % 
-The computation of closest point correspondences on pill (left) and wedge (right) convolution elements can be performed by tracing a ray along the normal of the circles (resp. sphere) tangent line (resp. plane). \TODO{how to subscript in illustrator?} \MP{I usually prefer overpic and use latex. It's a bit painful, but usually looks much nicer}
+The computation of closest point correspondences on pill (left) and wedge (right) convolution elements can be performed by tracing a ray along the normal of the circles (resp. sphere) tangent line (resp. plane). 
 %
 %
 }
