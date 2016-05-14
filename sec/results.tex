@@ -13,6 +13,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 \input{fig/motiontypes/item.tex}
 
+
 \providecommand{\depthrend}{\mathcal{R}}
 \providecommand{\metricone}{E_\text{3D}}
 \providecommand{\metrictwo}{E_\text{2D}}
@@ -23,7 +24,6 @@ For this reason, we propose several easy-to-compute metrics to evaluate the qual
 % 
 We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \AT{We have to explain why the ``golden energy'' is not sufficient; perhaps we can say more once we see the results.}
 
-\input{fig/comp1/item.tex}
 
 \paragraph{Fitting residuals (3D)}
 As we are seeking high-quality alignement every pixel from the sensor data should lie in the proximity of the model. Here the $\proj_\depthrend$ computes the closest point correspondence to the point cloud of the rendered model:
@@ -32,6 +32,9 @@ As we are seeking high-quality alignement every pixel from the sensor data shoul
 \label{eq:metric1}
 \end{equation}
 Differently from tracking these can be fetched with a kd-tree.
+
+
+\input{fig/barchart/item.tex}
 
 \paragraph{Silhouette residuals (2D)}
 Computing model-to-data registration residuals in 3D is not meaningful \todo{because blah}. Therefore, we evaluate the registration residual in the 2D projective space. 
@@ -45,7 +48,7 @@ Computing model-to-data registration residuals in 3D is not meaningful \todo{bec
 \end{eqnarray}
 Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Further, note that DT evaluates to zero for a pixel inside the silhouette. 
 
-\input{fig/comp2/item.tex}
+
 
 \paragraph{Golden Energy}
 Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:
@@ -55,6 +58,7 @@ E_{\text{Au}} = \sum_{ij} \rho(\depth(i,j) - \depthrend(i,j))
 \end{equation}
 where $\rho(e)=\min(|e|,\tau)$ is a truncated $\ell_1$ distance to make the metric less sensitive to outliers ($\tau=100mm$). Pixels outside the region of interest are mapped to the far plane $\depth^\text{max}$.
 
-\input{fig/barchart/item.tex}
 \paragraph{Comparison to HTrack}
 % \protect\cite{tagliasacchi2015robust}
+
+
