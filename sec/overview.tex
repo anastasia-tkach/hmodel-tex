@@ -37,7 +37,7 @@ We therefore interpret our terms $E_{d2m}$ and $E_{m2d}$ as approximations to th
 The first asymmetric distance minimizes the average closest point projection of each point $\point$ in the current data frame $\depth$:
 %
 \begin{equation}
-E_{d2m} = \frac{1}{|\depth|}\sum_{\point \in \depth} \| \point - \proj_{\model(\pars)}(\point)\|_2^1
+E_{d2m} = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_{\model(\pars)}(\point)\|_2^1
 \label{eq:d2m}
 \end{equation}
 % 
@@ -46,11 +46,12 @@ Adapting this energy, as well as its derivatives, to the convolution models requ
 \paragraph{Model $\rightarrow$ Data}
 The second asymmetric distance considers how our monocular acquisition system does not have a complete view of the model. While the 3D location is unknown, we can penalize the model from lying outside the sensor's image-space visual hull:
 \begin{equation}
-E_{m2d} = \frac{1}{|\model(\pars)|} \sum_{\pixel \in \model(\pars)} \| \pixel - \proj_{\depth}(\pixel)\|_2^1
+E_{m2d} = |\model(\pars)|^{-1} \sum_{\pixel \in \model(\pars)} \| \pixel - \proj_{\depth}(\pixel)\|_2^1
 \label{eq:m2d}
 \end{equation}
 In the equation above, the set of pixels $\pixel \in \model(\pars)$ is produced by the rasterization process detailed in \Section{rendering} that renders the model with the same intrinsic and extrinsic parameters of the sensor camera. 
 
-\paragraph{Pose space retargeting}
-\TODO{Should we say something here?}
-\TODO{The wrist fitting term is missing and a convolution element for the wrist is used instead.}
+% ANASTASIA ONLY NEEDED TO DO THIS ONCE
+% \paragraph{Pose space retargeting}
+% \TODO{Should we say something here?}
+% \TODO{The wrist fitting term is missing and a convolution element for the wrist is used instead.}

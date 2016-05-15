@@ -1,7 +1,18 @@
-
+\endinput
 % \input{fig/pipeline.tex} %<<< TO REMOVE!
 
-\endinput
+% \paragraph{Rigidity - OLD}
+% \begin{DRAFT}
+% We encode this requirement by requiring each edge $\edge_k$ in each posed skeleton $\skeleton_n$ to be a rotation of rotation $R_{k}$ of its rest-pose configuration~$\bar\edge_k$:
+% \begin{equation}
+% E_{\text{rigid}} = \sum_{\edge_k \in \skeleton_n} \| \edge_k  - R_{k}{\bar\edge_k} \|_2^2
+% \label{eq:rigidity}
+% \end{equation}
+% Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy this rigidity requirement. At the cost of introducing auxiliary variables $R_{i}$, this energy becomes independent from pose $\parposes$ and posture $\parposture$ angles.
+% \end{DRAFT}
+%
+
+% pose and posture are optimized jointly by fixing the geometry of the template and aligning multiple instances to each frame. The kinematic chain is adjusted by refining the rest-pose transformations $\mathbf{\bar{T}}_k$; note only the rotational degrees of freedom of $\mathbf{\bar{T}}_k$ are optimized for, as frame translations are inferred from $\skeleton$.
 
 % The first reason is that we want ensure that the resulting hand model will be able to assume all the poses that a real hand can, or at least the subset of poses for which we have the point clouds.
 % The second reason is that the artifacts present in some input point clouds might be compensated by the others, so it is possible to accumulate information this way.
