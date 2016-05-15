@@ -63,17 +63,17 @@ The energies above are non-linear and non-convex, but can be optimized offline, 
 \input{fig/calibration/item.tex}
 
 \subsection{Energies}
-Our fitting energies are analogous to the ones used in tracking, and approximate the symmetric Hausdorff distance. Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator fetches the closest point to $\point$ in the point cloud of frame $\depth_n$. If $\depth_n$ is acquired through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model:
+Our fitting energies are analogous to the ones used in tracking. They approximate the symmetric Hausdorff distance, but they are evaluated on a collection rather than a single data frame:
+% 
 \begin{eqnarray}
 E_{d2m} = |\depth_n|^{-1} \sum_{\point \in \depth_n} \| \point - \proj_{\model(\pars)}(\point)\|_2^1 \\
 E_{m2d} = |\model(\pars)|^{-1} \sum_{\pixel \in \model(\pars)} \| \pixel - \proj_{\depth_n}(\pixel)\|_2^1
 \end{eqnarray}
-
-
-
+% 
+Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator fetches the closest point to $\point$ in the point cloud of frame $\depth_n$. If $\depth_n$ is acquired through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
 
 \paragraph{Rigidity}
-It is essential that we recover a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose. This can be achieved by requiring each segment $\edge$ in our posed centers $\centers_n$ to have the same length as the corresponding segment $\bar\edge$ in its rest pose configuration:
+It is essential to estimate a template that \emph{jointly} fits the set of data frames $\{ \depth_n \}$. We achieve this task by requiring each posed model to be a piecewise-rigid articulation of our rest pose. This can be achieved by requiring each segment $\edge$ in our posed centers $\centers_n$ to share the same length as the corresponding segment $\bar\edge$ in its rest pose configuration:
 % 
 \begin{equation}
 E_{\text{rigid}} = \sum_{\edge \in \centers_n} (\| \edge \| - \| \bar\edge \|)^2
