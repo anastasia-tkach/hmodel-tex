@@ -19,3 +19,5 @@ The topology of our template has been defined in a manual trial-and-error proces
 \AT{FUTURE: with the introduction of compute shaders, it will make complete sense to perform brute-force closest point lookup on the GPU. Just like today nobody uses CPU for rendering a 3D scene in real-time, it is possible nobody will perform alignment queries on the CPU. I think the first version of kinect was doing much of the computation on an FPGA...}
 
 \AT{FUTURE: generate convolution models in a neural network? (given skeleton)}
+
+\Anastasia{Also, I think it is important to mention that in all the sequences the depth data is downsampled 4 times. Otherwise, the reviewers might say that our tracking looks better because the hand is very close to the sensor. It is close that that it can be seen better}
