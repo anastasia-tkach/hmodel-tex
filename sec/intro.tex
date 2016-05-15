@@ -17,7 +17,6 @@ With the imminent advent of consumer-level virtual and augmented reality technol
 
 \paragraph{Tracking: discriminative v.s. generative}
 Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{keskin2012hand}, and \emph{generative} approaches such as \cite{oiko2011hand}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud and to regularize its motion through time. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
-\TODO{mention no need to re-init $\gg$FPS?}.
 
 The main goal of this paper is to explore novel tracking models that strike an optimal balance between accuracy and performance. More specifically, we propose a geometric model that more accurately captures the user's hand geometry, while retaining the ability to answer registration queries in closed form with very high efficiency. In \Figure{coarsemodel} and \todo{Video [00:00]} we illustrate the importance of employing a tracking template that strikes this delicate balance.
 
@@ -41,8 +40,8 @@ where $\skeleton$ is a skeletal control mesh (a segment or a triangle in the sim
 \begin{equation}
 \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
 \end{equation}
-The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii are a function of the position $\mathbf{c}$ within an element, linearly interpolated from values $r_*=r(c_*)$ specified on the skeletal mesh vertices $c_*$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\surface = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\skeleton$ is an explicit representation (i.e.\ a simplicial complex). We generalize this basic construct to devise a model suitable to represent a human hand; see \Figure{topology}.
-\todo{Note that while the integral in \Eq{convsurf} might be difficult to evaluate, distances to $\surface$ can conveniently be computed by querying distances to the piecewise linear structures composing $\skeleton$; see \Figure{convsurf}.}
+The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii are a function of the position $\mathbf{c}$ within an element, linearly interpolated from values $r_*=r(c_*)$ specified on the skeletal mesh vertices $c_*$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\surface = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\skeleton$ is an explicit representation (i.e.\ a simplicial complex). We generalize this construct to devise a model suitable to represent a human hand; see \Figure{topology}.
+While the integral in \Eq{convsurf} might appear complex to evaluate, distances to $\surface$ can conveniently be computed by querying distances to the piecewise linear elements of $\skeleton$; see \Figure{convsurf}.
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models}
@@ -84,10 +83,18 @@ At the same time, due to a very compact model representation and closed-form cor
 %% \item Automatically identifies the degrees of freedom and axes of rotation from data
 
 \paragraph{Overview}
-The remainder of the paper is structured as follows: We first survey related work in Section~\ref{sec:related} and review in more detail the ICP-based generative approach for tracking that we employ in our system in \Section{tracking}.
-We then introduce our convolution surface model that allows modeling human hands at high geometric fidelity for improved tracking accuracy. We show how our novel formulation enables efficient correspondence computation crucial for realtime tracking \AT{not true?}.
-Section~\ref{sec:modeling} explains how we build our template model from 3D scans in an offline preprocess and how this template can be calibrated online towards a specific user based on RBGD sensor input only.
-In Section~\ref{sec:results} we analyze the performance of our convolution surface model for realtime hand tracking and provide comparisons to alternative methods. We conclude with a discussion of current limitations and ideas for future work.
+The remainder of the paper is structured as follows: We survey related work in \Section{related}, and describe our generative real-time tracking technique in \Section{tracking} detailing how our novel formulation enables efficient correspondence computation.
+% 
+\Section{modeling} explains how we build our template model from 3D scans acquired either through multi-view stereo or from depth maps.
+% 
+In \Section{results} we analyze the performance of our convolution surface model for realtime hand tracking and provide comparisons to alternative methods. 
+% 
+We conclude in \Section{discussion} with a discussion of current limitations and ideas for future work.
+ 
+
+\AT{I think we should mention the video here!}
 
 
+% calibrated online towards a specific user based on RBGD sensor input only.
+% We then introduce our convolution surface model that allows modeling human hands at high geometric fidelity for improved tracking accuracy.
 

@@ -2,12 +2,13 @@
 \section{Discussion}
 \label{sec:discussion}
 
-
 \AT{Sentence from CONCERTO: ``The correspondences now contribute only a small computational cost to each iteration, comparing very favourably with ICP, where a 
 closest-point operation must be performed on each iteration for each data point.'' For convtrack this is not a problem because it's very cheap, yet we can get a very good fitting model}
 
 % The core investigation in this paper is whether convolutional surfaces are a viable alternative for realtime hand tracking with single-view RBGD sensors. 
 % Our hypothesis is that the increased geometry accuracy compared with cylinder models allows for a higher tracking precision without impairing the computational performance of the tracking algorithm.
+
+\TODO{mention no need to re-init $\gg$FPS?}.
 
 \paragraph{Limitations} 
 The topology of our template has been defined in a manual trial-and-error process. A more suitable topology can probably be found using an optimization process, possibly even adapting the topology for specific users, which would be an interesting avenue for future research. $\quad$ Model calibration is currently done separately before the tracking starts. For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.

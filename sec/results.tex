@@ -3,7 +3,7 @@
 \label{sec:results}
 
 
-\todo{In our research, beyond releasing a dataset specifically designed to evaluate high precision tracking and propose metrics to quantitatively evaluate  performance in an algorithm-independent fashion.}
+In our research, beyond releasing a dataset specifically designed to evaluate high precision tracking and propose metrics to quantitatively evaluate  performance in an algorithm-independent fashion.
 
 \subsection{Database}
 \begin{DRAFT}
@@ -17,22 +17,22 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 \subsection{Comparison Metrics}
 Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms of \cite{sharp2015accurate} and \cite{tagliasacchi2015robust} have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
 % 
-For this reason, we propose several easy-to-compute metrics to evaluate the quality of generative algorithms for modeling/tracking. A core element that makes these metrics appealing is that, much like key feature positions, they are completely algorithm (and hence model) independent. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
+For this reason, we propose several easy-to-compute metrics to evaluate the quality of generative algorithms for modeling/tracking. A core element that makes these metrics appealing is that, much like key feature positions, they are completely algorithm independent. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
 % 
-We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \AT{We have to explain why the ``golden energy'' is not sufficient; perhaps we can say more once we see the results.}
+We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \todo{And with this sentence I explain why the ``golden energy'' is not sufficient}
 
 
 \input{fig/motiontypes/item.tex}
 
-\paragraph{Fitting residuals (3D)}
+\paragraph{Data $\rightarrow$ Model}
 As we are seeking high-quality alignement every pixel from the sensor data should lie in the proximity of the model. Here the $\proj_\depthrend$ computes the closest point correspondence to the point cloud of the rendered model:
 \begin{equation}
-\metricone = \frac{1}{|\depth|}\sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^2
+\metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^2
 \label{eq:metric1}
 \end{equation}
 Differently from tracking these can be fetched with a kd-tree.
 
-\paragraph{Silhouette residuals (2D)}
+\paragraph{Model $\rightarrow$ Data}
 Computing model-to-data registration residuals in 3D is not meaningful \todo{because blah}. Therefore, we evaluate the registration residual in the 2D projective space. 
 \begin{eqnarray}
 \metrictwo 
@@ -44,15 +44,13 @@ Computing model-to-data registration residuals in 3D is not meaningful \todo{bec
 \end{eqnarray}
 Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Further, note that DT evaluates to zero for a pixel inside the silhouette. 
 
-
-
-\paragraph{Golden Energy}
-Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:
-\begin{equation}
-E_{\text{Au}} = \sum_{ij} \rho(\depth(i,j) - \depthrend(i,j))
-\label{eq:golden}
-\end{equation}
-where $\rho(e)=\min(|e|,\tau)$ is a truncated $\ell_1$ distance to make the metric less sensitive to outliers ($\tau=100mm$). Pixels outside the region of interest are mapped to the far plane $\depth^\text{max}$.
+% \paragraph{Golden Energy}
+% Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:
+% \begin{equation}
+% E_{\text{Au}} = \sum_{ij} \rho(\depth(i,j) - \depthrend(i,j))
+% \label{eq:golden}
+% \end{equation}
+% where $\rho(e)=\min(|e|,\tau)$ is a truncated $\ell_1$ distance to make the metric less sensitive to outliers ($\tau=100mm$). Pixels outside the region of interest are mapped to the far plane $\depth^\text{max}$.
 
 \input{fig/barchart/item.tex}
 \paragraph{Comparison to HTrack}
