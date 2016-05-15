@@ -1,17 +1,24 @@
 % !TEX root = ../hmodel.tex
 \section{Results}
 \label{sec:results}
-We evaluate our technique on a variety of sequences, across a number of users and performed a qualitative as well as quantitative evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \todo{\emph{handy}} dataset associated with these metrics.
+We evaluate our technique on a variety of sequences, across a number of users and performed qualitative as well as quantitative evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \todo{\emph{\textsc{handy}}} dataset associated with these metrics.
 
 \paragraph{Calibration}
-The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to calibrate a \todo{consensual} articulated model. We refer the reader to \Video{00:00} to better appreciate our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the user pose.
+The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to calibrate a \todo{consensual} articulated model. We refer the reader to \Video{00:00} to better appreciate our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the user pose. In our experiments we discovered it is crucial to identify the typical kinematic chain (using the dataset in \Figure{calibration}), while only minor changes took place in per-user adaptation.
+
+\paragraph{Comparison Metrics}
+Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
+% 
+For this reason, we propose two easy-to-compute metrics to evaluate the quality of generative algorithms for modeling/tracking. A core element that makes these metrics appealing is that, much like key feature positions, they are completely \emph{algorithm agnostic}. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
+% 
+We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. Note \cite{sharp2015accurate} proposed the \emph{golden energy} which is similar in spirit, but does not directly encode an approximation of the previously discussed monocular Hausdorff distance like ours do.
 
 \paragraph{Quantitative evaluation}
 Our algorithm has been developed for the \realsense{} SR300 (QVGA, 60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it in order to enable quantitative comparisons.
 % 
 Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires manual parameter tweaking, something extremely challenging to achieve without direct access to every specific hardware variant.
 % 
-For these reasons, comparing to datasets developed on different sensors like \emph{Dexter}~\cite{sridhar2013multicam} or \emph{FingerPaint}~\cite{sharp2015accurate} is extremely challenging. 
+For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{}~\cite{sharp2015accurate} is extremely challenging. 
 Further, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz.
 
 \clearpage
@@ -29,12 +36,7 @@ seq7: sharp2 - fast rigid  \\
 seq8: sharp3 - rotating fist
 
 
-\subsection{Comparison Metrics}
-Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms of \cite{sharp2015accurate} and \cite{tagliasacchi2015robust} have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
-% 
-For this reason, we propose several easy-to-compute metrics to evaluate the quality of generative algorithms for modeling/tracking. A core element that makes these metrics appealing is that, much like key feature positions, they are completely algorithm independent. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
-% 
-We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \todo{And with this sentence I explain why the ``golden energy'' is not sufficient}
+
 
 
 \input{fig/motiontypes/item.tex}
