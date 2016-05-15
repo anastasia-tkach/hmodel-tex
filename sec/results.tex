@@ -11,9 +11,6 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 \end{DRAFT}
 \todo{seq1: concerto1 - rigid motion, clenching fist, seq2: shidhar1 - extending one finger, seq3: shidhar2 - fingers contact, seq4: shidhar4 - crossing fingers, seq5: shidhar5 - pinching, seq6: sharp1 - fast articulated motion, unlikely poses, extending finger, seq7: sharp2 - fast rigid, seq8: sharp3 - rotating fist}
 
-\input{fig/motiontypes/item.tex}
-
-
 \providecommand{\depthrend}{\mathcal{R}}
 \providecommand{\metricone}{E_\text{3D}}
 \providecommand{\metrictwo}{E_\text{2D}}
@@ -24,6 +21,8 @@ For this reason, we propose several easy-to-compute metrics to evaluate the qual
 % 
 We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. \AT{We have to explain why the ``golden energy'' is not sufficient; perhaps we can say more once we see the results.}
 
+
+\input{fig/motiontypes/item.tex}
 
 \paragraph{Fitting residuals (3D)}
 As we are seeking high-quality alignement every pixel from the sensor data should lie in the proximity of the model. Here the $\proj_\depthrend$ computes the closest point correspondence to the point cloud of the rendered model:

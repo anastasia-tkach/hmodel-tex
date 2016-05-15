@@ -1,6 +1,48 @@
+
 % \input{fig/pipeline.tex} %<<< TO REMOVE!
 
 \endinput
+
+% The first reason is that we want ensure that the resulting hand model will be able to assume all the poses that a real hand can, or at least the subset of poses for which we have the point clouds.
+% The second reason is that the artifacts present in some input point clouds might be compensated by the others, so it is possible to accumulate information this way.
+% For fitting we use the same optimization framework as for tracking (in a hope to extend it to fitting \& tracking real time system).
+% The main difference is that instead of the joint angles $\theta$, the hand model is parametrized by convolution surface centers locations and radii $[c , r]$.
+% \begin{equation*}
+% \sigma =\underset{\sigma}{\operatorname{argmin}} \; E_\text{d2m} + E_\text{m2d} + E_\text{rigid} + E_\text{valid}
+% \end{equation*}
+% \subsection{Optimization}
+
+% \paragraph{Synchronizing rotations energy}
+% \AT{This is now obsolete, as we encode common rotation frames for nodes of the kinematic chain} This energy ensures that initial rotations are similar for all the poses. The common initial rotations are computed as described in the section ``Initial Rotations''. The energy minimizes the distance between the current centers and the centers locations with common initial rotations. This energy is very important, because it constraints fingers motion in meaningful way. In the absence of this energy each joint bends in arbitrary direction.
+
+% The first attempt was to make the model-data energy also the same as in Htrack. But probably due to more non-linear gradients that expression was giving unstable optimization, because it was involving a projection operator. So, the model-data energy is replaced by a similar energy, but in 3D space. \Anastasia{Maybe we could just say that it is exactly the same?}.
+% The model-data correspondences are also computed by rendering the model and the data, identifying the model points that are outside of the data silhouette and finding the closest data points in 2D using a distance transform. Afterwards for each 2D correspondence pair $\{m_{2D}, p_{2D}$\}, the original 3D points $\{m, p\}$ are looked up. We minimize the distance between $m$ and $p$ in the direction orthogonal to the camera ray that goes through $p$.
+% \input{fig/optimization/item}
+% \begin{equation*}
+% E_\text{model-data} = \underset{m\in M}\sum n^T(p - m(\sigma))
+% \end{equation*}
+
+% This energy ensures that pills do not degenerate into spheres and wedges do not degenerate into pills. A pill becomes degenerate if one of the spheres is completely inside of another sphere. A wedge becomes degenerate if a sphere is completely inside of the tangent cone of two other spheres. The energy switches on if a pill or a wedge is within a threshold of becoming degenerate and pushes the optimization away.
+
+% 
+%In this section explain how we build our template model in an off-line preprocess and then discuss how this template can be adjusted to a specific user from RGBD sensor data. \AT{this makes it sounds like a two-steps approach... but it's really not? Also see below.}
+%
+%\subsection{Template construction}
+%\begin{DRAFT}
+%To obtain an accurate representation of hand geometry in different articulations, we scan a hand by taking on the order of ?? high-resolution photographs from different viewpoints for ?? different poses. From these images we compute dense point clouds for each pose using \emph{Agisoft Photoscan~\textcopyright}.
+%We manually specified the topology of our convolution surface depicted in Figure~\ref{fig:topology}. Then we optimize for the positions and radii, using manually specified initial values.
+%\end{DRAFT}
+%\AT{I am very confused about this ``template construction'' phase. As you can see in \Figure{calibration} there is not much to construct!}
+%
+%
+%
+%\subsection{User calibration} 
+
+% In the accompanying video \todo{[00:00]}, we show how incorrect initialization of $\mathbf{\bar{T}}$ can be highly detrimental to tracking quality. For this reason,
+% While for most articulations such an approximation is somewhat acceptable, it is particularly challenging to select the correct reference frame for the thumb articulation.
+% However, this is not sufficient, as most tracking systems, including the one we build upon, parameterize a pose through the specification of a kinematic chain.
+% An an example, transformations for the index finger are parameterized so to result in \todo{flexion} (resp. \todo{abduction}) as a rotation around the local $x$ (resp. $y$) axis.
+% \AT{We should write $\restcenters$ as the positions at rest, while $\posedcenters$ as the set of posed convolution models.}
 
 % \AT{I am very confused about what you wrote below, it doesn't look like an optimization problem at all... so in ``Chain Optimization'' I simply formalized what I had hand-written in the past -- please let me know if everything is clear!!.}
 %
