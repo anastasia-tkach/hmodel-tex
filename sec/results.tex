@@ -1,19 +1,34 @@
 % !TEX root = ../hmodel.tex
 \section{Results}
 \label{sec:results}
+We evaluate our technique on a variety of sequences, across a number of users and performed a qualitative as well as quantitative evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \todo{\emph{handy}} dataset associated with these metrics.
+
+\paragraph{Calibration}
+The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to calibrate a \todo{consensual} articulated model. We refer the reader to \Video{00:00} to better appreciate our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the user pose.
+
+\paragraph{Quantitative evaluation}
+Our algorithm has been developed for the \realsense{} SR300 (QVGA, 60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it in order to enable quantitative comparisons.
+% 
+Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires manual parameter tweaking, something extremely challenging to achieve without direct access to every specific hardware variant.
+% 
+For these reasons, comparing to datasets developed on different sensors like \emph{Dexter}~\cite{sridhar2013multicam} or \emph{FingerPaint}~\cite{sharp2015accurate} is extremely challenging. 
+Further, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz.
+
+\clearpage
 
 
-In our research, beyond releasing a dataset specifically designed to evaluate high precision tracking and propose metrics to quantitatively evaluate  performance in an algorithm-independent fashion.
 
 \subsection{Database}
-\begin{DRAFT}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-\end{DRAFT}
-\todo{seq1: concerto1 - rigid motion, clenching fist, seq2: shidhar1 - extending one finger, seq3: shidhar2 - fingers contact, seq4: shidhar4 - crossing fingers, seq5: shidhar5 - pinching, seq6: sharp1 - fast articulated motion, unlikely poses, extending finger, seq7: sharp2 - fast rigid, seq8: sharp3 - rotating fist}
+seq1: concerto1 - rigid motion, clenching fist \\
+seq2: shidhar1 - extending one finger \\
+seq3: shidhar2 - fingers contact \\
+seq4: shidhar4 - crossing fingers \\ 
+seq5: shidhar5 - pinching \\
+seq6: sharp1 - fast motion, unlikely poses, extending finger \\ 
+seq7: sharp2 - fast rigid  \\
+seq8: sharp3 - rotating fist
 
-\providecommand{\depthrend}{\mathcal{R}}
-\providecommand{\metricone}{E_\text{3D}}
-\providecommand{\metrictwo}{E_\text{2D}}
+
 \subsection{Comparison Metrics}
 Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms of \cite{sharp2015accurate} and \cite{tagliasacchi2015robust} have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
 % 
@@ -26,23 +41,24 @@ We achieve this goal by expressing these metrics exclusively as a function of th
 
 \paragraph{Data $\rightarrow$ Model}
 As we are seeking high-quality alignement every pixel from the sensor data should lie in the proximity of the model. Here the $\proj_\depthrend$ computes the closest point correspondence to the point cloud of the rendered model:
+% 
 \begin{equation}
 \metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^2
 \label{eq:metric1}
 \end{equation}
+% 
 Differently from tracking these can be fetched with a kd-tree.
 
 \paragraph{Model $\rightarrow$ Data}
 Computing model-to-data registration residuals in 3D is not meaningful \todo{because blah}. Therefore, we evaluate the registration residual in the 2D projective space. 
 \begin{eqnarray}
-\metrictwo 
-&=& \frac{1}{|\depthrend \setminus \partial\depth|} 
-\sum_{\pixel \in \depthrend \setminus \partial\depth} \| \pixel - \proj_{\partial\depth}(\pixel) \|_2 \\ 
-&=& \frac{1}{|\depthrend \setminus \partial\depth|} 
-\sum_{\pixel \in \depthrend \setminus \partial\depth} \text{DT}(\pixel)
+\metrictwo = |\depthrend \setminus \partial\depth|^{-1} 
+\sum_{\pixel \in \depthrend \setminus \partial\depth} \| \pixel - \proj_{\partial\depth}(\pixel) \|^1_2
+% &=& |\depthrend \setminus \partial\depth|^{-1}
+% \sum_{\pixel \in \depthrend \setminus \partial\depth} \text{DT}(\pixel)
 \label{eq:metric2}
 \end{eqnarray}
-Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Further, note that DT evaluates to zero for a pixel inside the silhouette. 
+Note how above each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform DT of the RoI's (image-space) silhouette $\partial \depth$. Also note that DT evaluates to zero for a pixel inside the silhouette. 
 
 % \paragraph{Golden Energy}
 % Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:
@@ -52,8 +68,4 @@ Note how above each term above can be evaluated efficiently by pre-computing the
 % \end{equation}
 % where $\rho(e)=\min(|e|,\tau)$ is a truncated $\ell_1$ distance to make the metric less sensitive to outliers ($\tau=100mm$). Pixels outside the region of interest are mapped to the far plane $\depth^\text{max}$.
 
-\input{fig/barchart/item.tex}
-\paragraph{Comparison to HTrack}
 % \protect\cite{tagliasacchi2015robust}
-
-
