@@ -28,7 +28,7 @@ The state-of-the-art in tracking performance is achieved by \emph{hybrid} algori
 Another class of hybrid algorithms introduce correspondences through a labeling obtained through a per-pixel forest  classifier~\cite{sridhar2015fast,fleishman2015icpik}.
 % 
 % What we (do not) cover?
-Our literature review focuses on generative approaches, while we refer the reader to the very recent work by Taylor and colleagues \shortcite{taylor2016concerto} for a review of recent discriminative methods. Commercial systems for hand tracking like the \emph{NimbleVR\textcopyright}, the \emph{LeapMotion\textcopyright} and the \emph{Intel Perceptual SDK\textcopyright} also exist, but it is difficult to consider them as the underlying technology is currently undisclosed. 
+Our literature review focuses on generative approaches, while we refer the reader to the very recent work by Taylor and colleagues \shortcite{taylor2016concerto} for a review of recent discriminative methods. Commercial systems for hand tracking like the \emph{NimbleVR\textcopyright}, the \emph{LeapMotion Orion\textcopyright} and the \emph{Intel Perceptual SDK\textcopyright} also exist, but it is difficult to consider them as the underlying technology is currently undisclosed. 
 % \AT{I tested them and I \emph{think} they are discriminative}
 
 \paragraph{Generative tracking models}
@@ -53,9 +53,7 @@ Implicit sculpting tools have recently become a viable alternative to mesh or sp
 For articulated geometry, it is often convenient to first create a coarse geometric structure analogous to the one described in~\Equation{convsurf}, a process that \emph{PixoLogic} has re-branded as \emph{ZSphere~{\textcopyright}} modeling; see \Figure{zsphere}. Editing the radii and centers of the convolution model is offers a \emph{natural} way of editing the model, making it easy for both humans and algorithms to calibrate.
 % Manually calibrating a convolution model is intuitive for a human, as it involves editing of a few sphere centers and radii. This leads to a simple and effective automated calibration algorithm.
 Note that any geometric model can be approximated, to any desired precision, as a union of spheres~\cite{tagliasacchi2016skeletons}. 
-However, by considering spheres that are linearly interpolated across edges, we can heavily reduce the required number of primitives. Following this principle, \cite{thiery2013sphere} recently investigated a method to automatically generate \emph{Sphere Meshes} provided a  (static) input model. Extending this work, \cite{thiery2016spheremesh} proposed a method to fit a model through an (dynamic) animated mesh. While seemingly related, our calibration optimization is solving a fundamentally different problem, as in our technique a template is provided in input.
-
-However, a mixture of implicit and explicit representations is key in achieving high quality skinning deformations at interactive rates \cite{vaillant2013implicit,vaillant2014robust}.
+However, by considering spheres that are linearly interpolated across edges, we can heavily reduce the required number of primitives. Following this principle, \cite{thiery2013sphere} recently investigated a method to automatically generate \emph{Sphere Meshes} provided a  (static) input model. Extending this work, \cite{thiery2016spheremesh} proposed a method to fit a model through an (dynamic) animated mesh. While seemingly related, our calibration optimization is solving a fundamentally different problem, as in our technique a template is provided in input. However, a mixture of implicit and explicit representations is key in achieving high quality skinning deformations at interactive rates \cite{vaillant2013implicit,vaillant2014robust}.
 
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
