@@ -6,18 +6,11 @@
 \AT{Sentence from CONCERTO: ``The correspondences now contribute only a small computational cost to each iteration, comparing very favourably with ICP, where a 
 closest-point operation must be performed on each iteration for each data point.'' For convtrack this is not a problem because it's very cheap, yet we can get a very good fitting model}
 
+\AT{Something about the fact that rather than mentioning thresholds and values and gradients we just provide source code for it?}
+
 % The core investigation in this paper is whether convolutional surfaces are a viable alternative for realtime hand tracking with single-view RBGD sensors. 
 % Our hypothesis is that the increased geometry accuracy compared with cylinder models allows for a higher tracking precision without impairing the computational performance of the tracking algorithm.
 
 \TODO{mention no need to re-init $\gg$FPS?}.
-
-\paragraph{Limitations} 
-The topology of our template has been defined in a manual trial-and-error process. A more suitable topology can probably be found using an optimization process, possibly even adapting the topology for specific users, which would be an interesting avenue for future research. $\quad$ Model calibration is currently done separately before the tracking starts. For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.
-
-\AT{FUTURE: extension of our method to full body tracking?}
-
-\AT{FUTURE: with the introduction of compute shaders, it will make complete sense to perform brute-force closest point lookup on the GPU. Just like today nobody uses CPU for rendering a 3D scene in real-time, it is possible nobody will perform alignment queries on the CPU. I think the first version of kinect was doing much of the computation on an FPGA...}
-
-\AT{FUTURE: generate convolution models in a neural network? (given skeleton)}
 
 \Anastasia{Also, I think it is important to mention that in all the sequences the depth data is downsampled 4 times. Otherwise, the reviewers might say that our tracking looks better because the hand is very close to the sensor. It is close that that it can be seen better}
