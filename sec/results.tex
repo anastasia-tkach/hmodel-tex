@@ -14,7 +14,7 @@ Therefore, we propose two easy-to-compute metrics to evaluate the quality of gen
 We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. Note \cite{sharp2015accurate} proposed the \emph{golden energy} which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like ours do. The first is the data-to-model asymmetric approximate Hausdorff metric: 
 % 
 \begin{equation}
-\metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^2
+\metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^1
 \label{eq:metric1}
 \end{equation}
 % 
@@ -28,11 +28,11 @@ where differently from before, $\proj_\depthrend$ computes the (kd-tree accelera
 \label{eq:metric2}
 \end{eqnarray}
 % 
-Each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$. Also note that the transform evaluates to zero for a pixel inside the silhouette.
+Each summation term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$. Also note that the transform evaluates to zero for a pixel inside the silhouette.
 
 \input{fig/comp2/item.tex}
 \paragraph{Handy dataset}
-We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of variation \Anastasia{I had in mind ``axes of complexity``. The larger coordinate at each axis the more difficult is the motion to track with monocular depth sensor.} in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. 
+We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of complexity in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. 
 \Anastasia{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand.}
 Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
 % 
