@@ -30,32 +30,40 @@ where differently from before, $\proj_\depthrend$ computes the (kd-tree accelera
 % 
 Each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$. Also note that the transform evaluates to zero for a pixel inside the silhouette.
 
-\paragraph{Quantitative evaluation}
+\paragraph{Self Evaluation}
+We evaluate the changes in performance as we disable the tracking energy terms in \Equation{htrack}.
+
+\begin{DRAFT}
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\end{DRAFT}
+
+\paragraph{Quantitative Comparison}
 Our algorithm has been developed for the \realsense{} SR300 (QVGA@60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it in order to enable quantitative comparisons.
 % 
 Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires manual parameter tweaking, something extremely challenging to achieve without direct access to every specific hardware variant.
 % 
 For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{}~\cite{sharp2015accurate} is simply not feasible. Further, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz.
-\input{fig/comp1/item.tex}
 \input{fig/comp2/item.tex}
 
+\paragraph{Qualitative Comparison}
 \begin{DRAFT}
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end{DRAFT}
 
+\todo{We perform a self-evaluation of the tracking algorithm by following the visualization proposed by~\protect\cite{sharp2015accurate}.}
+
+\input{fig/comp1/item.tex}
 \subsection{Database}
-seq1: concerto1 - rigid motion, clenching fist \\
-seq2: shidhar1 - extending one finger \\
-seq3: shidhar2 - fingers contact \\
-seq4: shidhar4 - crossing fingers \\ 
-seq5: shidhar5 - pinching \\
-seq6: sharp1 - fast motion, unlikely poses, extending finger \\ 
-seq7: sharp2 - fast rigid  \\
-seq8: sharp3 - rotating fist
-
-
-% \input{fig/motiontypes/item.tex}
-
+\begin{description}[labelsep=0em,labelwidth=.4in,labelindent=1cm]
+\item[tayl1] rigid motion, clenching fist
+\item[srid1] extending one finger
+\item[srid2] fingers contact
+\item[srid3] crossing fingers
+\item[srid4] pinching
+\item[shar1] fast, unlikely, extension
+\item[shar2] fast rigid 
+\item[shar3] rotating fist
+\end{description}
 
 % \paragraph{Golden Energy}
 % Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:

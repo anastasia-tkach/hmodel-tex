@@ -18,12 +18,12 @@ Given a query point $\point$, we can first compute the closest-points $\footpoin
 \input{fig/visibility/item.tex}
 \paragraph{Pill Correspondences: $\footpoint=\proj_\text{pill}(\point)$}
 A pill is defined by two spheres $\ball_1(\ballcenter_1,r_1)$ and $\ball_2(\ballcenter_2,r_2)$. By construction the closest point correspondence lies on the plane passing through the triplet $\{ \ballcenter_1, \ballcenter_2, \point \}$, thus allowing us to solve the problem in 2D; see \Figure{corresp}-(left). 
-% The computation of the tangent line $\mathcal{L}(\mathbf{t}_0, \mathbf{n})$ is detailed in \Appendix{pillcorr}.
+% 
 We compute the intersection point $\skewproj$ of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the segment $\segment$ and parametrize its location in barycentric coordinates as $\skewproj = \alpha\ballcenter_1 + (1-\alpha)\ballcenter_2$. If $\alpha \in [0,1]$ our closest point correspondence is given by $\footpoint=\proj_\mathcal{L}(\point)$, that is, the intersection of $\mathcal{L}$ and $\mathbf{r}(t)$.  If $\alpha<0$ or $\alpha>1$, then the closest point will be $\footpoint=\proj_{\ball_1}(\point)$ or $\footpoint=\proj_{\ball_2}(\point)$, respectively. 
 
 \paragraph{Wedge Correspondences: $\footpoint=\proj_\text{wedge}(\point)$}
 A wedge is defined by three spheres $\ball_i = \{\ballcenter_i, r_i\}$.  \Figure{convsurf} illustrates how a wedge element can be decomposed in three parts: \emph{spherical}, \emph{conical}, and \emph{planar} elements, associated with vertices, edges, and faces of the triangular convolution skeleton. For the planar element $\mathcal{P}(\mathbf{t}_0,\mathbf{n})$ with normal $\mathbf{n}$ and tangent $\mathbf{t}_0$ to $\ball_0$
-% (see \Appendix{wedgecorr}),
+%
 we compute the skewed projection $\skewproj$ by finding the intersection of the ray $\mathbf{r}(t) = \point + t\mathbf{n}$ with the triangle $\mathcal{T}$ formed by $\ballcenter_1$, $\ballcenter_2$, $\ballcenter_3$. 
 % 
 According to the position of $\skewproj$ we have two possible solutions:
