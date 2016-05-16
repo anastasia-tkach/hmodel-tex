@@ -1,7 +1,13 @@
 % !TEX root = ../hmodel.tex
 \section{Results}
 \label{sec:results}
-We evaluate our technique on a variety of sequences, across a number of users \Anastasia{across just one user} and performed qualitative as well as quantitative  \Anastasia{only qualitative for all except for Htrack} evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto} \Anastasia{Also Qian et al}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
+We evaluate our technique on a variety of sequences, across a number of users 
+% \Anastasia{across just one user}
+% \AT{sentence above talks about calibration+tracking together. It's carefully written to make the unattentive reader believe it has several users}
+and performed qualitative as well as quantitative  
+% \Anastasia{only qualitative for all except for Htrack}
+% \AT{I know but overall we do both qualitative and quantitative, no need to say what is what at this stage}
+evaluation of our method to the state-of-the-art~\cite{qian2014realtime,sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
 
 \paragraph{Calibration}
 The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to create articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the correct pose; see a dramatization in \Video{00:00}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}, while relatively fine-scale difference exist across users per-user adaptation.
