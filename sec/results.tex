@@ -1,7 +1,7 @@
 % !TEX root = ../hmodel.tex
 \section{Results}
 \label{sec:results}
-We evaluate our technique on a variety of sequences, across a number of users and performed qualitative as well as quantitative evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
+We evaluate our technique on a variety of sequences, across a number of users \Anastasia{across just one user} and performed qualitative as well as quantitative  \Anastasia{only qualitative for all except for Htrack} evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto} \Anastasia{Also Qian et al}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
 
 \paragraph{Calibration}
 The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to create articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the correct pose; see a dramatization in \Video{00:00}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}, while relatively fine-scale difference exist across users per-user adaptation.
@@ -32,7 +32,9 @@ Each term above can be evaluated efficiently by pre-computing the 2D euclidean d
 
 \input{fig/comp2/item.tex}
 \paragraph{Handy dataset}
-We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of variation in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
+We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of variation \Anastasia{I had in mind ``axes of complexity``. The larger coordinate at each axis the more difficult is the motion to track with monocular depth sensor.} in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. 
+\Anastasia{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand.}
+Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
 % 
 \begin{description}[labelsep=0em,labelwidth=1.6in,labelindent=1cm,itemsep=-.6em]
     \item[\VideoExtra{00:00} -- \textsc{tayl1}] rigid and clenching
@@ -40,14 +42,15 @@ We create the new \handy{} tracking dataset for the evaluation of high-precision
     \item[\VideoExtra{00:00} -- \textsc{srid2}] fingers contact
     \item[\VideoExtra{00:00} -- \textsc{srid3}] crossing fingers
     \item[\VideoExtra{00:00} -- \textsc{srid4}] pinching
-    \item[\VideoExtra{00:00} -- \textsc{shar1}] fast and unlikely
+    \item[\VideoExtra{00:00} -- \textsc{shar1}] fast and unlikely \Anastasia {I know I came up with "unlikely", but it does not explain what kind of motion it is. Even though I do not know how to replace it.}
     \item[\VideoExtra{00:00} -- \textsc{shar2}] fast rigid 
     \item[\VideoExtra{00:00} -- \textsc{shar3}] rotating fist
 \end{description}
-The sequences marked as \emph{tayl*}, \emph{srid*} and \emph{shar*} are respectively designed to emulate the motions in~\cite{taylor2016concerto}, \cite{sridhar2015fast} and~\cite{sharp2015accurate}.
+The sequences marked as \emph{tayl*}, \emph{srid*} and \emph{shar*} are respectively designed to emulate the motions in~\cite{taylor2016concerto}, \cite{sridhar2015fast} and~\cite{sharp2015accurate}. \Anastasia{We do not use Qian et al and Tompson et al. because Taylor, Sridhar and Sharp already cover motion space more or less. Also, too many sequences could not fit on the plot.}
 
 \paragraph{Self evaluation}
-In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests the \emph{d2m} term is never disabled as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{limits} and \emph{pose} terms to be the ones dominating performance, as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric.
+\Anastasia{In figure 12, the X axis numerical values are not visible for E3D and are visible for E2D. You decided to remove "no data energy`` from the plots. It was at bottom limit for E3D and at top limit for E2D. I think, it illustrates nicely why silhouette energy makes E3D metric worse, since data energy also make E2D metrics MUCH worse.}
+In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests the \emph{d2m} term is never disabled as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{limits} and \emph{pose} terms to be the ones dominating performance, as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric. \Anastasia{maybe say again that both E2D and E3D are essential to judge about the system performance, because they are two sides of the distance between two sets}.
 
 \input{fig/comp1/item.tex}
 \paragraph{Quantitative comparison}
@@ -56,7 +59,7 @@ Our algorithm has been developed for the \realsense{} SR300 (QVGA@60Hz), and we 
 Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires some parameter tweaking, something extremely challenging to achieve without direct access to each sensor variant. For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{} \cite{sharp2015accurate} is simply not feasible. Most importantly, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz. To enable a fair comparison we would require the discriminative per-frame re-initializer employed by the authors, but no sources for these algorithms are available.
 
 \paragraph{Qualitative comparison}
-While we do not perform quantitative comparisons, we employ the \handy{} sequences to perform a qualitative comparison to~\cite{sridhar2015fast,sharp2015accurate,taylor2016concerto}. As it can be observed in~\VideoExtra{00:00} our calibrated tracker is capable to replicate any of the motions benchmarked by state-of-the-art techniques with great accuracy.
+While we do not perform quantitative comparisons, we employ the \handy{} sequences to perform a qualitative comparison to~\cite{sridhar2015fast,sharp2015accurate,taylor2016concerto} \Anastasia{and Qian et al.}. As it can be observed in~\VideoExtra{00:00} our calibrated tracker is capable to replicate any of the motions benchmarked by state-of-the-art techniques with great accuracy.
 
 
 
