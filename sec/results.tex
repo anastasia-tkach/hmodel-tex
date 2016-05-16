@@ -4,12 +4,12 @@
 We evaluate our technique on a variety of sequences, across a number of users and performed qualitative as well as quantitative evaluation of our method to the state-of-the-art~\cite{sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
 
 \paragraph{Calibration}
-The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to create articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the user pose. In our experiments we discovered it is crucial to identify the typical kinematic chain (using the dataset in \Figure{calibration}), while only minor changes took place in per-user adaptation.
+The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to create articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the correct pose; see a dramatization in \Video{00:00}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}, while relatively fine-scale difference exist across users per-user adaptation.
 
-\paragraph{Comparison Metrics}
+\paragraph{Comparison metrics}
 Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
 % 
-For this reason, we propose two easy-to-compute metrics to evaluate the quality of generative algorithms for modeling/tracking. A core element that makes these metrics appealing is that, much like key feature positions, they are completely \emph{algorithm agnostic}. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
+Therefore, we propose two easy-to-compute metrics to evaluate the quality of generative tracking algorithms. A core element that makes these metrics appealing is that, much like key feature positions, they are completely \emph{algorithm agnostic}. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
 % 
 We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. Note \cite{sharp2015accurate} proposed the \emph{golden energy} which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like ours do. The first is the data-to-model asymmetric approximate Hausdorff metric: 
 % 
@@ -30,40 +30,36 @@ where differently from before, $\proj_\depthrend$ computes the (kd-tree accelera
 % 
 Each term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$. Also note that the transform evaluates to zero for a pixel inside the silhouette.
 
-\paragraph{Self Evaluation}
-We evaluate the changes in performance as we disable the tracking energy terms in \Equation{htrack}.
-
-\begin{DRAFT}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-\end{DRAFT}
-
-\paragraph{Quantitative Comparison}
-Our algorithm has been developed for the \realsense{} SR300 (QVGA@60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it in order to enable quantitative comparisons.
-% 
-Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires manual parameter tweaking, something extremely challenging to achieve without direct access to every specific hardware variant.
-% 
-For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{}~\cite{sharp2015accurate} is simply not feasible. Further, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz.
 \input{fig/comp2/item.tex}
+\paragraph{Handy dataset}
+We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of variation in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
+% 
+\begin{description}[labelsep=0em,labelwidth=1.6in,labelindent=1cm,itemsep=-.6em]
+    \item[\VideoExtra{00:00} -- \textsc{tayl1}] rigid and clenching
+    \item[\VideoExtra{00:00} -- \textsc{srid1}] finger extension 
+    \item[\VideoExtra{00:00} -- \textsc{srid2}] fingers contact
+    \item[\VideoExtra{00:00} -- \textsc{srid3}] crossing fingers
+    \item[\VideoExtra{00:00} -- \textsc{srid4}] pinching
+    \item[\VideoExtra{00:00} -- \textsc{shar1}] fast and unlikely
+    \item[\VideoExtra{00:00} -- \textsc{shar2}] fast rigid 
+    \item[\VideoExtra{00:00} -- \textsc{shar3}] rotating fist
+\end{description}
+The sequences marked as \emph{tayl*}, \emph{srid*} and \emph{shar*} are respectively designed to emulate the motions in~\cite{taylor2016concerto}, \cite{sridhar2015fast} and~\cite{sharp2015accurate}.
 
-\paragraph{Qualitative Comparison}
-\begin{DRAFT}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-\end{DRAFT}
-
-\todo{We perform a self-evaluation of the tracking algorithm by following the visualization proposed by~\protect\cite{sharp2015accurate}.}
+\paragraph{Self evaluation}
+In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests the \emph{d2m} term is never disabled as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{limits} and \emph{pose} terms to be the ones dominating performance, as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric.
 
 \input{fig/comp1/item.tex}
-\subsection{Database}
-\begin{description}[labelsep=0em,labelwidth=.4in,labelindent=1cm]
-\item[tayl1] rigid motion, clenching fist
-\item[srid1] extending one finger
-\item[srid2] fingers contact
-\item[srid3] crossing fingers
-\item[srid4] pinching
-\item[shar1] fast, unlikely, extension
-\item[shar2] fast rigid 
-\item[shar3] rotating fist
-\end{description}
+\paragraph{Quantitative comparison}
+Our algorithm has been developed for the \realsense{} SR300 (QVGA@60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it and enable quantitative comparisons. In \Figure{comp1}, our two metrics are plotted per-frame as the two tracking algorithms are executed on the \handyseq{teaser} sequence; see \Video{00:00}. Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{00:00}. These metrics reveal a consistent significant increase in performance; the performance gain can be better appreciated in our accompanying videos.
+
+Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires some parameter tweaking, something extremely challenging to achieve without direct access to each sensor variant. For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{} \cite{sharp2015accurate} is simply not feasible. Most importantly, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz. To enable a fair comparison we would require the discriminative per-frame re-initializer employed by the authors, but no sources for these algorithms are available.
+
+\paragraph{Qualitative comparison}
+While we do not perform quantitative comparisons, we employ the \handy{} sequences to perform a qualitative comparison to~\cite{sridhar2015fast,sharp2015accurate,taylor2016concerto}. As it can be observed in~\VideoExtra{00:00} our calibrated tracker is capable to replicate any of the motions benchmarked by state-of-the-art techniques with great accuracy.
+
+
+
 
 % \paragraph{Golden Energy}
 % Another metric we consider is the golden energy from Sharp and colleagues~\shortcite{sharp2015accurate} that was employed to drive their PSO real-time tracker:

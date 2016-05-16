@@ -14,12 +14,13 @@ w_\mathcal{T} E_\mathcal{T}(\depth_t,\parpose,\parpose_{t-1})
 % 
 where fitting energies are combined with a number of priors to regularize the solution and ensure the estimation of plausible poses. The energy terms $\termstrack$ in our optimization are:
 % 
-\begin{description}[labelsep=0em,labelwidth=.6in,labelindent=.25cm]
-    \item[d2m] each data point is explained by the model
-    \item[m2d] the model lies in the sensor visual-hull
-    \item[pose] hand poses sample a low-dimensional manifold
-    \item[kinematic] fingers respect joint limits and avoid collisions
-    \item[temporal] the hand is moving smoothly in time
+\begin{description}[labelsep=0em,labelwidth=.6in,labelindent=.25cm,itemsep=-.6em]
+    \item[d2m]          each data point is explained by the model
+    \item[m2d]          the model lies in the sensor visual-hull
+    \item[pose]         hand poses sample a low-dimensional manifold
+    \item[limits]       joint limits must be respected
+    \item[collision]    fingers cannot interpenetrate
+    \item[temporal]     the hand is moving smoothly in time
 \end{description}
 % 
 We limit our discussion to the computational elements that need to be adapted to support our convolution model, while referring the reader to \cite{tagliasacchi2015robust} for further details. 
