@@ -44,6 +44,12 @@
 % Don't intent by default on new paragraph
 \setlength{\parindent}{0pt}%
 
+%%
+%% text layout
+%%
+\usepackage{pdfcomment}
+\providecommand{\AnastasiaComment}[1]{\pdfcomment[color=red,icon=Note]{#1}}
+
 %% 
 %% To define colors
 %% 
@@ -52,7 +58,6 @@
 \definecolor{mygray}{gray}{0.6}
 \definecolor{darkgreen}{rgb}{0.2, 0.35, 0.385}
 \definecolor{lightgreen}{rgb}{0.2, 0.85, 0.385}
-
  
 %% 
 %% Portions that {need major work, comments}
