@@ -13,17 +13,26 @@
 
 % NOTE: the paragraph names can be removed later on
 \section{Introduction}
-With the imminent advent of consumer-level virtual and augmented reality technology, the ability to interact with the digital world with the most natural means of interaction, our hands, becomes of paramount importance. \Anastasia{Too many ``with`` in previous sentence. Maybe Nicolas can do something about it. Also, the word importance is repeated twice in consecutive sentences}. Most importantly, the degree of immersion in a virtual world is directly correlated to whether the user perceives his own realistic hands~\todo{\cite{immersion}}. \Anastasia{I think that most important is that tracking model exactly repeats the user motion, so that fine scale operations with virtual world can be performed. Otherwise, the user experience will be just pure frustration. The calibration is particularly crucial for the poses when fingers touch each other, because this is characteristic of precise operations with a hand}. Over the past two decades the research community has explored a number of techniques to address this problem, from expensive and unwieldy marker-based mocap~\cite{mocapsurvey} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the ~10 fps system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), as commonly predicted to be readily available in a typical AR/VR consumer experience.
+With the imminent advent of consumer-level virtual and augmented reality technology, the ability to interact with the digital world in the most natural way, using our hands, becomes of paramount importance. 
+% 
+We believe the degree of immersion in the virtual world will be directly correlated to whether one can use his hands to precisely interact with digital content. 
+% 
+% Most importantly, the degree of immersion in a virtual world is directly correlated to whether the user perceives his own realistic hands~\todo{\cite{immersion}}.
+% \Anastasia{I think that most important is that tracking model exactly repeats the user motion, so that fine scale operations with virtual world can be performed. Otherwise, the user experience will be just pure frustration. The calibration is particularly crucial for the poses when fingers touch each other, because this is characteristic of precise operations with a hand}.
+% 
+Over the past two decades the research community has explored a number of techniques to address this problem, from expensive and unwieldy marker-based mocap~\cite{mocapsurvey} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the ~10 fps system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), as commonly predicted to be readily available in a typical AR/VR consumer experience.
 
 \paragraph{Tracking: discriminative v.s. generative}
 Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{keskin2012hand}, and \emph{generative} approaches such as \cite{oiko2011hand}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud and to regularize its motion through time. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
+
+\input{fig/coarsemodel/item.tex}
 
 The main goal of this paper is to explore novel tracking models that strike an optimal balance between accuracy and performance. \Anastasia{I think, we can argue, that our model has both better performance and better accuracy for tracking. Probably here you implicitly mean that cylinder model has better performance and triangles model has better accuracy (maybe this should be discussed somewhere). I believe that the additional degrees of freedom of triangular mesh do not help, they actually make it worse. Both for calibration (because the prior is required and it gets really slow) and for tracking (because the fingers bend like they are made of gum, and it is not only rubber band effect, the fingers just do not feel as rigidly articulated objects (just have a look at Sharp sequences again). Triangular mesh could arguably be better for a high quality hand visualization, \textbf{but it does not mean that you have to track with it}. The underlying problem has much lower dimensionality. And the sensor data is not that good anyway, you cannot bet something like fingernails from it.} More specifically, we propose a geometric model that more accurately captures the user's hand geometry, while retaining the ability to answer registration queries in closed form with very high efficiency. In \Figure{coarsemodel} and \todo{Video [00:00]} we illustrate the importance of employing a tracking template that strikes this delicate balance.
 
 % \paragraph{Model calibration.}
 % As generative models perform tracking by fitting a geometric model to what is measured by the sensor, our template should be able to represent well the observed data. However, even in modern trackers, the discrepancy between the optimal model pose given the data and the true hand pose can be significant. For example, the sources of discrepancy in \Figure{coarsemodel} include the incorrect length of fingers and the lack of the \todo{[pinky-ring]} degree of freedom. \todo{In the literature, the creation of user-specific models for tracking is referred to as \emph{calibration}.}
 
-\input{fig/coarsemodel/item.tex}
+
 \paragraph{Implicit v.s. explicit templates}
 In modern digital production representing objects by a surface mesh of their boundary (e.g.\ triangle or quad meshes) is the de-facto standard. Fast rendering and easy direct manipulation make \emph{explicit} surface representation attractive for many applications.
 %
@@ -45,7 +54,7 @@ While the integral in \Eq{convsurf} might appear complex to evaluate, distances 
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models}
-Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller~(\todo{25 in our model}) \Anastasia{30 elements} than the number of polygons in a typical triangular mesh surface representation~\cite{thiery2013sphere}. 
+Our novel tracking model has two significant advantages. (1) Distance queries to $\surface$ can be executed by measuring the distance to the skeletal structure $\skeleton$. The number of elements in $\skeleton$ is significantly smaller~(30 in our model) than the number of polygons in a typical triangular mesh surface representation~\cite{thiery2013sphere}. 
 Therefore, distance queries can be performed efficiently using a brute force approach, which leads to a simple algorithm that is trivially parallelizable and executes at a fixed frame-rate. (2)~The parameterization of our hand model is compact, as we can generate a family of models by simply adjusting \emph{positions} and \emph{radii} of the control skeleton vertices $c_* \in \skeleton$. This allows adapting the model to the hand geometry of a specific user.
 
 \paragraph{Contributions}
@@ -92,7 +101,8 @@ In \Section{results} we analyze the performance of our convolution surface model
 We conclude in \Section{discussion} with a discussion of current limitations and ideas for future work.
  
 
-\AT{I think we should mention the video here!}
+\AT{I think we should mention the video here!} \\
+\AT{I think we should mention the source code here!}
 
 
 % calibrated online towards a specific user based on RBGD sensor input only.
