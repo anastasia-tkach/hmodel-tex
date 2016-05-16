@@ -1,29 +1,27 @@
 % !TEX root = ../hmodel.tex
+\input{fig/barchart/item.tex}
 \section{Conclusion}
 \label{sec:conclusion}
-\AT{What's the difference between discussion and conclusion?}
 
-\begin{DRAFT}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \end{DRAFT}
-
-\input{fig/barchart/item.tex}
 
 \paragraph{Limitations} 
 The topology of our template has been defined in a manual trial-and-error process. A more suitable topology can probably be found using an optimization process, possibly even adapting the topology for specific users, which would be an interesting avenue for future research. $\quad$
-
-\Anastasia{The topology for a hand needs to be found only once and for all, and we have already found it and can provide it to anyone who wants. For an arbitrary tracking objection the topology can be using, for example, ``Sphere-Meshes`` system.}
-
-  Model calibration is currently done separately before the tracking starts. \Anastasia{Maybe let`s not talk so directly about this, somehow, make it more obscure.}
-  For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.
+% 
+\Anastasia{The topology for a hand needs to be found only once and for all, and we have already found it and can provide it to anyone who wants. For an arbitrary tracking objection the topology can be using, for example, ``Sphere-Meshes'' system.}
+% 
+Model calibration is currently done separately before the tracking starts. \Anastasia{Maybe let`s not talk so directly about this, somehow, make it more obscure.}
+For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans. \Anastasia{More on calibration. I do not remember exactly, but I think to calibrate a triangular mesh one has to solve a huge off-line optimization problem. Our calibration can run as fast as tracking (I think so, we will see when I implement it will C++}.
 
 \paragraph{Future Work}
-\AT{FUTURE: extension of our method to full body tracking?}
-
+\AT{FUTURE: extension to full body tracking?}
+% 
 \AT{FUTURE: with the introduction of compute shaders, it will make complete sense to perform brute-force closest point lookup on the GPU. Just like today nobody uses CPU for rendering a 3D scene in real-time, it is possible nobody will perform alignment queries on the CPU. I think the first version of kinect was doing much of the computation on an FPGA...}
-
+% 
+\AT{FUTURE: dynamic fusion using spheremesh}
+% 
 \AT{FUTURE: generate convolution models in a neural network? (given skeleton)} \Anastasia{Are you sure?}
-
+% 
 \Anastasia{Implicit skinning based on convolution surface hand model. Or maybe we could just add bumps map to the model to capture the details like fingernails. The texture can be taken from RGB channel and Poisson integration can be used to fiil the gaps. The odds are that hand model will look like real (unless we get into uncanny valley). We might even be able to display the realistic hand model during tracking, not at post-processing stage. It depends, how much we can optimize the system. Maybe, we could find some hard core performance optimization people and consult with them. Or make a special hardware? In collaboration with Intel? (Sorry, went too far)}.
 
-\Anastasia{On-line calibration is definitely our future work. We can do it! Maybe.}
+% The core investigation in this paper is whether convolutional surfaces are a viable alternative for realtime hand tracking with single-view RBGD sensors. 
+% Our hypothesis is that the increased geometry accuracy compared with cylinder models allows for a higher tracking precision without impairing the computational performance of the tracking algorithm.
