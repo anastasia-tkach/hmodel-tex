@@ -11,7 +11,7 @@ The topology of our template has been defined in a manual trial-and-error proces
 % \Anastasia{Maybe let`s not talk so directly about this, somehow, make it more obscure.} \AT{there is no way we can "hide" this, anybody would see that}
 Model calibration is currently done in pre-processing. For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. 
 % 
-We believe the calibration of \emph{convolution} models to be the first step towards photorealistic hand modeling and tracking; our models can be thought of as a first approximation to the implicit elements used in~\cite{vaillant2013implicit}. How to efficiently refine our simple elements to allow high-quality skinning deformations to be generated is an interesting venue for future works.
+We believe the calibration of \emph{convolution} models to be the first step towards photorealistic hand modeling and tracking; our models can be thought of as a first approximation to the implicit elements used in~\cite{vaillant2013implicit}. How to efficiently refine our simple elements to allow high-quality skinning deformations, e.g. through the use of more advanced implicit functions with localized blending control~\cite{zanni2013scale}, is an interesting venue for future works. \AT{this last citation from zanni is to make marie-paul happy in case she ends up reviewing our paper... she pointed it out herself.}
 
 % \AT{Had to remove this, as now we calibrate from RGBD}
 % This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.
