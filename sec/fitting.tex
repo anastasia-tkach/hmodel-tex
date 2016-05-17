@@ -4,7 +4,7 @@
 \label{sec:modeling}
 
 \brief{Multi-Pose Data}
-Our calibration procedure tailors our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary as it is not possible to understand the kinematic behavior by analyzing static geometry, while the redundancy of information improves fitting precision. Further, in monocular monocular acquisition this is essential, as single-view data is highly incomplete making the problem ill-posed. In our research we have experimented with datasets $\{\depth_i\}$ acquired via from multi-view stereo (e.g.\ \emph{Agisoft Photoscan~\textcopyright}), as well as a single RGBD sensor. Our calibration formulation can be employed for both acquisition modalities \todo{with minimal changes}.
+Our calibration procedure adapts our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary as it is not possible to understand the kinematic behavior by analyzing static geometry, while the redundancy of information improves fitting precision. Further, in  monocular acquisition this redundancy is essential, as single-view data is highly incomplete making the problem ill-posed. In our research we have experimented with datasets $\{\depth_i\}$ acquired via  multi-view stereo (e.g.\ \emph{Agisoft Photoscan~\textcopyright}), as well as a single RGBD sensor. Our calibration formulation can be employed for both acquisition modalities \todo{with minimal changes}.
 
 \input{fig/posing/item.tex}
 \paragraph{Kinematics}
