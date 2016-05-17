@@ -45,10 +45,15 @@
 \setlength{\parindent}{0pt}%
 
 %%
-%% text layout
+%% PDF comments
 %%
 \usepackage{pdfcomment}
 \providecommand{\AnastasiaComment}[1]{\pdfcomment[color=red,icon=Note]{#1}}
+
+%%
+%% margin comments
+%%
+% \usepackage[colorinlistoftodos]{todonotes}
 
 %% 
 %% To define colors
@@ -91,5 +96,3 @@
 \newcommand{\Sec}[1]{Sec.~\ref{sec:#1}}
 \newcommand{\Section}[1]{Section~\ref{sec:#1}}
 \newcommand{\Appendix}[1]{Appendix~\ref{app:#1}}
-\newcommand{\Video}[1]{Video1~\todo{[#1]}}
-\newcommand{\VideoExtra}[1]{Video2~\todo{[#1]}}

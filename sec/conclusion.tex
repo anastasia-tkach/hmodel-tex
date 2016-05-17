@@ -3,25 +3,22 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
+In this paper we have introduced the use of convolution surfaces as a novel geometric representation for hand-tracking. We have demonstrated how this representation is excellent for real-time registration of articulated geometry, and presented a calibration algorithm to estimate a per-user tracking template. We have validated our results by demonstrating qualitative as well as quantitative improvements over the state-of-the-art. Our volumetric model can be thought of as a generalization of the spherical models presented in~\cite{sridhar2015fast,qian2014realtime}, and the cylinder models from \cite{oiko2011hand,tagliasacchi2015robust}. It is also related to the convex body model from~\cite{melax2013dynamics}, with the core advantage that its control skeleton compactly parameterizes its geometry. Our calibration optimization is related to the works in~\cite{taylor2014user,khamis15learning,tan2016fitsglove}, with a fundamental difference: the innate simplicity of convolution surfaces substantially simplifies the algorithmic complexity of calibration and tracking algorithms. This considered, we believe that with the introduction of \emph{compute shaders}, articulated tracking on the GPU can become as effortless and efficient as simple mesh rasterization is today.
 
-\paragraph{Limitations} 
-The topology of our template has been defined in a manual trial-and-error process. A more suitable topology can probably be found using an optimization process, possibly even adapting the topology for specific users, which would be an interesting avenue for future research. $\quad$
+\paragraph{Limitations and future work} 
+% \Anastasia{The topology for a hand needs to be found only once and for all, and we have already found it and can provide it to anyone who wants. For an arbitrary tracking objection the topology can be using, for example, ``Sphere-Meshes'' system.}
+The topology of our template has been defined in a manual trial-and-error process. A more suitable topology can probably be found using an optimization process, possibly even adapting the topology for specific users; For example, the work in~\cite{thiery2016spheremesh} could be extended to space-time point clouds. Similarly one could think of a variant of~\cite{newcombe2015dynfusion} where convolution elements are instantiated on-the-fly.
+% \Anastasia{Maybe let`s not talk so directly about this, somehow, make it more obscure.} \AT{there is no way we can "hide" this, anybody would see that}
+Model calibration is currently done in pre-processing. For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. 
 % 
-\Anastasia{The topology for a hand needs to be found only once and for all, and we have already found it and can provide it to anyone who wants. For an arbitrary tracking objection the topology can be using, for example, ``Sphere-Meshes'' system.}
-% 
-Model calibration is currently done separately before the tracking starts. \Anastasia{Maybe let`s not talk so directly about this, somehow, make it more obscure.}
-For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans. \Anastasia{More on calibration. I do not remember exactly, but I think to calibrate a triangular mesh one has to solve a huge off-line optimization problem. Our calibration can run as fast as tracking (I think so, we will see when I implement it will C++}.
+We believe the calibration of \emph{convolution} models to be the first step towards photorealistic hand modeling and tracking; our models can be thought of as a first approximation to the implicit elements used in~\cite{vaillant2013implicit}. How to efficiently refine our simple elements to allow high-quality skinning deformations to be generated is an interesting venue for future works.
 
-\paragraph{Future Work}
-\AT{FUTURE: extension to full body tracking?}
-% 
-\AT{FUTURE: with the introduction of compute shaders, it will make complete sense to perform brute-force closest point lookup on the GPU. Just like today nobody uses CPU for rendering a 3D scene in real-time, it is possible nobody will perform alignment queries on the CPU. I think the first version of kinect was doing much of the computation on an FPGA...}
-% 
-\AT{FUTURE: dynamic fusion using spheremesh}
-% 
-\AT{FUTURE: generate convolution models in a neural network? (given skeleton)} \Anastasia{Are you sure?}
-% 
-\Anastasia{Implicit skinning based on convolution surface hand model. Or maybe we could just add bumps map to the model to capture the details like fingernails. The texture can be taken from RGB channel and Poisson integration can be used to fiil the gaps. The odds are that hand model will look like real (unless we get into uncanny valley). We might even be able to display the realistic hand model during tracking, not at post-processing stage. It depends, how much we can optimize the system. Maybe, we could find some hard core performance optimization people and consult with them. Or make a special hardware? In collaboration with Intel? (Sorry, went too far)}.
+% \AT{Had to remove this, as now we calibrate from RGBD}
+% This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.
+% \Anastasia{More on calibration. I do not remember exactly, but I think to calibrate a triangular mesh one has to solve a huge off-line optimization problem. Our calibration can run as fast as tracking (I think so, we will see when I implement it will C++}.
+% \AT{FUTURE: generate convolution models in a neural network? (given skeleton)} \Anastasia{Are you sure?} \AT{Yes, I am. But perhaps I don't want to tell people that yet...}
+
+% \Anastasia{Implicit skinning based on convolution surface hand model. Or maybe we could just add bumps map to the model to capture the details like fingernails. The texture can be taken from RGB channel and Poisson integration can be used to fiil the gaps. The odds are that hand model will look like real (unless we get into uncanny valley). We might even be able to display the realistic hand model during tracking, not at post-processing stage. It depends, how much we can optimize the system. Maybe, we could find some hard core performance optimization people and consult with them. Or make a special hardware? In collaboration with Intel? (Sorry, went too far)}.
 
 % The core investigation in this paper is whether convolutional surfaces are a viable alternative for realtime hand tracking with single-view RBGD sensors. 
 % Our hypothesis is that the increased geometry accuracy compared with cylinder models allows for a higher tracking precision without impairing the computational performance of the tracking algorithm.

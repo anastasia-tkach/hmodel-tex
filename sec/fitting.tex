@@ -59,12 +59,11 @@ Our first step adjusts radii and sphere centers, by allowing the convolution mod
 
 \paragraph{Optimization}
 The energies above are non-linear and non-convex, but can be optimized offline, as real-time tracking only necessitates a pre-calibrated model. For this reason, we conveniently employ the $lsqnonlin$ Matlab routine, and provide the gradients of our energies as well as an initialization point.
-\AnastasiaComment{lsqnonlin does not provide the gradients and the optimization point. Anyone who used it will know this. lsqnonlin can compute numerical gradients, but our problem optimized like this will probably run for years instead of minutes.}
- The initialization of $\restcenters$ is performed \todo{automatically} by anisotropically scaling the vertices of a generic template to roughly fit the rest pose. The initial transformation frame rotations $\parposture$ are retrieved from the default template, while $\parposes$ are obtained by either aligning the scaled template to depth images, or by executing inverse kinematics on a few manually selected keypoints (multiview stereo).
+The initialization of $\restcenters$ is performed \todo{automatically} by anisotropically scaling the vertices of a generic template to roughly fit the rest pose. The initial transformation frame rotations $\parposture$ are retrieved from the default template, while $\parposes$ are obtained by either aligning the scaled template to depth images, or by executing inverse kinematics on a few manually selected keypoints (multiview stereo).
  \AnastasiaComment{We should say that we use our tracking system with automatically scaled model to get the initial poses. Because the initial poses for calibration from sensor data are extremely close to the final ones. The model will not align to the from the rest pose, only tracking can do this.}
+Our (unoptimized) Matlab script calibrates the model within three minutes for all our examples.
 
 \input{fig/calibration/item.tex}
-
 \subsection{Energies}
 Our fitting energies are analogous to the ones used in tracking. They approximate the symmetric Hausdorff distance, but they are evaluated on a collection rather than a single data frame:
 % 
@@ -85,8 +84,7 @@ E_{\text{rigid}} = \sum_{\edge \in \centers_n} (\| \edge \| - \| \bar\edge \|)^2
 Note that only a subset of the edges of our control skeleton, as illustrated in \Figure{topology}, are required to satisfy the rigidity condition.
 
 \paragraph{Validity}
-\AnastasiaComment{both this and previous paragraph start with \textbf{it is essential}}.
-It is essential to prevent the calibration optimization from producing degenerate configurations. For example, a pill degenerates into a sphere when one of its balls is fully contained within the the volume of other. Analogously a wedge can degenerate into a pill, or even a sphere. We monitor validity by an indicator function $\chi(\ball_i)$ evaluating to one if $\ball_i$ is degenerate and zero otherwise, thus defining the following penalty function:
+The calibration optimization should avoid producing degenerate configurations. For example, a pill degenerates into a sphere when one of its balls is fully contained within the the volume of other. Analogously a wedge can degenerate into a pill, or even a sphere. We monitor validity by an indicator function $\chi(\ball_i)$ evaluating to one if $\ball_i$ is degenerate and zero otherwise, thus defining the following penalty function:
 % 
 \begin{equation}
 E_{\text{valid}} = \sum_{\ballcenter_k \in \centers_k} \chi(\ballcenter_k) \| \ballcenter_k - \proj_{\model \setminus \ball_k}(\ballcenter_k) \|_2^2
