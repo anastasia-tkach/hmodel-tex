@@ -3,7 +3,7 @@
 \input{fig/corresp/item.tex}
 \section{Tracking}
 \label{sec:tracking}
-Given a calibrated hand model $\model$, in our real-time tracking algorithm we optimize the 26 \MP{We talk about 30 elements before, where does 26 come from? We should say clearly what they are, i.e. angles/trafos.}degrees of freedom $\parpose$ so that our hand model matches the sensor input data; the generation of a calibrated model $\model$ for a user is detailed in \Section{modeling}. Directly extending the open source \emph{htrack} framework of \cite{tagliasacchi2015robust}, we write our tracking optimization in Gauss-Newton/Levenberg-Marquardt form
+Given a calibrated hand model $\model$, in our real-time tracking algorithm we optimize the 26 \MP{We talk about 30 elements before, where does 26 come from? We should say clearly what they are, i.e. angles/trafos.}degrees of freedom $\parpose$ \todo{(i.e. joint angles)} so that our hand model matches the sensor input data; the generation of a calibrated model $\model$ for a user is detailed in \Section{modeling}. Directly extending the open source \emph{htrack} framework of \cite{tagliasacchi2015robust}, we write our tracking optimization in Gauss-Newton/Levenberg-Marquardt form
 % 
 \begin{eqnarray}
 \parpose_t = \argmin_{\parpose}
