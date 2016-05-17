@@ -48,7 +48,7 @@ However, unlike \emph{implicit} models~\cite{bloomenthal1997book}, explicit repr
 \paragraph{Hybrid tracking model}
 The model we propose in this paper is a variant of a convolution surface~\cite{bloomenthal1991convolution}. Its fundamental building blocks are illustrated in \Figure{convsurf}. The surface is defined as the zero iso-level of the scalar function
 \begin{equation}
-\phi(\mathbf{x}) = \min \int_{\mathbf{c} \in \skeleton} \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) \: d\mathbf{c},
+\phi(\mathbf{x}) = \min_{\mathbf{c} \in \skeleton} \: \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}),
 \label{eq:convsurf}
 \end{equation}
 where $\skeleton$ is a skeletal control mesh (a segment or a triangle in the simple examples of \Figure{convsurf}), and $\mathcal{B}$ is the implicit function of a sphere parameterized by its center $\mathbf{c}$ and radius $r$:
@@ -56,7 +56,7 @@ where $\skeleton$ is a skeletal control mesh (a segment or a triangle in the sim
 \mathcal{B}_{\mathbf{c}, r(\mathbf{c})}(\mathbf{x}) = \|\mathbf{x}-\mathbf{c}\|^2 - r(\mathbf{c})^2.
 \end{equation}
 The sphere centers $\mathbf{c}$ span the skeleton $\skeleton$, while the radii are a function of the position $\mathbf{c}$ within an element, linearly interpolated from values $r_*=r(c_*)$ specified on the skeletal mesh vertices $c_*$. This is indeed a \emph{hybrid} model, as \Eq{convsurf} defines an implicit surface $\surface = \{\mathbf{x} \in \mathbb{R}^n | \phi(\mathbf{x})=0 \}$, while the underlying skeleton $\skeleton$ is an explicit representation (i.e.\ a simplicial complex). We generalize this construct to devise a model suitable to represent a human hand; see \Figure{topology}.
-While the integral in \Eq{convsurf} might appear complex to evaluate, distances to $\surface$ can conveniently be computed by querying distances to the piecewise linear elements of $\skeleton$; see \Figure{convsurf}.
+Distances to $\surface$ can conveniently be computed by querying distances to the piecewise linear elements of $\skeleton$; see \Figure{convsurf}.
 
 \input{fig/topology/item.tex}
 \paragraph{Tracking and calibration with convolution models}
