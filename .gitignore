@@ -14,3 +14,5 @@
 *.upb
 
 *.upa
+
+*.watcher_pid

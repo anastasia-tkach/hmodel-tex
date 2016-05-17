@@ -51,10 +51,9 @@ Our experiments indicate that rendering at a resolution of $320 \times 240$ pixe
 
 
 
-%Ray tracing our surface on a framebuffer of size $1280 \times 960$ would consume in average \todo{$\approx 4$ ms/iteration}. However, our optimization requires in the order of 10 iterations to converge, thus upper-bounding the performance of the tracker to 25 \FPS{}. We overcome this issue by rendering the model to a smaller $320 \times 240$ framebuffer texture (the same resolution of textures fetched from the sensor) and up-sampling it with linearly interpolation whenever necessary. This process allows us to reduce the rendering time to~\todo{$\approx.6$~ms/iteration}.
-
-
 \endinput
+
+%Ray tracing our surface on a framebuffer of size $1280 \times 960$ would consume in average \todo{$\approx 4$ ms/iteration}. However, our optimization requires in the order of 10 iterations to converge, thus upper-bounding the performance of the tracker to 25 \FPS{}. We overcome this issue by rendering the model to a smaller $320 \times 240$ framebuffer texture (the same resolution of textures fetched from the sensor) and up-sampling it with linearly interpolation whenever necessary. This process allows us to reduce the rendering time to~\todo{$\approx.6$~ms/iteration}.
 
 % It is required to render the model for silhouette energy and for visualization purposes. The full rendering process is done in fragment shader, the vertex shader only provides a quad.
 % In fragment shader, given the fragment coordinates gl\_FragCoord, we compute the camera ray corresponding to the current pixel, but de-applying the transformations done by the rasterizer to the points $\{$gl\_FragCoord.x, gl\_FragCoord.y, 0$\}$ and $\{$gl\_FragCoord.x, gl\_FragCoord.y, 1$\}$ that correspond to the points on the near and far camera plane in the world coordinates.

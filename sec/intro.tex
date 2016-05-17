@@ -22,9 +22,9 @@ With the imminent advent of consumer-level virtual and augmented reality technol
 % Most importantly, the degree of immersion in a virtual world is directly correlated to whether the user perceives his own realistic hands~\todo{\cite{immersion}}.
 %\AnastasiaComment{I think that most important is that tracking model exactly repeats the user motion, so that fine scale operations with virtual world can be performed. Otherwise, the user experience will be just pure frustration. The calibration is particularly crucial for the poses when fingers touch each other, because this is characteristic of precise operations with a hand}.
 %
-Over the past two decades  a number of techniques have been explored to address this problem, from expensive and unwieldy marker-based mocap~\cite{mocapsurvey} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the 10 fps system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), commonly predicted to be readily available in a typical AR/VR consumer experience.
+Over the past two decades  a number of techniques have been explored to address this problem, from expensive and unwieldy marker-based mocap~\cite{mocapsurvey} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the 10Hz system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), commonly predicted to be readily available in a typical AR/VR consumer experience.
 
-\paragraph{Tracking: discriminative v.s. generative}
+\paragraph{Tracking: discriminative vs. generative}
 Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{keskin2012hand}, and \emph{generative} approaches such as \cite{oiko2011hand}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud and to regularize its motion through time. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
 
 \input{fig/coarsemodel/item.tex}
@@ -71,7 +71,7 @@ Therefore, distance queries can be performed efficiently using a brute force app
 The core contribution of this paper is to demonstrate that convolutional models provide superior hand tracking performance for single-view depth  sensors.  We introduce an optimization approach that allows adapting our tracking model to different human hands with a high level of accuracy. 
 %In addition, instead of relying on an artist-built IK skeleton, we automatically identify the kinematic decomposition of motion from data.
 The improved geometric fidelity compared to existing representations leads to quantifiable reductions in registration error and allows accurate tracking even for intricate hand poses and complex motion sequences that previous methods have difficulties with. 
-At the same time, due to a very compact model representation and closed-form correspondences queries, our generative model retains high computational performance, leading to sustained tracking at 60 FPS.
+At the same time, due to a very compact model representation and closed-form correspondences queries, our generative model retains high computational performance, leading to sustained tracking at 60Hz.
 
 
 %(1)~We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. 
@@ -98,17 +98,16 @@ At the same time, due to a very compact model representation and closed-form cor
 %% \item Automatically identifies the degrees of freedom and axes of rotation from data
 
 \paragraph{Overview}
-The remainder of the paper is structured as follows: We survey related work in \Section{related}. In \Section{tracking} we describe our generative real-time hand tracking technique, detailing how our novel formulation enables efficient correspondence computation.
+The remainder of the paper is structured as follows: We survey related work in \Section{related}. In \Section{tracking} we describe our generative real-time hand tracking technique, which details how our novel formulation enables efficient correspondence computation.
 % 
 \Section{modeling} explains how we build our template model from 3D scans acquired either through multi-view stereo or from depth maps.
 % 
 In \Section{results} we analyze the performance of our convolution surface model for realtime tracking and provide comparisons to alternative methods. 
 % 
 We conclude in \Section{discussion} with a discussion of current limitations and ideas for future work.
- 
 
-\AT{We have to mention something about the fact that screen-recording is very invasive and at times it interfered with framerate? (I have seen this in the video in at least two occasions)}
+% \AT{We have to mention something about the fact that screen-recording is very invasive and at times it interfered with framerate? (I have seen this in the video in at least two occasions)}
 
-\MP{We could provide a readme for the video. It's probably a technical detail and doesn't really fit here. People will in any case mostly look at the video and it's referred to several times in the paper}
+% \MP{We could provide a readme for the video. It's probably a technical detail and doesn't really fit here. People will in any case mostly look at the video and it's referred to several times in the paper}
 
 
