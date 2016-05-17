@@ -44,7 +44,7 @@ Each summation term above can be evaluated efficiently by pre-computing the 2D E
 \paragraph{Handy dataset}
 We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10m} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of complexity in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\Video{00:00}. 
 % 
-\AnastasiaComment{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand.}
+% \AnastasiaComment{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand. AT: I think it's quite ok, perhaps we can add it to the revised version (after reviews)?}
 % 
 Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
 % 
@@ -67,8 +67,7 @@ The sequences marked as \emph{tayl*}, \emph{srid*} and \emph{shar*} are respecti
 % 
 In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests the \emph{d2m} term is never disabled as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{limits} and \emph{pose} terms to be the ones dominating performance, as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric. 
 % 
-\AnastasiaComment{maybe say again that both E2D and E3D are essential to judge about the system performance, because they are two sides of the distance between two sets.
-AT: didn't we talk about this already a number of times?}
+% \AnastasiaComment{maybe say again that both E2D and E3D are essential to judge about the system performance, because they are two sides of the distance between two sets. AT: we talk about this already a number of times! a few lines above actually.}
 
 
 \input{fig/comp1/item.tex}
