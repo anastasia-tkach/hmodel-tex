@@ -1,30 +1,33 @@
 % !TEX root = ../hmodel.tex
 \section{Results}
 \label{sec:results}
-We evaluate our technique on a variety of sequences, across a number of users 
+We evaluate our technique on a variety of sequences across a number of users 
 % \Anastasia{across just one user}
 % \AT{sentence above talks about calibration+tracking together. It's carefully written to make the unattentive reader believe it has several users}
 and performed qualitative as well as quantitative  
 % \Anastasia{only qualitative for all except for Htrack}
 % \AT{I know but overall we do both qualitative and quantitative, no need to say what is what at this stage}
-evaluation of our method to the state-of-the-art~\cite{qian2014realtime,sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
+comparisons of our method to the state-of-the-art~\cite{qian2014realtime,sridhar2015fast,tagliasacchi2015robust,sharp2015accurate,taylor2016concerto}. We also propose new algorithm-agnostic metrics tailored to high-precision tracking evaluation, and release the new \handy{} dataset associated with these metrics.
 
 \paragraph{Calibration}
-The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a \emph{strict} necessity. Only in this situation the centers location $\posedcenters$ will be automatically adjusted to create articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The iterative calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. The importance of adjusting kinematic chain transformations is also shown in \Figure{posing}, where joint-limits and the articulation restrictions of the kinematic chain can prevent the model from correctly recovering the correct pose; see a dramatization in \Video{00:00}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}, while relatively fine-scale difference exist across users per-user adaptation.
+The calibration of the convolution model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a necessity. Only in this situation can the centers locations $\posedcenters$ be automatically adjusted to create an articulated model that \todo{consensually} fits the data. We refer the reader to \Video{00:00} for a visualization of our iterative calibration procedure. The calibration from RGBD datasets can also be seen at \Video{00:00}, and the resulting models are illustrated in \Figure{topology}. 
+
+The importance of adjusting kinematic chain transformations is  shown in \Figure{posing}. With incorrect  transformations, joint limits and the articulation restrictions of the kinematic chain can prevent the model from recovering the correct pose; see a dramatization in \Video{00:00}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}, while relatively fine-scale difference exist across users per-user adaptation.
+\MP{The last sentence is not clear to me.  Do you mean that one MVS model was necessary, but that the other users can be adapted with RGBD data?}
 
 \paragraph{Comparison metrics}
 Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how state-of-the-art hand tracking algorithms have reached human precision in determining the location of key features (e.g. fingertips and wrist position). Therefore, publicly available datasets like \cite{tompson2014real} and \cite{sridhar2013multicam}, often relying on human labeling of data, have become less suitable for quantitatively evaluating the quality of high-precision tracking. 
 % 
 Therefore, we propose two easy-to-compute metrics to evaluate the quality of generative tracking algorithms. A core element that makes these metrics appealing is that, much like key feature positions, they are completely \emph{algorithm agnostic}. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
 % 
-We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Note that below we drop the subscript $n$ for notational brevity, and that $\point \in \depth$ only considers points within the RoI. Note \cite{sharp2015accurate} proposed the \emph{golden energy} which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like ours do. The first is the data-to-model asymmetric approximate Hausdorff metric: 
+We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Below we drop the subscript $n$ for notational brevity and only consider points  $\point \in \depth$ within the RoI.  Sharp et al.~\shortcite{sharp2015accurate} proposed the \emph{golden energy} which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like our two metrics do. The first is the data-to-model asymmetric approximate Hausdorff metric: 
 % 
 \begin{equation}
 \metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^1
 \label{eq:metric1}
 \end{equation}
 % 
-where differently from before, $\proj_\depthrend$ computes the (kd-tree accelerated) closest point correspondence to the rendered model \emph{point cloud}, rather than to the model itself. The second asymmetric metric is evaluated in the 2D projective space:
+where, differently from before, $\proj_\depthrend$ computes the (kd-tree accelerated) closest point correspondence to the rendered model \emph{point cloud}, rather than to the model itself. The second asymmetric metric is evaluated in the 2D projective space:
 % 
 \begin{eqnarray}
 \metrictwo = |\depthrend \setminus \partial\depth|^{-1} 
@@ -34,7 +37,7 @@ where differently from before, $\proj_\depthrend$ computes the (kd-tree accelera
 \label{eq:metric2}
 \end{eqnarray}
 % 
-Each summation term above can be evaluated efficiently by pre-computing the 2D euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$. Also note that the transform evaluates to zero for a pixel inside the silhouette.
+Each summation term above can be evaluated efficiently by pre-computing the 2D Euclidean distance transform of the RoI's (image-space) silhouette $\partial \depth$, where the transform evaluates to zero for a pixel inside the silhouette.
 
 \input{fig/comp2/item.tex}
 \paragraph{Handy dataset}
@@ -69,7 +72,7 @@ AT: didn't we talk about this already a number of times?}
 
 \input{fig/comp1/item.tex}
 \paragraph{Quantitative comparison}
-Our algorithm has been developed for the \realsense{} SR300 (QVGA@60Hz), and we have tailored the method in~\cite{tagliasacchi2015robust} to support it and enable quantitative comparisons. In \Figure{comp1}, our two metrics are plotted per-frame as the two tracking algorithms are executed on the \handyseq{teaser} sequence; see \Video{00:00}. Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{00:00}. These metrics reveal a consistent significant increase in performance; this performance gain can be better appreciated in our accompanying videos. \Figure{calibeval} quantitatively illustrate the benefits of a calibrated template.
+Our algorithm has been tested with the \realsense{} SR300 (QVGA@60Hz).  We have tailored the method of~\cite{tagliasacchi2015robust} to support this sensor to enable quantitative comparisons. In \Figure{comp1}, our two metrics are plotted per-frame as the two tracking algorithms are executed on the \handyseq{teaser} sequence; see \Video{00:00}. Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{00:00}. These metrics reveal a consistent and significant increase in performance; this performance gain can be better appreciated in our accompanying videos. \Figure{calibeval} quantitatively illustrate the benefits of a calibrated template.
 
 Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires some parameter tweaking, something extremely challenging to achieve without direct access to each sensor variant. For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{} \cite{sharp2015accurate} is simply not feasible. Most importantly, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz. To enable a fair comparison we would require the discriminative per-frame re-initializer employed by the authors, but no sources for these algorithms are available.
 
