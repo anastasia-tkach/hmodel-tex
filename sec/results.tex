@@ -42,15 +42,15 @@ Each summation term above can be evaluated efficiently by pre-computing the 2D E
 
 \input{fig/comp2/item.tex}
 \paragraph{Handy dataset}
-We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains \todo{$\approx$10 minutes} of recorded sequences from an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of complexity in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\VideoSpace{}. 
+We create the new \handy{} tracking dataset for the evaluation of high-precision generative tracking algorithms. Our dataset contains $\approx$ 30k depth and color images recorded with an \realsense{} SR300 sensor. The dataset is designed to cover the entire range of motions that has been surveyed in recent techniques. As detailed in \Figure{motiontypes}, we identified three main axes of complexity in the hand tracking literature, and devised the \textsc{teaser} dataset to thoroughly sample this space; see~\VideoSpace{}. 
 % 
 % \AnastasiaComment{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand. AT: I think it's quite ok, perhaps we can add it to the revised version (after reviews)?}
 % 
+
 Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
-% 
 \begin{description}[labelsep=0em,labelwidth=1.6in,labelindent=1cm,itemsep=-.6em]
     \item[\VideoExtraTaylOne{} -- \textsc{tayl1}] rigid and clenching
-    \item[\VideoExtraSridOne{} -- \textsc{srid1}] finger extension 
+    \item[\VideoExtraSridOne{} -- \textsc{srid1}] fingers extension 
     \item[\VideoExtraSridTwo{} -- \textsc{srid2}] fingers contact
     \item[\VideoExtraSridThree{} -- \textsc{srid3}] crossing fingers
     \item[\VideoExtraSridFour{} -- \textsc{srid4}] pinching
@@ -73,8 +73,9 @@ In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{
 \input{fig/comp1/item.tex}
 \paragraph{Quantitative comparison}
 Our algorithm has been tested with the \realsense{} SR300 (QVGA@60Hz).  We have tailored the method of~\cite{tagliasacchi2015robust} to support this sensor to enable quantitative comparisons. In \Figure{comp1}, our two metrics are plotted per-frame as the two tracking algorithms are executed on the \handyseq{teaser} sequence; see \VideoHTrack{}. Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{}. These metrics reveal a consistent and significant increase in performance; this performance gain can be better appreciated in our accompanying videos. \Figure{calibeval} quantitatively illustrates the benefits of a calibrated template.
-% 
-$\quad$ Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires some parameter tweaking, something extremely challenging to achieve without direct access to each sensor variant. For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{} \cite{sharp2015accurate} is simply not feasible. Most importantly, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz. To enable a fair comparison, we would require the discriminative per-frame re-initializer employed by the authors, but no sources for these algorithms are available.
+% $\quad$
+
+Given a sufficiently rich annotated data sample, it is generally possible to adapt a discriminative tracker to a different sensor from what it was originally designed for. However, for generative algorithms the task requires some parameter tweaking, something extremely challenging to achieve without direct access to each sensor variant. For these reasons, comparing to datasets developed on different sensors like \dexter{}~\cite{sridhar2013multicam} or \fingerpaint{} \cite{sharp2015accurate} is simply not feasible. Most importantly, these datasets were acquired at 30Hz, while our generative algorithm is specifically designed to execute at 60Hz. To enable a fair comparison, we would require the discriminative per-frame re-initializer employed by the authors, but no sources for these algorithms are available.
 
 \paragraph{Qualitative comparison}
 While we do not perform quantitative comparisons, we employ the \handy{} sequences to perform a qualitative comparison to~\cite{qian2014realtime,sridhar2015fast,sharp2015accurate,taylor2016concerto}. As it can be observed in~\VideoExtra{}, our calibrated tracker is capable to replicate any of the motions benchmarked by state-of-the-art techniques with excellent accuracy.
