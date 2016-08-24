@@ -501,7 +501,7 @@
 % Package hyperref should come late in class file to properly apply to any modified commands.
 \RequirePackage{ifpdf}
 \ifpdf
-  \usepackage[pdftex,breaklinks,hyperfootnotes=false,bookmarks=false]{hyperref}
+  \usepackage[draft,pdftex,breaklinks,hyperfootnotes=false,bookmarks=false]{hyperref}
 \else
   \usepackage[hyperfootnotes=false,bookmarks=false]{hyperref}
 \fi
