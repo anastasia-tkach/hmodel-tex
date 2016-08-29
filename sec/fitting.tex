@@ -3,7 +3,11 @@
 \label{sec:modeling}
 
 \brief{Multi-Pose Data}
-Our calibration procedure adapts our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary, as it is not possible to understand the kinematic behavior by analyzing static geometry, and the redundancy of information improves fitting precision. Further, in  monocular acquisition this redundancy is essential, as single-view data is highly incomplete making the problem ill-posed. In our research we have experimented with datasets $\{\depth_i\}$ acquired via multi-view stereo (e.g.\ \emph{Agisoft Photoscan~\textcopyright}), as well as a single RGBD sensor. Our calibration formulation can be employed for both acquisition modalities.
+Our calibration procedure adapts our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary, as it is not possible to understand the kinematic behavior by analyzing static geometry, and the redundancy of information improves fitting precision. Further, in  monocular acquisition this redundancy is essential, as single-view data is highly incomplete\todo{,} making the problem ill-posed. In our research we have experimented with datasets $\{\depth_i\}$ acquired via multi-view stereo (e.g.\ \emph{Agisoft Photoscan~\textcopyright}), as well as a single RGBD sensor. 
+\begin{draft}
+Dynamic reconstruction frameworks such as~\cite{newcombe2015dynfusion} or \cite{innmann2016volume} could also be used to generate a dynamic template mesh, over which sphere-mesh decimation can be executed~\cite{thiery2016spheremesh}. However, it is currently unclear how well these methods would cope with loop-closure for features as small as human fingers.
+\end{draft}
+Our calibration formulation can be employed for both acquisition modalities.
 
 \paragraph{Kinematics}
 The rest-pose geometry of a convolution model is fully specified by two matrices specifying the set of sphere positions $\centers$ and radii $\radii$. The geometry is then posed through the application of  kinematic chain transformations; see \Figure{posing}a. Given a point $\bar\point$ on the model $\model$ at rest pose, its 3D position after posing can be computed by evaluating the expression:

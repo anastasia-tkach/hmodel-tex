@@ -23,14 +23,19 @@ Taylor and colleagues \shortcite{taylor2016concerto} have recently reported how 
 % 
 Therefore, we propose two easy-to-compute metrics to evaluate the quality of generative tracking algorithms. A core element that makes these metrics appealing is that, much like key feature positions, they are completely \emph{algorithm agnostic}. This is essential, as it will enable the research community to validate and compare results through quantitative analysis. 
 % 
-We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Below we drop the subscript $n$ for notational brevity and only consider points  $\point \in \depth$ within the RoI.  Sharp et al.~\shortcite{sharp2015accurate} proposed the \emph{golden energy}, which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like our two metrics do. The first is the data-to-model approximate asymmetric Hausdorff metric: 
+We achieve this goal by expressing these metrics exclusively as a function of the acquired depth image $\depth_n$, and of the depth image $\depthrend_{n}$ of the rendered model. Below we drop the subscript $n$ for notational brevity and only consider points  $\point \in \depth$ within the RoI.  Sharp et al.~\shortcite{sharp2015accurate} proposed the \emph{golden energy}, which is similar in spirit, but does not directly encode an approximation of the previously discussed (monocular) Hausdorff distance like our two metrics do. 
+
+The first is the data-to-model approximate asymmetric Hausdorff metric: 
 % 
 \begin{equation}
 \metricone = |\depth|^{-1} \sum_{\point \in \depth} \| \point - \proj_\depthrend(\point) \|_2^1
 \label{eq:metric1}
 \end{equation}
 % 
-Differently from before, $\proj_\depthrend$ computes the (kd-tree accelerated) closest point correspondence to the rendered model \emph{point cloud}, rather than to the model itself. The second asymmetric metric is evaluated in the 2D projective space:
+Differently from before, $\proj_\depthrend$ computes the (kd-tree accelerated) closest point correspondence to the rendered model \emph{point cloud}, rather than to the model itself. 
+
+\newpage
+The second asymmetric metric is evaluated in the 2D projective space:
 % 
 \begin{eqnarray}
 \metrictwo = |\depthrend \setminus \partial\depth|^{-1} 
@@ -49,7 +54,7 @@ We create the new \handy{} tracking dataset for the evaluation of high-precision
 % \AnastasiaComment{We should add, that there is at least one more axis of complexity, which is quality of sensor data. Sharp et. all have explored that axis a lot. They have sequences for far away (which our sensor does not allow) and sequence where the hand is only partially visible (not possible for us, because we use purely model base tracking). Anyway, system is not intended to be used in such scenarios, if a person wants to have a hand tracked, he or she should make sure that the sensor can see the hand. AT: I think it's quite ok, perhaps we can add it to the revised version (after reviews)?}
 % 
 
-\input{fig/motiontypes/item.tex}
+
 
 Further, to enable qualitative comparisons to motions from state-of-the-art papers we also devised an additional set of sequences:
 \begin{description}[labelsep=0em,labelwidth=1.6in,labelindent=1cm,itemsep=-.6em]
@@ -66,10 +71,13 @@ The sequences marked as \emph{tayl*}, \emph{srid*}, and \emph{shar*} are respect
 % 
 % \AnastasiaComment{We do not use Qian et al and Tompson et al. because Taylor, Sridhar and Sharp already cover motion space more or less. Also, too many sequences could not fit on the plot.}
 
+\input{fig/motiontypes/item.tex}
 \paragraph{Self evaluation}
 % \AnastasiaComment{In figure 12, the X axis numerical values are not visible for E3D and are visible for E2D. You decided to remove ``no data energy'' from the plots. It was at bottom limit for E3D and at top limit for E2D. I think, it illustrates nicely why silhouette energy makes E3D metric worse, since data energy also make E2D metrics MUCH worse.}
 % 
-In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests, the \emph{d2m} term is never disabled, as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{limits} and \emph{pose} terms to be the ones dominating performance, as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric. 
+In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests, the \emph{d2m} term is never disabled, as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{m2d} and \emph{pose} terms to be the ones dominating tracking performance. \todo{Although exclusion of other terms only make a small difference in the metrics, similarly to \cite{taylor2016concerto}, we find these help improve the qualitative feel of the tracker.}
+% 
+% , as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric.
 % 
 % \AnastasiaComment{maybe say again that both E2D and E3D are essential to judge about the system performance, because they are two sides of the distance between two sets. AT: we talk about this already a number of times! a few lines above actually.}
 
