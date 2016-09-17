@@ -23,11 +23,12 @@ With the imminent advent of consumer-level virtual and augmented reality technol
 %\AnastasiaComment{I think that most important is that tracking model exactly repeats the user motion, so that fine scale operations with virtual world can be performed. Otherwise, the user experience will be just pure frustration. The calibration is particularly crucial for the poses when fingers touch each other, because this is characteristic of precise operations with a hand}.
 %
 Over the past two decades  a number of techniques have been explored to address this problem, from expensive and unwieldy marker-based mocap~\cite{mocapsurvey} to instrumented gloves~\cite{dipietro2008survey} as well as imaging systems~\cite{erol2007survey}. Multi-camera imaging systems can recover the hand pose and hand-objects interactions with high accuracy~\cite{ballan2013salient}, but the only system capable to approach interactive applications is the 10Hz system of~\cite{sridhar2013multicam}. Conversely, in this paper we focus on hand motion tracking with a single RGBD sensor (e.g.\ Intel RealSense or Microsoft Kinect), commonly predicted to be readily available in a typical AR/VR consumer experience.
+\input{fig/coarsemodel/item.tex}
 
 \paragraph{Tracking: discriminative vs. generative}
 Modern systems for real-time tracking from RGBD data  \cite{sridhar2015fast,sharp2015accurate} rely on a combination of \emph{discriminative} approaches like \cite{keskin2012hand}, and \emph{generative} approaches such as \cite{oiko2011hand}. The per-frame re-initialization of discriminative methods prevents error propagation by offering a continuous recovery from tracking failure. As these discriminative models are learned from data, they typically only estimate a coarse pose. Therefore, generative models are used to refine the estimate by aligning a geometric template of the user hand to the measured point cloud and to regularize its motion through time. It is not surprising that the quality of the template directly affects the quality of pose refinement; see \Figure{teaser}. 
 
-\input{fig/coarsemodel/item.tex}
+
 
 The main goal of this paper is to explore novel tracking models that strike an optimal balance between accuracy and performance.
 % 
