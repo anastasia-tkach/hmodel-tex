@@ -81,7 +81,7 @@ In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{
 \paragraph{Quantitative comparison}
 Our algorithm has been tested with the \realsense{} SR300 (QVGA@60Hz).  We have tailored the method of~\cite{tagliasacchi2015robust} to support this sensor to enable quantitative comparisons. In \Figure{comp1a}, our two metrics are plotted per-frame \todo{as multiple tracking algorithms} are executed on the \handyseq{teaser} sequence, \todo{while \Figure{comp1b} reports aggregated errors;} see \VideoHTrack{}. 
 \begin{draft}
-It is important to note our metrics are designed to evaluate fitting precision; the method of~\cite{sharp2015accurate} still achieves good tracking robustness on such sequence, but the lack of user calibration heavily biases this metric.
+It is important to note our metrics are designed to evaluate fitting precision; the method of~\cite{sharp2015accurate} still achieves good tracking robustness on the test sequences, but the lack of user calibration heavily biases this metric.
 \end{draft}
 Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{}. These metrics reveal a consistent and significant increase in performance. \Figure{calibeval} quantitatively illustrates the tracking benefits of template calibration.
 
