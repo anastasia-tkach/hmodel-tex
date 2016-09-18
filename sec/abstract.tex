@@ -9,19 +9,11 @@ In this paper, \todo{we propose a the use of sphere-meshes }as a novel geometric
 \todo{How tightly this model fits a specific user heavily affects tracking precision.}
 %--- Model Adaptation
 We derive an optimization to non-rigidly deform a template model to fit the user data in a number of poses.
-% \Anastasia{Initial transformations of the fingers are as important for tracking as precise geometry. We find both geometry and transformations.}
-% \AT{this is already captured by ``dynamic geometry''?}
-% 
 % 
 %--- Performance
 This optimization jointly captures the user's static and dynamic hand geometry, thus facilitating high-precision registration.
 At the same time, the limited number of primitives in the \todo{tracking template} allows us to retain excellent \todo{computational} performance. We confirm this by embedding our models in an open source real-time registration algorithm to obtain a tracker steadily running at 60Hz.
 %
-%While the convolution model fits the model tightly, allowing high-precision registration, the limited number of primitives in the model allows us to retain excellent tracking performance. We confirm this by embedding our models in an open source real-time tracking algorithm and obtaining a tracker steadily running at 60 frames per second.
-% \Anastasia{Moreover, we introduce the fist model type that represents all the degrees of freedom of a real hand without introducing non-existing degrees of freedom. The model type allows to natively specify whether the current part is rigid, articulated or elastic.}
-% \AT{It might be risky to say this... People might say: you can just use dimensionality reduction}
-% \Anastasia{The increased tracking fidelity of the model has allowed us NOT TO USE RE-INITIALIZATION AT ALL. The absence of re-initialization component in our system is not a drawback of our approach, there is nothing that prohibits to add it. Our intension is to push pure tracking as far as possible and to demonstrate its power.}
-% \AT{Yes, this is a good point, but we should say this in the introduction.}
 %--- Why should I believe you?
 We demonstrate the effectiveness of our solution by qualitatively and quantitatively evaluating tracking precision on a variety of complex motions. We show that the improved tracking accuracy at high frame-rate enables stable tracking of extended and complex motion sequences without the need for \todo{per-frame} re-initialization.
 %

@@ -6,7 +6,7 @@ In this paper we have introduced the use of sphere-meshes as a novel geometric r
 
 \paragraph{Limitations and future work} 
 % \Anastasia{The topology for a hand needs to be found only once and for all, and we have already found it and can provide it to anyone who wants. For an arbitrary tracking objection the topology can be using, for example, ``Sphere-Meshes'' system.}
-The topology of our template has been defined in a manual trial-and-error process. A more suitable topology \todo{could be estimated} by optimization, possibly even adapting the topology for specific users; For example, the work in~\cite{thiery2016spheremesh} could be extended to space-time point clouds. Similarly one could think of a variant of~\cite{newcombe2015dynfusion} where convolution elements are instantiated on-the-fly.
+The topology of our template has been defined in a manual trial-and-error process. A more suitable topology \todo{could be estimated} by optimization, possibly even adapting the topology for specific users; For example, the work in~\cite{thiery2016spheremesh} could be extended to space-time point clouds. Similarly one could think of a variant of~\cite{newcombe2015dynfusion} where sphere-meshes are instantiated on-the-fly.
 % 
 % While our generative tracker performs very well, there are extreme situations, like when fingers becomes completely occluded, for which the use of a discriminative solution becomes unavoidable.
 \begin{draft}
@@ -16,16 +16,3 @@ The use of more advanced re-initialization techniques than \cite{qian2014realtim
 Model calibration is currently done in pre-processing. For certain consumer applications, it would be desirable to calibrate the model online during tracking, as recently proposed for face tracking systems~\cite{bouaziz2013online}. 
 % 
 \todo{Our sphere-mesh models are a first approximations to the implicit functions lying at the core of the recently proposed geometric skinning techniques~\cite{vaillant2013implicit,vaillant2014robust}. Therefore, we believe the calibration of \emph{sphere-meshes} to be the first step towards photorealistic real-time hand modeling and tracking.}
-
-% REMOVED DURING REVISION PHASE
-% How to efficiently refine our simple elements to allow high-quality skinning deformations, e.g. through the use of more advanced implicit functions with localized blending control~\cite{zanni2013scale}, is an interesting venue for future works.
-
-% \AT{Had to remove this, as now we calibrate from RGBD}
-% This, however, might be more challenging for hand tracking, where a significant amount of geometry is at grazing angles (e.g.\ finger silhouettes), which often leads to data culling and thus incomplete scans.
-% \Anastasia{More on calibration. I do not remember exactly, but I think to calibrate a triangular mesh one has to solve a huge off-line optimization problem. Our calibration can run as fast as tracking (I think so, we will see when I implement it will C++}.
-% \AT{FUTURE: generate convolution models in a neural network? (given skeleton)} \Anastasia{Are you sure?} \AT{Yes, I am. But perhaps I don't want to tell people that yet...}
-
-% \Anastasia{Implicit skinning based on convolution surface hand model. Or maybe we could just add bumps map to the model to capture the details like fingernails. The texture can be taken from RGB channel and Poisson integration can be used to fiil the gaps. The odds are that hand model will look like real (unless we get into uncanny valley). We might even be able to display the realistic hand model during tracking, not at post-processing stage. It depends, how much we can optimize the system. Maybe, we could find some hard core performance optimization people and consult with them. Or make a special hardware? In collaboration with Intel? (Sorry, went too far)}.
-
-% The core investigation in this paper is whether convolutional surfaces are a viable alternative for realtime hand tracking with single-view RBGD sensors. 
-% Our hypothesis is that the increased geometry accuracy compared with cylinder models allows for a higher tracking precision without impairing the computational performance of the tracking algorithm.

@@ -85,41 +85,13 @@ We introduce an optimization approach that allows adapting our tracking model to
 The improved geometric fidelity compared to existing representations leads to quantifiable reductions in registration error and allows accurate tracking even for intricate hand poses and complex motion sequences that previous methods have difficulties with. 
 At the same time, due to a very compact model representation and closed-form correspondence queries, our generative model retains high computational performance, leading to sustained tracking at 60Hz.
 
-
-%(1)~We demonstrate that convolutional models can be effectively employed for tracking of geometry in motion. 
-%(2)~Amongst many possible variants, we identify an effective convolution surface  topology for hand-tracking. \AT{won't they us to compare against other topologies?} \MP{Yes, I would probably not state it like this. We have no evidence that we provide the best topology, we just found one that works. I would take this out of the contributions.}
-%(3)~We demonstrate that the increased model accuracy does not aberrate tracking performance, leading to a 60 FPS tracking algorithm.
-% (3) While any geometric model could be employed in tracking applications, it is imperative to determine whether a model is suitable for real-time tracking applications; we demonstrate this is the case by integrating our models in an open-source tracking system~\cite{tagliasacchi2015robust} and retaining 60 FPS tracking performance. 
-%(4)~We introduce an optimization technique for convolution models that adapts a given template to a given user, and demonstrate how this results in substantial improvements in tracking precision.
-%(5)~Rather than relying on a artist-built IK skeleton, we define an optimization problem to automatically identify the kinematic decomposition of motion from data.
-
-%
-%%
-%\hspace{0in}
-%%
-%\MP{I would not list future work in the contributions section. It somewhat limits our contribution as we are already pointing to things that we did not do.}.
-%%--- Areas of future work
-%Our findings pave the way to a number of interesting venues for future works, including 
-%(1)~the extension of our modeling framework to the capture of generic articulated geometry in motion, 
-%(2)~the consolidation of optimization for modeling and tracking stages, 
-%(3)~the generation of parameterizations, so to enable texturing and level-of-detail representations for convolution models and
-%(4)~\todo{the possibility to automatically discover a tracking template}. \
-%% 
-%% \item Proposed a single optimization framework for modeling and tracking
-%% \item Skinning. Display the texture on the model. For that a  parametrization is required. Potentially create ``bumps map'' to apply the errors from model fitting stage
-%% \item Automatically identifies the degrees of freedom and axes of rotation from data
-
 \paragraph{Overview}
 The remainder of the paper is structured as follows: We survey related work in \Section{related}. In \Section{tracking} we describe our generative real-time hand tracking technique, which details how our novel formulation enables efficient correspondence computation.
 % 
 \Section{modeling} explains how we build our template model from 3D scans acquired either through multi-view stereo or from depth maps.
 % 
-In \Section{results} we analyze the performance of our convolution surface model for realtime tracking and provide comparisons to alternative methods. 
+In \Section{results} we analyze the performance of our model for realtime tracking and provide comparisons to the state-of-the-art. 
 % 
 We conclude in \Section{discussion} with a discussion of current limitations and ideas for future work.
-
-% \AT{We have to mention something about the fact that screen-recording is very invasive and at times it interfered with frame-rate? (I have seen this in the video in at least two occasions)}
-
-% \MP{We could provide a readme for the video. It's probably a technical detail and doesn't really fit here. People will in any case mostly look at the video and it's referred to several times in the paper}
 
 

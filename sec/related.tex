@@ -39,14 +39,12 @@ Our literature review focuses on generative approaches, while we refer the reade
 The capsule model originally proposed by~\cite{rehg1994tracking} has been adopted by a number of researchers \cite{oiko2011hand,schroder2014real,fleishman2015icpik,tagliasacchi2015robust}; see \Figure{handmodels}(a). Such a coarse representation is suitable to the task given the low signal-to-noise ratio in modern depth sensors, while its simplicity enables the efficient closed-form computation of alignment queries. Cylinders can also be approximated by a small set of disconnected spheres~\cite{qian2014realtime}, but this rough approximation is only sufficient for coarse-scale tracking. An alternative to cylinders and spheres is the use of isotropic~\cite{sridhar2013multicam,sridhar2015fast}, as well as anisotropic Gaussians~\cite{sridhar2014anisotropic}; see \Figure{handmodels}(b).
 % while registration gradients can conveniently be computed in closed-form, the resulting tracking model is not appropriate for high-precision tracking.
 % 
-% \todo{Our research pioneers the generalization of these tracking templates into convolution surfaces, and by doing so it demonstrates a substantial increase in real-time tracking precision.}
 %
 The use of surface meshes, while widespread in other domains (e.g.\ face tracking~\cite{bouaziz2013online} or offline registration~\cite{loper_eccv14}), has been limited to the visualization of tracking performance through skinned model animations~\cite{tompson2014real,schroder2014real}. Sharp et al.~\shortcite{sharp2015accurate} employed mesh models for tracking in a render-and-compare framework, while the very recent work of~\cite{taylor2016concerto} presents the first attempt towards a continuous registration framework for tracking hands with triangular meshes; see~\Figure{handmodels}(c).
 %
 Other variants of tracking models include the union of convex bodies from~\cite{melax2013dynamics}, \todo{a convolutional neural network capable of directly synthesizing hand depth images~\cite{oberweger2015feedback}}, and some \todo{initial attempts at tracking with implicit templates~\cite{fua2003soft}}.
 % 
 \todo{Our sphere-mesh model} offers accuracy comparable to triangle meshes used in \todo{recent hand} trackers, while retaining a compact representation for efficient correspondence queries and effective user adaptation.
-% \AnastasiaComment{Can you please also mention its dynamic properties that I mention in the video: that it can do rigid articulation like a cylinder model, and at the same time can represent skin elasticity, like a triangular mesh? MP: Not sure how to write this. People can argue that you can do the same for triangle meshes, you just need to label the deformation properties of each triangle, which can be done once on the template.}
 
 \input{fig/zsphere/item.tex}
 \paragraph{Template calibration}
@@ -60,27 +58,9 @@ The method in \cite{taylor2014user} shares some similarities with our work, wher
 
 \paragraph{Implicit modeling}
 Implicit sculpting tools have recently become a viable alternative to mesh or spline-based approaches for modeling complex geometries. This paradigm lies at the basis of the success of the \emph{PixoLogic ZBrush} product line. 
-For articulated geometry, it is often convenient to first create a coarse geometric structure analogous to the one described in~\Equation{convsurf}, a process that \emph{PixoLogic} has re-branded as \emph{ZSphere{}} modeling; see \Figure{zsphere}. Editing the radii and centers of the convolution model offers a \emph{natural} way of editing the model, making it easy for both humans and algorithms to calibrate.
-% Manually calibrating a convolution model is intuitive for a human, as it involves editing of a few sphere centers and radii. This leads to a simple and effective automated calibration algorithm.
+For articulated geometry, it is often convenient to first create a coarse geometric structure analogous to the one described in~\Equation{convsurf}, a process that \emph{PixoLogic} has re-branded as \emph{ZSphere{}} modeling; see \Figure{zsphere}. Editing the radii and centers of the sphere-mesh offers a \emph{natural} way of editing the model, making it easy for both humans and algorithms to calibrate.
+%
 Note that any geometric model can be approximated, to any desired precision, as a union of spheres~\cite{tagliasacchi2016skeletons}. 
 However, by considering spheres that are linearly interpolated across edges, we can heavily reduce the required number of primitives. Following this principle, \cite{thiery2013sphere} recently investigated a method to automatically generate Sphere Meshes provided a  (static) input model. Extending this work, \cite{thiery2016spheremesh} proposed a method to fit a model to a sequence of dynamic meshes. 
 % 
 While seemingly related, our calibration optimization is solving a fundamentally different problem, as in our technique a template is fixed and provided in input.
-% However, a mixture of implicit and explicit representations is key in achieving high quality skinning deformations at interactive rates \cite{vaillant2013implicit,vaillant2014robust}.
-
-%----------------------------------------------------------------------
-%----------------------------------------------------------------------
-%----------------------------------------------------------------------
-%----------------------------------------------------------------------
-%----------------------------------------------------------------------
-\endinput
-
-% Taylor et. al.  generate a user-specific hand model from an RGBD video sequence. The model is represented as a triangular mesh with an embedded skeleton. In each frame the hand pose is initialized using an appearance-based tracking algorithm. The hand model parameters are found by solving a single optimization problem formulated for the entire video sequence which also finds hand pose in each frame.
-
-% Khamis et. al.   fit a hand model for a specific user by finding its shape coordinates in the basis of mesh matrices and bones locations. As in the approach by Taylor et. al, they optimize simultaneously for pose and shape parameters in all the frames of an RGBD sequence across all the subjects. Requires large number of subjects as a regularization for excessive degrees of freedom.
-
-%--- LINEAR BLEND SKINNING
-% \TODO{The Linear Blend Skinning approach used to pose the triangular mesh model in previous works (\cite{sharp2015accurate}, \cite{schroder2013analysis} ) creates artifacts, the fingers looks like made from rubber. The spheres/cylinders model is not suitable for realistic animation, therefore a re-targeting step to a template mesh is required. Retargeting does not only demand additional effort, but also brings additional imprecision. }
-
-%--- CLOSEST POINT COMPUTATIONS
-% \TODO{For model based tracking the main operation is to find the closest point on the model for a given data point. This operation is can be done in closed for each rigid segment with spheres/cylinder and convolution surfaces model representation. For a triangular mesh this operation has complexity linear in number of triangles. Thus, it is necessary to simplifying assumptions and/or more complex optimization to allow the hand tracking system to run in real time. (Look how different systems deal with this problem). Moreover, the triangular mesh has (much) more degrees of freedom than the underlying problem. Without additional regularization, rigid parts of the hand model can deform to fit the data and the individual vertices can shift to fit the sensor noise.}
