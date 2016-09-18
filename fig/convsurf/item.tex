@@ -15,11 +15,13 @@
 \caption{
 % 
 % Image thanks to: ryoichi_sig13
-The skeleton $\skeleton$ identifies sphere positions and controls the union convolution operator to generate an implicit function. 
+The \todo{sphere-mesh skeleton $\skeleton$ identifies sphere positions and radii.}
+% and controls the union convolution operator to generate an implicit function.
 % 
-The zero-crossing of this implicit function describes the convex-hull of our spheres.
+\todo{The surface of the object is obtained as the convex-hull of the spheres on the vertices of the skeleton.}
+% zero-crossing of this implicit function describes the convex-hull of our spheres.
 % 
-Convolution surfaces can be rendered through GPU ray-tracing or by triangulating the zero-crossing of the implicit function and rasterizing its triangles.
+\todo{Sphere-meshes} can be rendered through GPU ray-tracing, or by meshing \todo{the zero-crossing of their implicit function; see \Eq{convsurf}.}
 % 
 % 
 }
