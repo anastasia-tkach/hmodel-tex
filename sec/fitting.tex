@@ -78,11 +78,17 @@ Our (unoptimized) Matlab script calibrates the model within a few minutes for al
 
 
 \subsection{Energies}
-Our fitting energies are analogous to the ones used in tracking. They approximate the symmetric Hausdorff distance, but they are evaluated on a collection rather than a single data frame:
+Our fitting energies are analogous to the ones used in tracking. They approximate the symmetric Hausdorff distance, but they are evaluated on \todo{a \emph{collection} of $N$ frames}:
 % 
 \begin{eqnarray}
-E_{d2m} = |\depth_n|^{-1} \sum_{\point \in \depth_n} \| \point - \proj_{\model(\pars)}(\point)\|_2^1 \\
-E_{m2d} = |\model(\pars)|^{-1} \sum_{\pixel \in \model(\pars)} \| \pixel - \proj_{\depth_n}(\pixel)\|_2^1
+E_{d2m} = 
+\sum_{n=1}^N |\depth_n|^{-1} 
+\sum_{\point \in \depth_n} 
+\| \point - \proj_{\model(\pars_n)}(\point)\|_2^1 \\
+E_{m2d} = 
+\sum_{n=1}^N |\model(\pars_n)|^{-1} 
+\sum_{\pixel \in \model(\pars_n)} 
+\| \pixel - \proj_{\depth_n}(\pixel)\|_2^1
 \end{eqnarray}
 % 
 Note that the projection operator $\proj_{\depth_n}$ changes according to the type of input data. If a multi-view acquisition system is used to acquire a complete point cloud, then the projection operator fetches the closest point to $\point$ in the point cloud of frame $\depth_n$. If $\depth_n$ is acquired through monocular acquisition, then $\proj_{\depth_n}$ computes the 2D projection to the image-space silhouette of the model.
