@@ -48,11 +48,11 @@ In our experiments the average computation of the silhouette on the CPU takes 15
 \label{sec:rendering}
 Rendering the \todo{sphere-meshes} in real time is not only employed for visual verification of tracking performance; e.g. \Figure{coarsemodel}. The real-time tracking algorithm reviewed above performs a 2D registration in the image plane that requires the computation of an (image-space) silhouette. There are two alternatives for rendering a sphere-mesh model like the one shown in \Figure{topology}. One possibility is to explicitly extract the surface of individual elements by computing the convex hull of pairs or triplets of spheres; see \Figure{convsurf}.
 % \todo{and \cite{ando2013liquid}}.
-While this process would be suitable in applications where the model is fixed, it is hardly appropriate in our scenario where we want to calibrate the model to the user. Therefore, similarly to~\cite{thiery2016spheremesh}, we ray-trace the model on the GPU. We render a unit fullscreen quad and in the fragment shader use the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each ray is intersected in closed form with each element of our model, and only the closest intersection point is retained. Intersection tests are performed with the planar, conical, and spherical primitives that compose each element. 
+While this process would be suitable in applications where the model is fixed, it is hardly appropriate in our scenario where we want to calibrate the model to the user. Therefore, similarly to~\cite{thiery2016spheremesh}, we ray-trace the model on the GPU. We render a unit fullscreen quad and in the fragment shader use the camera intrinsics to compute the camera ray $\mathbf{r}(\mathbf{x})$ associated with each pixel $\mathbf{x}$. Each ray is intersected with each element of our model, and the closest intersection point is retained. Tests are performed with the planar, conical, and spherical primitives that compose each element. 
 % 
 % Surface normals at the intersection point are also computed for shading purposes.
 % 
-Our experiments indicate that rendering at a resolution of $320 \times 240$ pixels provides the best trade-off between accuracy and performance, leading to a total rendering time of $\approx 3$ms for visualization and $\approx 500 \mu$s/iteration for the evaluation of $E_{m2d}$.
+Rendering at a resolution of $320 \times 240$ pixels provides the best trade-off between accuracy and performance, leading to a total rendering time of $\approx 3$ms for visualization and $\approx 500 \mu$s/iteration for the evaluation of $E_{m2d}$.
 
 \endinput
 

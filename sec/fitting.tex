@@ -25,9 +25,11 @@ Each node $k$ of the kinematic chain is associated with an orthogonal frame $\ma
 \input{fig/calibeval/item.tex}
 \input{fig/calibration/item.tex}
 
-\newpage
+% \newpage
 \paragraph{Formulation}
-Let $\parpose_n$ be the \emph{pose} parameters optimally aligning the rest-pose template to the data frame $\depth_n$, and $\parposture$ be the \emph{posture} parameters representing the transformations $\mathbf{\bar{T}}_*$ via Euler angles. For notational brevity, we also define $\pars_n=[\parpose_n, \parposture, \restcenters, \radii]$. Our calibration optimization can then be written as:
+Let $\parpose_n$ be the \emph{pose} parameters optimally aligning the rest-pose template to the data frame $\depth_n$, and $\parposture$ be the \emph{posture} parameters representing the transformations $\mathbf{\bar{T}}_*$ via Euler angles. 
+
+For notational brevity, we also define $\pars_n=[\parpose_n, \parposture, \restcenters, \radii]$. Our calibration optimization can then be written as:
 % 
 \begin{eqnarray}
 % \parposture, \centers, \radii =
