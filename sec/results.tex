@@ -6,7 +6,7 @@ We evaluate our technique on a variety of sequences across a number of users, an
 % associated with these metrics.
 
 \paragraph{Template Calibration}
-The calibration of our model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a necessity. Only in this situation can the centers locations $\posedcenters$ be \todo{jointly} adjusted to create an articulated model that \todo{consensually} fits the whole dataset. We refer the reader to \VideoMVS{} for a visualization of our iterative calibration procedure. The calibration from RGBD datasets can be seen at \VideoCalibRGB{}, and the resulting models are illustrated in \Figure{topology}. 
+The calibration of our model to a collection of 3D data frames is illustrated in \Figure{calibration}; note the same model is rigidly articulated to fit to multiple poses. While for this user we build a model from multi-view stereo data (omni-directional, complete), it is important to notice that the use of multiple frames in different poses is a necessity. Only in this situation can the centers $\posedcenters$ be \todo{jointly} adjusted to create an articulated model that \todo{consensually} fits the whole dataset. We refer the reader to \VideoMVS{} for a visualization of our iterative calibration procedure. The calibration from RGBD datasets can be seen at \VideoCalibRGB{}, and the resulting models are illustrated in \Figure{topology}. 
 
 \paragraph{Kinematic Calibration}
 The importance of adjusting kinematic chain transformations is shown in \Figure{posing}, as well as the first images pair in \Figure{teaser}. With incorrect  transformations, joint limits and the articulation restrictions of the kinematic chain can prevent the model from being posed correctly; see a dramatization in \VideoKinematic{}. In our experiments we discovered it was crucial to identify the \emph{typical} kinematic chain structure using the dataset in \Figure{calibration}; user-specific calibration optimization used these transformations as initialization.
@@ -76,9 +76,7 @@ Similarly to \cite{taylor2016concerto}, while the contribution of other terms is
 
 \paragraph{Quantitative comparison}
 Our algorithm has been tested with the \realsense{} SR300 (QVGA@60Hz).  We have tailored the method of~\cite{tagliasacchi2015robust} to support this sensor to enable quantitative comparisons. In \Figure{comp1a}, our two metrics are plotted per-frame \todo{as multiple tracking algorithms} are executed on the \handyseq{teaser} sequence, \todo{while \Figure{comp1b} reports aggregated errors;} see \VideoHTrack{}. 
-\begin{draft}
-It is important to note our metrics are designed to evaluate fitting precision; the method of~\cite{sharp2015accurate} still achieves good tracking robustness on the test sequences, but the lack of user calibration heavily biases this metric.
-\end{draft}
+\todo{It is important to note our metrics are designed to evaluate fitting precision; the method of~\cite{sharp2015accurate} still achieves good tracking robustness on the test sequences, but the lack of user calibration heavily biases this metric.}
 Aggregated performance comparisons are also reported in \Figure{barchart} for each sequence in the \handy{} dataset; see \VideoExtra{}. These metrics reveal a consistent and significant increase in performance. \Figure{calibeval} quantitatively illustrates the tracking benefits of template calibration.
 
 \paragraph{Qualitative comparison}
