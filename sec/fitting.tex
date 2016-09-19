@@ -6,7 +6,7 @@
 Our calibration procedure adapts our template model to a specific user from a set of $N$ 3D measurements $\{ \depth_1 \dots \depth_N \}$ of the user's hand in different poses. Multiple measurements are necessary, as it is not possible to understand the kinematic behavior by analyzing static geometry, and the redundancy of information improves fitting precision. Further, in  monocular acquisition this redundancy is essential, as single-view data is highly incomplete\todo{,} making the problem ill-posed. In our research we have experimented with datasets $\{\depth_n\}$ acquired via multi-view stereo (e.g. \emph{Agisoft Photoscan}), as well as a single RGBD sensor. 
 Our calibration formulation can be employed for both acquisition modalities.
 \begin{draft}
-Dynamic reconstruction frameworks such as~\cite{newcombe2015dynfusion} or \cite{innmann2016volume} could also be used to generate a dynamic template mesh, over which sphere-mesh decimation could be executed~\cite{thiery2016spheremesh}. 
+Dynamic reconstruction frameworks such as~\cite{newcombe2015dynfusion} or \cite{innmann2016volume} could also be used to generate a dynamic template mesh over which sphere-mesh decimation could be executed~\cite{thiery2016spheremesh}. 
 \todo{However, as no public implementation is currently available,} it is currently unclear how well these methods would cope with loop-closure for features as small as human fingers.
 \end{draft}
 

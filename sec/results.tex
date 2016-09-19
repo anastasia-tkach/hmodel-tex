@@ -72,6 +72,9 @@ The sequences marked as \emph{tayl*}, \emph{srid*}, and \emph{shar*} are respect
 % \AnastasiaComment{In figure 12, the X axis numerical values are not visible for E3D and are visible for E2D. You decided to remove ``no data energy'' from the plots. It was at bottom limit for E3D and at top limit for E2D. I think, it illustrates nicely why silhouette energy makes E3D metric worse, since data energy also make E2D metrics MUCH worse.}
 % 
 In~\Figure{comp2}, we adopt the self-evaluation visualization proposed by \cite{taylor2016concerto}. We study the changes in algorithm performance as we disable the tracking energy terms in \Equation{htrack} on the \handyseq{teaser} sequence -- in all tests, the \emph{d2m} term is never disabled, as otherwise immediate loss of tracking occurs. Not surprisingly, we identify the \emph{m2d} and \emph{pose} terms to be the ones dominating tracking performance. \todo{Although exclusion of other terms only make a small difference in the metrics, similarly to \cite{taylor2016concerto}, we find these help improve the qualitative feel of the tracker.}
+
+\MP{hmm, that's a difficult to interpret comment. Maybe say something like "While the contribution of other terms is small, we found that it still yields a visually noticeable improvement."}
+
 % 
 % , as they directly encode the look and feel of a human hand. The 2D metric is clearly dominated by the \emph{m2d} fitting term, while this has little effect on the 3D metric.
 % 

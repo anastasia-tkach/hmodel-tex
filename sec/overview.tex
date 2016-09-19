@@ -30,7 +30,7 @@ We limit our discussion to the computational elements that need to be adapted to
 \newpage
 \paragraph{Hausdorff distance} 
 % Generally speaking,
-\todo{In geometry,} the similarity of two geometric models is measured by the symmetric Hausdorff distance $\metric_{X \leftrightarrow Y}$:
+\todo{The similarity of two geometric models can be measured }by the symmetric Hausdorff distance $\metric_{X \leftrightarrow Y}$:
 % 
 \begin{eqnarray*}
 \metric_{X \rightarrow Y} =& \max_{x \in X} \left[ \min_{y \in Y} \metric(x,y) \right] \\
@@ -58,4 +58,4 @@ The second asymmetric distance considers how our monocular acquisition system do
 E_{m2d} = |\model(\pars)|^{-1} \int_{\pixel \in \model(\pars)} \| \pixel - \proj_{\depth}(\pixel)\|_2^1
 \label{eq:m2d}
 \end{equation}
-In the equation above, \todo{the integral is discretized by a sum over the set of pixels obtained through rasterization; see ~\Section{rendering}. The rasterization renders the model to image plane with the same intrinsic and extrinsic parameters of the sensor's depth camera.}
+In the equation above, \todo{the integral is discretized as a sum over the set of pixels obtained through rasterization; see ~\Section{rendering}. The rasterization renders the model to the image plane using the intrinsic and extrinsic parameters of the sensor's depth camera.}
